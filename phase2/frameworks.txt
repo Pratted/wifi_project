@@ -1,0 +1,8 @@
+Frameworks:
+ - Android Studio
+ - PostgresSQL (server side DB)
+ - SQLite (client side DB)
+ - Firebase (API for sending data messages between devices)
+ - MaterialDialogs (android framework for pretty dialogs)
+
+
