@@ -1,6 +1,13 @@
 package com.example.eric.wishare;
 
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.os.Build;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -8,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,11 +53,49 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean hasContactPermissions() {
+        return checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private void requestContactPermissions(){
+        if(!hasContactPermissions()){
+            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS} , 87);
+
+            if(!hasContactPermissions()){
+                new MaterialDialog.Builder(this)
+                        .content("WiShare needs access to your contacts for this feature")
+                        .positiveText("Ok")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 87);
+                            }
+                        })
+                        .show();
+            }
+        }
+    }
+
+    private ArrayList<String> fetchContacts(){
+        ArrayList<String> contacts = new ArrayList<>();
+        ContentResolver cr = getContentResolver();
+        Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null,null,null);
+
+        if((cur != null ? cur.getCount() : 0) > 0){
+            while(cur.moveToNext()){
+                contacts.add(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)));
+            }
+        }
+
+        return contacts;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
 
         findViewById(R.id.btn_add_network).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,20 +113,19 @@ public class MainActivity extends AppCompatActivity {
                     .itemsCallback(onNetWorkSelect())
                     .negativeText("Cancel")
                     .show();
-
-
-
             }
         });
 
-
         findViewById(R.id.btn_manage_contacts).setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View view) {
-                ArrayList<String> contacts = new ArrayList<>();
-                contacts.add("Jeremy");
-                contacts.add("Hyuntae");
-                contacts.add("Sukmoon");
+
+                if(!hasContactPermissions())
+                    requestContactPermissions();
+
+                ArrayList<String> contacts = fetchContacts();
+
                 new MaterialDialog.Builder(MainActivity.this)
                         .title("Manage Contacts")
                         .items(contacts)
@@ -109,14 +154,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-
     }
-
-
-
-
-
-
 }
