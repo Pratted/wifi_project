@@ -31,8 +31,16 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                 Toast.makeText(MainActivity.this, "You entered " + input, Toast.LENGTH_LONG).show();
-                            }
-                        }).show();
+                            }}).show();
+            }
+        };
+    }
+
+    private MaterialDialog.ListCallback onContactSelect() {
+        return new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence contactName) {
+                Toast.makeText(MainActivity.this, "You selected " + contactName, Toast.LENGTH_LONG).show();
             }
         };
     }
@@ -66,6 +74,22 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        findViewById(R.id.btn_manage_contacts).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<String> contacts = new ArrayList<>();
+                contacts.add("Jeremy");
+                contacts.add("Hyuntae");
+                contacts.add("Sukmoon");
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title("Manage Contacts")
+                        .items(contacts)
+                        .itemsCallback(onContactSelect())
+                        .negativeText("Cancel")
+                        .show();
+            }
+        });
+
         FirebaseInstanceId.getInstance().getInstanceId()
             .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
@@ -84,7 +108,13 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+
+
+
     }
+
+
 
 
 
