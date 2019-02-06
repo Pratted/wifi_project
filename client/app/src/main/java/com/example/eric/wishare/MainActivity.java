@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
+    private ScrollView mNetworkScrollView;
+    private ArrayList<String> mUnreadInvitations;
 
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
@@ -45,11 +49,25 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    private MaterialDialog.ListCallback onInviteSelect() {
+        return new MaterialDialog.ListCallback() {
+            @Override
+            public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
+                new MaterialDialog.Builder(MainActivity.this)
+                        .title("Name")
+                        .negativeText("Decline")
+                        .positiveText("Accept")
+                        .show();
+            }
+        };
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
         findViewById(R.id.btn_add_network).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,28 +85,41 @@ public class MainActivity extends AppCompatActivity {
                     .itemsCallback(onNetWorkSelect())
                     .negativeText("Cancel")
                     .show();
-
-
-
             }
         });
-
 
         findViewById(R.id.btn_manage_contacts).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ArrayList<String> contacts = new ArrayList<>();
-                contacts.add("Jeremy");
-                contacts.add("Hyuntae");
-                contacts.add("Sukmoon");
                 new MaterialDialog.Builder(MainActivity.this)
                         .title("Manage Contacts")
-                        .items(contacts)
                         .itemsCallback(onContactSelect())
                         .negativeText("Cancel")
                         .show();
             }
         });
+
+        mUnreadInvitations = new ArrayList<>();
+        mUnreadInvitations.add("Invitation onto 'Eric's crib' from Eric Pratt");
+        mUnreadInvitations.add("Invitation onto 'Hyuntae's hangout from Hyuntae Na");
+
+        findViewById(R.id.btn_my_invitations).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .title("My Invitations")
+                                .items(mUnreadInvitations)
+                                .negativeText("Close")
+                                .itemsCallback(onInviteSelect())
+                                .show();
+                    }
+                }
+        );
+
+        ((TextView) findViewById(R.id.tv_number_of_invites)).setText(mUnreadInvitations.size() + "");
+
 
         FirebaseInstanceId.getInstance().getInstanceId()
             .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -104,14 +135,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // Log and toast
                 Log.d(TAG, "The token is: " + token);
-                Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
 
             }
         });
-
-
-
-
     }
 
 
