@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> mUnreadInvitations;
     private WiInvitationListDialog mInvitationListDialog;
 
+
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
             @Override
@@ -75,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
+
+
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
@@ -116,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
         mUnreadInvitations.add("Invitation onto 'Hyuntae's hangout from Hyuntae Na");
 
 
-        mInvitationListDialog = new WiInvitationListDialog(this);
+        mInvitationListDialog = new WiInvitationListDialog(this, (TextView) findViewById(R.id.tv_number_of_invites));
         mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never"));
         mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019"));
+        mInvitationListDialog.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019"));
+        mInvitationListDialog.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019"));
 
         findViewById(R.id.btn_my_invitations).setOnClickListener(new View.OnClickListener() {
                     @Override
