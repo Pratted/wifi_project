@@ -1,10 +1,13 @@
 package com.example.eric.wishare;
 
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -18,6 +21,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -73,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
+
+        final List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
+
         findViewById(R.id.btn_add_network).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
                 new MaterialDialog.Builder(MainActivity.this)
                     .title("Select Network")
-                    .items(networks)
+                    .items(wifiList)
                     .itemsCallback(onNetWorkSelect())
                     .negativeText("Cancel")
                     .show();

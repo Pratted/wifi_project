@@ -11,9 +11,7 @@ public class WiInvitation {
         this.expires = expires;
     }
 
-    public WiInvitation(){
-
-    }
+    public WiInvitation() {}
 
     @Override
     public boolean equals(Object obj) {
