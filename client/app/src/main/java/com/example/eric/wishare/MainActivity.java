@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private ScrollView mNetworkScrollView;
     private ArrayList<String> mUnreadInvitations;
+    private WiInvitationListDialog mInvitationListDialog;
 
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
@@ -67,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        FirebaseApp.initializeApp(this);
+
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
         findViewById(R.id.btn_add_network).setOnClickListener(new View.OnClickListener() {
@@ -103,17 +107,15 @@ public class MainActivity extends AppCompatActivity {
         mUnreadInvitations.add("Invitation onto 'Eric's crib' from Eric Pratt");
         mUnreadInvitations.add("Invitation onto 'Hyuntae's hangout from Hyuntae Na");
 
+
+        mInvitationListDialog = new WiInvitationListDialog(this);
+        mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never"));
+        mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019"));
+
         findViewById(R.id.btn_my_invitations).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
-
-                        new MaterialDialog.Builder(MainActivity.this)
-                                .title("My Invitations")
-                                .items(mUnreadInvitations)
-                                .negativeText("Close")
-                                .itemsCallback(onInviteSelect())
-                                .show();
+                        mInvitationListDialog.show();
                     }
                 }
         );
@@ -140,10 +142,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
-
-
 
 }

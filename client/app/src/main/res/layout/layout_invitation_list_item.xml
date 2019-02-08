@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="12dp"
+    android:layout_marginBottom="12dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <TextView
+        android:id="@+id/tv_invitation_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invitation to 'belkin-0615'"
+        android:textSize="16dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="Owner:"/>
+
+        <TextView
+            android:id="@+id/tv_invitation_owner"
+            android:paddingLeft="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Eric Pratt"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:text="Expires:"/>
+
+        <TextView
+            android:id="@+id/tv_invitation_expiration"
+            android:paddingLeft="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Never"/>
+    </LinearLayout>
+
+</LinearLayout>
