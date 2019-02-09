@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -98,19 +99,17 @@ public class WiInvitationListDialog {
         }
 
         private class WiInvitationAcceptDeclineDialog {
-            private ConstraintLayout mLayoutAcceptDeclineDialog;
-
-            private TextView tvAcceptDeclineTitle;
-            private TextView tvInvitationOwner;
-            private TextView tvInvitationExpires;
-            private TextView tvDataLimit;
-            private TextView tvTimeLimit;
+            private LinearLayout mLayoutAcceptDeclineDialog;
 
             private MaterialDialog.Builder builder;
 
             private WiInvitationAcceptDeclineDialog() {
-                mLayoutAcceptDeclineDialog = (ConstraintLayout) mInflater.inflate(R.layout.layout_accept_decline_invitation_dialog, null);
-                tvAcceptDeclineTitle = null;
+                mLayoutAcceptDeclineDialog = (LinearLayout) mInflater.inflate(R.layout.layout_accept_decline_invitation_dialog, null);
+
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_time_limit)).setText(mInvitation.timeLimit);
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_data_limit)).setText(mInvitation.dataLimit);
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_invitation_expiration)).setText(mInvitation.expires);
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_invitation_owner)).setText(mInvitation.owner);
 
                 builder = new MaterialDialog.Builder(mContext)
                         .title(mInvitation.networkName)
@@ -119,8 +118,9 @@ public class WiInvitationListDialog {
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                remove(mInvitation);
-
+                                   remove(mInvitation);
+                                   Toast.makeText(mContext, mInvitation.networkName + " has been configured", Toast.LENGTH_LONG).show();
+                                   WiNetworkManager.getInstance().add(mInvitation.getWiConfiguration());
                             }
                         })
                         .negativeText("Decline")

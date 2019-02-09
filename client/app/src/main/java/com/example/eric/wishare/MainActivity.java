@@ -99,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
             scrollLayout.addView(temp);
         }
 
+
+
         findViewById(R.id.btn_add_network).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -135,10 +137,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         mInvitationListDialog = new WiInvitationListDialog(this, (TextView) findViewById(R.id.tv_number_of_invites));
-        mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never"));
-        mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019"));
-        mInvitationListDialog.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019"));
-        mInvitationListDialog.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019"));
+        mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
+        mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
+        mInvitationListDialog.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019", "Never", "None"));
+        mInvitationListDialog.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019", "24 hours", "3GB"));
 
         findViewById(R.id.btn_my_invitations).setOnClickListener(new View.OnClickListener() {
                     @Override
