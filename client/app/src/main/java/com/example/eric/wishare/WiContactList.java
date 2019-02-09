@@ -1,6 +1,7 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,7 +9,6 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
-import android.support.annotation.RequiresApi;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -45,6 +45,10 @@ public class WiContactList {
         return mContactList;
     }
 
+    public int size() {
+        return mContactList == null ? 0 : mContactList.size();
+    }
+
 
     interface OnContactListReadyListener{
         void onContactListReady(ArrayList<WiContact> contacts);
@@ -59,19 +63,19 @@ public class WiContactList {
         @Override
         protected ArrayList<WiContact> doInBackground(Void... voids) {
             ContentResolver resolver = mContext.get().getContentResolver();
-            Cursor cursor = resolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 
-            if((cursor != null ? cursor.getCount() : 0) > 0){
-                while(cursor != null && cursor.moveToNext()){
-                    WiContact contact = new WiContact(
-                        cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME)),
-                        "phone #"
-                    );
+            Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-                    mContactList.add(contact);
-                    mPhoneToContact.put(contact.phone, contact);
-                }
+            while(cursor != null && cursor.moveToNext()) {
+                WiContact contact = new WiContact(
+                        cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                        cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                );
+
+                mContactList.add(contact);
+                mPhoneToContact.put(contact.phone, contact);
             }
+
 
             return mContactList;
         }
@@ -84,9 +88,16 @@ public class WiContactList {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     public static boolean hasContactPermissions(Context context){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
 
-        return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
+    public static void requestContactPermissions(Activity activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 87);
+        }
     }
 }

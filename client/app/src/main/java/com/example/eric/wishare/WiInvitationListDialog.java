@@ -15,38 +15,41 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.w3c.dom.Text;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class WiInvitationListDialog {
-    private Context mContext;
+public class WiInvitationListDialog implements WiDialog{
+    private WeakReference<Context> mContext;
     private LinearLayout mParent;
     private LayoutInflater mInflater;
     private TextView mNumInvites;
 
     private ArrayList<WiInvitationListItem> mInvitations = new ArrayList<>();
-    private MaterialDialog.Builder mDialog;
+    private MaterialDialog mDialog;
 
-    public WiInvitationListDialog(Context context, TextView numInvites){
-        mContext = context;
+    public WiInvitationListDialog(Context context, ArrayList<WiInvitation> invitations, TextView numInvites){
+        mContext = new WeakReference<>(context);
         mNumInvites = numInvites;
-
 
         // create an empty layout to place into the dialog...
         mParent = new LinearLayout(context);
         mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         mParent.setOrientation(LinearLayout.VERTICAL);
 
-        mDialog = new MaterialDialog.Builder(context)
+        mDialog = new MaterialDialog.Builder(mContext.get())
                 .title("My Invitations")
                 .customView(mParent, false)
-                .positiveText("Close");
+                .positiveText("Close")
+                .build();
+
+        for(WiInvitation invitation: invitations){
+            add(invitation);
+        }
     }
 
-
-
-    public void add(WiInvitation invitation){
+    private void add(WiInvitation invitation){
         add(new WiInvitationListItem(invitation));
     }
 
@@ -56,6 +59,10 @@ public class WiInvitationListDialog {
 
     public void show(){
         mDialog.show();
+    }
+
+    public void refresh(Context context){
+        mContext = new WeakReference<>(context);
     }
 
     public void remove(WiInvitation invitation){
@@ -101,7 +108,7 @@ public class WiInvitationListDialog {
         private class WiInvitationAcceptDeclineDialog {
             private LinearLayout mLayoutAcceptDeclineDialog;
 
-            private MaterialDialog.Builder builder;
+            private MaterialDialog mDialog;
 
             private WiInvitationAcceptDeclineDialog() {
                 mLayoutAcceptDeclineDialog = (LinearLayout) mInflater.inflate(R.layout.layout_accept_decline_invitation_dialog, null);
@@ -111,7 +118,7 @@ public class WiInvitationListDialog {
                 ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_invitation_expiration)).setText(mInvitation.expires);
                 ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_invitation_owner)).setText(mInvitation.owner);
 
-                builder = new MaterialDialog.Builder(mContext)
+                mDialog = new MaterialDialog.Builder(mContext.get())
                         .title(mInvitation.networkName)
                         .customView(mLayoutAcceptDeclineDialog, true)
                         .positiveText("Accept")
@@ -119,7 +126,7 @@ public class WiInvitationListDialog {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                    remove(mInvitation);
-                                   Toast.makeText(mContext, mInvitation.networkName + " has been configured", Toast.LENGTH_LONG).show();
+                                   Toast.makeText(mContext.get(), mInvitation.networkName + " has been configured", Toast.LENGTH_LONG).show();
                                    WiNetworkManager.getInstance().add(mInvitation.getWiConfiguration());
                             }
                         })
@@ -129,12 +136,13 @@ public class WiInvitationListDialog {
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 remove(mInvitation);
                             }
-                        });
+                        })
+                        .build();
 
             }
 
             public void show() {
-                builder.show();
+                mDialog.show();
             }
 
         }
@@ -147,7 +155,6 @@ public class WiInvitationListDialog {
             tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
             tvInvitationOwner.setText(mInvitation.owner);
             tvInvitationExpires.setText(mInvitation.expires);
-
         }
     }
 }
