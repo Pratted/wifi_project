@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
     private ArrayList<String> mUnreadInvitations;
     private WiInvitationListDialog mInvitationListDialog;
-
+    private WiContactList mContactList;
 
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
@@ -120,16 +120,37 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.btn_manage_contacts).setOnClickListener(new View.OnClickListener() {
+        mContactList = new WiContactList(this);
+        mContactList.refreshContext(this);
+
+
+
+        mContactList.setOnContactListReadyListener(new WiContactList.OnContactListReadyListener() {
             @Override
-            public void onClick(View view) {
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title("Manage Contacts")
-                        .itemsCallback(onContactSelect())
-                        .negativeText("Cancel")
-                        .show();
+            public void onContactListReady(ArrayList<WiContact> contacts) {
+                final ArrayList<String> ttt = new ArrayList<>();
+
+                for(WiContact contact: contacts){
+                    ttt.add(contact.name + " " + contact.phone);
+                }
+
+                findViewById(R.id.btn_manage_contacts).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        new MaterialDialog.Builder(MainActivity.this)
+                                .title("Manage Contacts")
+                                .items(ttt)
+                                .itemsCallback(onContactSelect())
+                                .negativeText("Cancel")
+                                .show();
+                    }
+                });
             }
         });
+
+        mContactList.loadAsync(this);
+
+        //ArrayList<WiContact> contacts = mContactList.getWiContacts();
 
         mUnreadInvitations = new ArrayList<>();
         mUnreadInvitations.add("Invitation onto 'Eric's crib' from Eric Pratt");
