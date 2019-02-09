@@ -27,11 +27,9 @@ public class WiInvitationListDialog {
     private ArrayList<WiInvitationListItem> mInvitations = new ArrayList<>();
     private MaterialDialog.Builder mDialog;
 
-    public WiInvitationListDialog(Context context, TextView mNumInvites){
+    public WiInvitationListDialog(Context context, TextView numInvites){
         mContext = context;
-
-
-        this.mNumInvites = mNumInvites;
+        mNumInvites = numInvites;
 
 
         // create an empty layout to place into the dialog...
@@ -42,7 +40,7 @@ public class WiInvitationListDialog {
         mDialog = new MaterialDialog.Builder(context)
                 .title("My Invitations")
                 .customView(mParent, false)
-                .positiveText("Ok");
+                .positiveText("Close");
     }
 
 
@@ -53,7 +51,6 @@ public class WiInvitationListDialog {
 
     private void add(WiInvitationListItem invitation){
         mInvitations.add(invitation);
-        //mInvitations.add(0, invitation);
     }
 
     public void show(){
@@ -65,17 +62,16 @@ public class WiInvitationListDialog {
             WiInvitation lhs = mInvitations.get(i).mInvitation;
 
             if (lhs.equals(invitation)) {
+                mParent.removeView(mInvitations.get(i).mLayout);
                 mInvitations.remove(i);
+
+                mNumInvites.setText(mInvitations.size() + "");
+                mNumInvites.setVisibility((mInvitations.size() != 0) ? View.VISIBLE : View.INVISIBLE);
+
                 return;
             }
         }
     }
-
-    public int size(){
-        return mInvitations.size();
-    }
-
-
 
     private class WiInvitationListItem {
         private LinearLayout mLayout;
@@ -85,25 +81,18 @@ public class WiInvitationListDialog {
         private TextView tvInvitationOwner;
         private TextView tvInvitationExpires;
 
-        private WiInvitationAcceptDeclineDialog acceptDeclineDialog;
-
-
         public WiInvitationListItem(WiInvitation invitation){
             mInvitation = invitation;
 
-            acceptDeclineDialog = new WiInvitationAcceptDeclineDialog();
-
             mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item, null);
             mParent.addView(mLayout);
-
-
 
             refresh();
 
             mLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    acceptDeclineDialog.show();
+                    new WiInvitationAcceptDeclineDialog().show();
                 }
             });
         }
@@ -131,7 +120,6 @@ public class WiInvitationListDialog {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 remove(mInvitation);
-                                mNumInvites.setText(mInvitations.size() + "");
 
                             }
                         })
@@ -151,9 +139,6 @@ public class WiInvitationListDialog {
 
         }
 
-
-
-
         public void refresh(){
             tvInvitationTitle = mLayout.findViewById(R.id.tv_invitation_title);
             tvInvitationOwner = mLayout.findViewById(R.id.tv_invitation_owner);
@@ -164,6 +149,5 @@ public class WiInvitationListDialog {
             tvInvitationExpires.setText(mInvitation.expires);
 
         }
-
     }
 }
