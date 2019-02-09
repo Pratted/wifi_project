@@ -9,6 +9,9 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,13 +79,24 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-
-
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
-        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
+        LinearLayout scrollLayout = new LinearLayout(this);
+        scrollLayout.setOrientation(LinearLayout.VERTICAL);
 
+        mNetworkScrollView.addView(scrollLayout);
+
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
         final List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
+        TextView temp;
+        int counter = 0;
+        for(WifiConfiguration item : wifiList) {
+            System.out.println(counter++ + item.SSID);
+            temp = new TextView(this);
+            temp.setText(item.SSID.replace("\"", ""));
+            temp.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            scrollLayout.addView(temp);
+        }
 
         findViewById(R.id.btn_add_network).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
                 new MaterialDialog.Builder(MainActivity.this)
                     .title("Select Network")
-                    .items(wifiList)
+                    .items(networks)
                     .itemsCallback(onNetWorkSelect())
                     .negativeText("Cancel")
                     .show();
