@@ -80,12 +80,13 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
 
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
-
+        // ScrollView can only have 1 child
+        // Adding linear layout as a child solves the problem
         LinearLayout scrollLayout = new LinearLayout(this);
         scrollLayout.setOrientation(LinearLayout.VERTICAL);
-
         mNetworkScrollView.addView(scrollLayout);
 
+        // Get the phone's configured Wifi networks.
         WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
         final List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
         TextView temp;
