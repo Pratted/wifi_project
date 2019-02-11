@@ -4,11 +4,20 @@ public class WiInvitation {
     public String networkName;
     public String owner;
     public String expires;
+    public String timeLimit;
+    public String dataLimit;
+    private WiConfiguration mConfiguration;
 
-    public WiInvitation(String networkName, String owner, String expires) {
+    public WiConfiguration getWiConfiguration() {
+        return mConfiguration;
+    }
+
+    public WiInvitation(String networkName, String owner, String expires, String timeLimit, String dataLimit) {
         this.networkName = networkName;
         this.owner = owner;
         this.expires = expires;
+        this.timeLimit = timeLimit;
+        this.dataLimit = dataLimit;
     }
 
     public WiInvitation() {}

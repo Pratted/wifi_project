@@ -8,56 +8,61 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.w3c.dom.Text;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
-public class WiInvitationListDialog {
-    private Context mContext;
+public class WiInvitationListDialog implements WiDialog{
+    private WeakReference<Context> mContext;
     private LinearLayout mParent;
     private LayoutInflater mInflater;
     private TextView mNumInvites;
 
     private ArrayList<WiInvitationListItem> mInvitations = new ArrayList<>();
-    private MaterialDialog.Builder mDialog;
+    private MaterialDialog mDialog;
 
-    public WiInvitationListDialog(Context context, TextView mNumInvites){
-        mContext = context;
-
-
-        this.mNumInvites = mNumInvites;
-
+    public WiInvitationListDialog(Context context, ArrayList<WiInvitation> invitations, TextView numInvites){
+        mContext = new WeakReference<>(context);
+        mNumInvites = numInvites;
 
         // create an empty layout to place into the dialog...
         mParent = new LinearLayout(context);
         mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         mParent.setOrientation(LinearLayout.VERTICAL);
 
-        mDialog = new MaterialDialog.Builder(context)
+        mDialog = new MaterialDialog.Builder(mContext.get())
                 .title("My Invitations")
                 .customView(mParent, false)
-                .positiveText("Ok");
+                .positiveText("Close")
+                .build();
+
+        for(WiInvitation invitation: invitations){
+            add(invitation);
+        }
     }
 
-
-
-    public void add(WiInvitation invitation){
+    private void add(WiInvitation invitation){
         add(new WiInvitationListItem(invitation));
     }
 
     private void add(WiInvitationListItem invitation){
         mInvitations.add(invitation);
-        //mInvitations.add(0, invitation);
     }
 
     public void show(){
         mDialog.show();
+    }
+
+    public void refresh(Context context){
+        mContext = new WeakReference<>(context);
     }
 
     public void remove(WiInvitation invitation){
@@ -65,17 +70,16 @@ public class WiInvitationListDialog {
             WiInvitation lhs = mInvitations.get(i).mInvitation;
 
             if (lhs.equals(invitation)) {
+                mParent.removeView(mInvitations.get(i).mLayout);
                 mInvitations.remove(i);
+
+                mNumInvites.setText(mInvitations.size() + "");
+                mNumInvites.setVisibility((mInvitations.size() != 0) ? View.VISIBLE : View.INVISIBLE);
+
                 return;
             }
         }
     }
-
-    public int size(){
-        return mInvitations.size();
-    }
-
-
 
     private class WiInvitationListItem {
         private LinearLayout mLayout;
@@ -85,54 +89,45 @@ public class WiInvitationListDialog {
         private TextView tvInvitationOwner;
         private TextView tvInvitationExpires;
 
-        private WiInvitationAcceptDeclineDialog acceptDeclineDialog;
-
-
         public WiInvitationListItem(WiInvitation invitation){
             mInvitation = invitation;
 
-            acceptDeclineDialog = new WiInvitationAcceptDeclineDialog();
-
             mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item, null);
             mParent.addView(mLayout);
-
-
 
             refresh();
 
             mLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    acceptDeclineDialog.show();
+                    new WiInvitationAcceptDeclineDialog().show();
                 }
             });
         }
 
         private class WiInvitationAcceptDeclineDialog {
-            private ConstraintLayout mLayoutAcceptDeclineDialog;
+            private LinearLayout mLayoutAcceptDeclineDialog;
 
-            private TextView tvAcceptDeclineTitle;
-            private TextView tvInvitationOwner;
-            private TextView tvInvitationExpires;
-            private TextView tvDataLimit;
-            private TextView tvTimeLimit;
-
-            private MaterialDialog.Builder builder;
+            private MaterialDialog mDialog;
 
             private WiInvitationAcceptDeclineDialog() {
-                mLayoutAcceptDeclineDialog = (ConstraintLayout) mInflater.inflate(R.layout.layout_accept_decline_invitation_dialog, null);
-                tvAcceptDeclineTitle = null;
+                mLayoutAcceptDeclineDialog = (LinearLayout) mInflater.inflate(R.layout.layout_accept_decline_invitation_dialog, null);
 
-                builder = new MaterialDialog.Builder(mContext)
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_time_limit)).setText(mInvitation.timeLimit);
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_data_limit)).setText(mInvitation.dataLimit);
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_invitation_expiration)).setText(mInvitation.expires);
+                ((TextView) mLayoutAcceptDeclineDialog.findViewById(R.id.tv_invitation_owner)).setText(mInvitation.owner);
+
+                mDialog = new MaterialDialog.Builder(mContext.get())
                         .title(mInvitation.networkName)
                         .customView(mLayoutAcceptDeclineDialog, true)
                         .positiveText("Accept")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                remove(mInvitation);
-                                mNumInvites.setText(mInvitations.size() + "");
-
+                                   remove(mInvitation);
+                                   Toast.makeText(mContext.get(), mInvitation.networkName + " has been configured", Toast.LENGTH_LONG).show();
+                                   WiNetworkManager.getInstance().add(mInvitation.getWiConfiguration());
                             }
                         })
                         .negativeText("Decline")
@@ -141,18 +136,16 @@ public class WiInvitationListDialog {
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                 remove(mInvitation);
                             }
-                        });
+                        })
+                        .build();
 
             }
 
             public void show() {
-                builder.show();
+                mDialog.show();
             }
 
         }
-
-
-
 
         public void refresh(){
             tvInvitationTitle = mLayout.findViewById(R.id.tv_invitation_title);
@@ -162,8 +155,6 @@ public class WiInvitationListDialog {
             tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
             tvInvitationOwner.setText(mInvitation.owner);
             tvInvitationExpires.setText(mInvitation.expires);
-
         }
-
     }
 }

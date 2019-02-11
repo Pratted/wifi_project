@@ -4,17 +4,17 @@ import android.annotation.SuppressLint;
 import android.net.wifi.WifiConfiguration;
 
 @SuppressLint("ParcelCreator")
-public class WiConfigurations extends WifiConfiguration {
+public class WiConfiguration extends WifiConfiguration {
 
     private String mPassword;
     private String mSSID;
 
-    public WiConfigurations(String mSSID, String mPassword) {
+    public WiConfiguration(String mSSID, String mPassword) {
         this.mPassword = mPassword;
-        this.mSSID = super.SSID;
+        this.mSSID = mSSID;
     }
 
     public String getSSID() {
-        return mSSID;
+        return mSSID.replace("\"", "");
     }
 }
