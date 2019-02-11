@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                                 Toast.makeText(MainActivity.this, "You entered " + input, Toast.LENGTH_LONG).show();
                             }}).show();
+
             }
         };
     }
