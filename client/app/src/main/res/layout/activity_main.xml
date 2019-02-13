@@ -7,6 +7,14 @@
     android:orientation="vertical">
 
 
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="24dp"
+        android:text="Configured Networks"/>
+
     <ScrollView
         android:id="@+id/scroll_network_list"
         android:layout_width="match_parent"
@@ -16,11 +24,6 @@
         android:layout_marginStart="20dp"
         android:layout_marginTop="8dp">
 
-        <!--<LinearLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-            <!---->
-        <!--</LinearLayout>-->
     </ScrollView>
 
 
@@ -32,7 +35,6 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="100dp"
         android:text="@string/btn_add_network" />
-
 
     <Button
         android:id="@+id/btn_manage_contacts"

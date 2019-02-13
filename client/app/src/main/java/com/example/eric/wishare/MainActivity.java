@@ -1,19 +1,16 @@
 package com.example.eric.wishare;
 
-import android.content.ContentResolver;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -26,17 +23,14 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
     private ScrollView mNetworkScrollView;
     private ArrayList<WiInvitation> mInvitations;
-    private LinearLayout mScollView;
+    private LinearLayout mScrollView;
 
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
@@ -99,13 +93,13 @@ public class MainActivity extends AppCompatActivity {
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
         // ScrollView can only have 1 child
         // Adding linear layout as a child solves the problem
-        mScollView = new LinearLayout(this);
-        mScollView.setOrientation(LinearLayout.VERTICAL);
+        mScrollView = new LinearLayout(this);
+        mScrollView.setOrientation(LinearLayout.VERTICAL);
 
-        mNetworkScrollView.addView(mScollView);
+        mNetworkScrollView.addView(mScrollView);
 
         mAddNetworkDialog = new WiAddNetworkDialog(this);
-        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
+        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered(1));
 
         // Get the phone's configured Wifi networks.
 //        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
@@ -148,9 +142,31 @@ public class MainActivity extends AppCompatActivity {
                     temp = new TextView(MainActivity.this);
                     temp.setText(config.getSSID());
                     temp.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    mScollView.addView(temp);
+                    mScrollView.addView(temp);
                 }
         }};
+    }
+
+    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(int x){
+        return new WiAddNetworkDialog.OnPasswordEnteredListener() {
+            @Override
+            public void OnPasswordEntered(WiConfiguration config) {
+                LayoutInflater inflater = getLayoutInflater();
+                LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_configured_network_list_item, null);
+
+                // random # of users
+                int users = config.hashCode() % 5;
+                if(users < 0) users *= -1;
+
+                ((TextView) layout.findViewById(R.id.tv_network_name)).setText(config.getSSID());
+                ((TextView) layout.findViewById(R.id.tv_active_users)).setText(users + " active user(s)");
+
+                if(users % 2 == 0)
+                    ((ImageView) layout.findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
+                //((ImageView) layout.findViewById(R.id.iv_configured_status))
+                mScrollView.addView(layout);
+            }
+        };
     }
 
 

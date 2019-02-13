@@ -3,10 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="12dp"
-    android:layout_marginBottom="12dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <TextView
+        android:layout_marginTop="10dp"
         android:id="@+id/tv_invitation_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -28,6 +28,8 @@
             android:layout_height="wrap_content"
             android:text="Eric Pratt"/>
     </LinearLayout>
+
+    <!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -43,5 +45,6 @@
             android:layout_height="wrap_content"
             android:text="Never"/>
     </LinearLayout>
+    -->
 
 </LinearLayout>

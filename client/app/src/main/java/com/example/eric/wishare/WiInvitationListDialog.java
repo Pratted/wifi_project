@@ -87,7 +87,7 @@ public class WiInvitationListDialog implements WiDialog{
 
         private TextView tvInvitationTitle;
         private TextView tvInvitationOwner;
-        private TextView tvInvitationExpires;
+        //private TextView tvInvitationExpires;
 
         public WiInvitationListItem(WiInvitation invitation){
             mInvitation = invitation;
@@ -126,7 +126,7 @@ public class WiInvitationListDialog implements WiDialog{
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                    remove(mInvitation);
-                                   Toast.makeText(mContext.get(), mInvitation.networkName + " has been configured", Toast.LENGTH_LONG).show();
+                                   Toast.makeText(mContext.get(), mInvitation.networkName + " has been accepted", Toast.LENGTH_LONG).show();
                                    WiNetworkManager.getInstance().add(mInvitation.getWiConfiguration());
                             }
                         })
@@ -150,11 +150,11 @@ public class WiInvitationListDialog implements WiDialog{
         public void refresh(){
             tvInvitationTitle = mLayout.findViewById(R.id.tv_invitation_title);
             tvInvitationOwner = mLayout.findViewById(R.id.tv_invitation_owner);
-            tvInvitationExpires = mLayout.findViewById(R.id.tv_invitation_expiration);
+            //tvInvitationExpires = mLayout.findViewById(R.id.tv_invitation_expiration);
 
             tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
             tvInvitationOwner.setText(mInvitation.owner);
-            tvInvitationExpires.setText(mInvitation.expires);
+            //tvInvitationExpires.setText(mInvitation.expires);
         }
     }
 }
