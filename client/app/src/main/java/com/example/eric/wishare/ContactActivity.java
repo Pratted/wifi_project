@@ -20,11 +20,12 @@ public class ContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
-        onContactSelected();
 
-
+        WiContact contact = getIntent().getExtras().getParcelable("contact");
+        ((TextView)findViewById(R.id.tv_contact_name)).setText(contact.getName());
+        ((TextView)findViewById(R.id.tv_contact_number)).setText(contact.getPhone());
     }
-    private WiContactListDialog.OnContactSelectedListener onContactSelected(){
+/*    private WiContactListDialog.OnContactSelectedListener onContactSelected(){
         return new WiContactListDialog.OnContactSelectedListener() {
             @Override
             public void onContactSelected(WiContact contact) {
@@ -33,5 +34,5 @@ public class ContactActivity extends AppCompatActivity {
                 Toast.makeText(ContactActivity.this, "Hello", Toast.LENGTH_LONG).show();
             }
         };
-    }
+    }*/
 }

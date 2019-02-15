@@ -39,7 +39,7 @@ public class WiContactListDialog implements WiDialog{
         return new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                mOnContactSelectedListener.onContactSelected(new WiContact("Eric", "6107370292"));
+                mOnContactSelectedListener.onContactSelected(mContactList.getWiContacts().get(position));
             }
         };
     }
