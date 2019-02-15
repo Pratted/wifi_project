@@ -24,23 +24,13 @@ public class WiContactListDialog implements WiDialog{
         mContactList = new WiContactList(context);
 
         mContactList.setOnContactListReadyListener(onContactListReady());
-
-        // contacts already retrieved. used cached array list...
-        if(mContactList.size() > 0) {
-            build(mContactList.getWiContacts());
-        }
-
-        // otherwise load asynchronously. list will populate in callback onContactListReady()
-        else {
-            mContactList.loadAsync(context);
-        }
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){
         return new WiContactList.OnContactListReadyListener() {
             @Override
             public void onContactListReady(ArrayList<WiContact> contacts) {
-                build(contacts);
+                build();
             }
         };
     }
@@ -58,8 +48,9 @@ public class WiContactListDialog implements WiDialog{
         mOnContactSelectedListener = listener;
     }
 
-    private void build(ArrayList<WiContact> contacts){
+    public void build(){
         ArrayList<String> strings = new ArrayList<>();
+        ArrayList<WiContact> contacts = mContactList.getWiContacts();
 
         for (WiContact contact : contacts) {
             strings.add(contact.name + " " + contact.phone);
@@ -77,8 +68,17 @@ public class WiContactListDialog implements WiDialog{
         mDialog.show();
     }
 
+    public void loadContacts(){
+        mContactList.load();
+    }
+
+    public void loadContactsAsync(){
+        mContactList.loadAsync(mContext.get());
+    }
+
     @Override
     public void refresh(Context context) {
         mContext = new WeakReference<>(context);
+        build();
     }
 }

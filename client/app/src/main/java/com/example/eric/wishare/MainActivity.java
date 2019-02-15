@@ -1,6 +1,7 @@
 package com.example.eric.wishare;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -32,46 +33,37 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<WiInvitation> mInvitations;
     private LinearLayout mScrollView;
 
-    private MaterialDialog.ListCallback onNetWorkSelect() {
-        return new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                new MaterialDialog.Builder(MainActivity.this)
-                        .title("Enter Password")
-                        .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
-                        .input("Password", "", false, new MaterialDialog.InputCallback() {
-                            @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                                Toast.makeText(MainActivity.this, "You entered " + input, Toast.LENGTH_LONG).show();
-                            }}).show();
-
-            }
-        };
-    }
-
-    private WiInvitationListDialog mInvitationListDialog;
-    private WiAddNetworkDialog mAddNetworkDialog;
-    private WiContactListDialog mContactListDialog;
-
-    private MaterialDialog.ListCallback onContactSelect() {
-        return new MaterialDialog.ListCallback() {
-            @Override
-            public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence contactName) {
-                Toast.makeText(MainActivity.this, "You selected " + contactName, Toast.LENGTH_LONG).show();
-            }
-        };
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-    }
     private TextView tvNumberOfInvites;
 
     private Button btnMyInvitations;
     private Button btnAddNetwork;
     private Button btnManageContacts;
+
+    private WiInvitationListDialog mInvitationListDialog;
+    private WiAddNetworkDialog mAddNetworkDialog;
+    private WiContactListDialog mContactListDialog;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        // contact permission accepted..
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            mContactListDialog = new WiContactListDialog(this);
+
+            mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
+                @Override
+                public void onContactSelected(WiContact contact) {
+                    startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                }
+            });
+
+            //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
+            mContactListDialog.loadContacts();
+            mContactListDialog.refresh(this);
+            mContactListDialog.show();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,10 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         tvNumberOfInvites = findViewById(R.id.tv_number_of_invites);
 
-        //mContactList = new WiContactList(this);
-        mInvitations = new ArrayList<>();
-
-
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
         // ScrollView can only have 1 child
         // Adding linear layout as a child solves the problem
@@ -99,55 +87,35 @@ public class MainActivity extends AppCompatActivity {
         mNetworkScrollView.addView(mScrollView);
 
         mAddNetworkDialog = new WiAddNetworkDialog(this);
-        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered(1));
+        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
-        // Get the phone's configured Wifi networks.
-//        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
-//        final List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
-
-//        for(WifiConfiguration item : wifiList) {
-//            System.out.println(counter++ + item.SSID);
-//            temp = new TextView(this);
-//            temp.setText(item.SSID.replace("\"", ""));
-//            temp.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//            scrollLayout.addView(temp);
-//        }
-
-
+        mInvitations = new ArrayList<>();
         mInvitations.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
         mInvitations.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
         mInvitations.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019", "Never", "None"));
         mInvitations.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019", "24 hours", "3GB"));
 
-        mContactListDialog = new WiContactListDialog(this);
         mInvitationListDialog = new WiInvitationListDialog(this, mInvitations, tvNumberOfInvites);
 
-        mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
-            @Override
-            public void onContactSelected(WiContact contact) {
-                startActivity(new Intent(MainActivity.this, ContactActivity.class));
-            }
-        });
-    }
+        /**
+         need contact permission to build the ContactListDialog
+         if contact permission is not granted, the user will be prompted on Manage Contacts button click
+         if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
+         **/
+        if(WiContactList.hasContactPermissions(this)){
+            mContactListDialog = new WiContactListDialog(this);
+            mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
-    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered() {
-        return new WiAddNetworkDialog.OnPasswordEnteredListener() {
-            @Override
-            public void OnPasswordEntered(WiConfiguration config) {
-                TextView temp;
-//                Intent i = getIntent();
-//                WiConfiguration config = (WiConfiguration) i.getSerializableExtra("addedWifi");
-
-                if(config != null) {
-                    temp = new TextView(MainActivity.this);
-                    temp.setText(config.getSSID());
-                    temp.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    mScrollView.addView(temp);
+            mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
+                @Override
+                public void onContactSelected(WiContact contact) {
+                    startActivity(new Intent(MainActivity.this, ContactActivity.class));
                 }
-        }};
+            });
+        }
     }
 
-    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(int x){
+    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(){
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override
             public void OnPasswordEntered(WiConfiguration config) {
@@ -175,8 +143,12 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         mAddNetworkDialog.refresh(this);
-        mContactListDialog.refresh(this);
+
         mInvitationListDialog.refresh(this);
+
+        if(mContactListDialog != null) {
+            mContactListDialog.refresh(this);
+        }
 
         btnAddNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,8 +160,12 @@ public class MainActivity extends AppCompatActivity {
         btnManageContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //WiContactList.requestContactPermissions(MainActivity.this);
-                mContactListDialog.show();
+                if(!WiContactList.hasContactPermissions(MainActivity.this)){
+                    WiContactList.requestContactPermissions(MainActivity.this);
+                }
+                else{
+                    mContactListDialog.show();
+                }
             }
         });
 
@@ -199,8 +175,6 @@ public class MainActivity extends AppCompatActivity {
                 mInvitationListDialog.show();
             }
         });
-
-
 
         tvNumberOfInvites.setText(mInvitations.size() + "");
     }
