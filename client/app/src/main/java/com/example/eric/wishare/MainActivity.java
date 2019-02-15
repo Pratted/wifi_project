@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onContactSelected(WiContact contact){
                     Intent intent = new Intent(MainActivity.this, ContactActivity.class);
                     intent.putExtra("contact", contact);
-                    startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                    startActivity(intent);
                 }
             });
         }
