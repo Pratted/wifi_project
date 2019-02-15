@@ -58,25 +58,27 @@ public class WiContactList {
         mContactListReadyListener = listener;
     }
 
+    public void load(){
+        ContentResolver resolver = mContext.get().getContentResolver();
+
+        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+
+        while(cursor != null && cursor.moveToNext()) {
+            WiContact contact = new WiContact(
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
+            );
+
+            mContactList.add(contact);
+            mPhoneToContact.put(contact.phone, contact);
+        }
+    }
+
     private class WiContactListLoader extends AsyncTask<Void, Void, ArrayList<WiContact>> {
 
         @Override
         protected ArrayList<WiContact> doInBackground(Void... voids) {
-            ContentResolver resolver = mContext.get().getContentResolver();
-
-            Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-
-            while(cursor != null && cursor.moveToNext()) {
-                WiContact contact = new WiContact(
-                        cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
-                        cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                );
-
-                mContactList.add(contact);
-                mPhoneToContact.put(contact.phone, contact);
-            }
-
-
+            load(); // calling a synchronous function in an async function makes it async
             return mContactList;
         }
 
