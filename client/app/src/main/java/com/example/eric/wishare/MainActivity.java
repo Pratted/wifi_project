@@ -55,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
             mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
                 @Override
                 public void onContactSelected(WiContact contact) {
-                    startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                    Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                    intent.putExtra("contact", contact);
+                    startActivity(intent);
                 }
             });
 

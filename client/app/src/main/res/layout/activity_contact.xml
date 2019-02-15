@@ -33,6 +33,7 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_contact_name" />
 
     <ScrollView
+        android:id="@+id/scroll_network_list"
         android:layout_width="368dp"
         android:layout_height="0dp"
         android:layout_marginEnd="8dp"
@@ -43,25 +44,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_contact_number">
 
-        <LinearLayout
+       <!-- <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Shared Networks"
-                android:textSize="20sp" />
-
-            <android.support.v7.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8sp">
-
-            </android.support.v7.widget.RecyclerView>
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:text="Shared Networks"
+            android:textSize="20sp"
+            tools:layout_editor_absoluteX="8dp"
+            tools:layout_editor_absoluteY="97dp" />-->
     </ScrollView>
 
     <Button
