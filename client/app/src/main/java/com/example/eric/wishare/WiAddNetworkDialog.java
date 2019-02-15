@@ -39,7 +39,6 @@ public class WiAddNetworkDialog implements WiDialog {
         mNetworks = new ArrayList<>();
 
         if(wifiList == null) {
-            mNetworks.add("Hyuntaes crib");
             mNetworks.add("Eric Home");
             mNetworks.add("Foo");
             mNetworks.add("Bar");
@@ -77,9 +76,6 @@ public class WiAddNetworkDialog implements WiDialog {
                         .input("Password", "", false, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence password) {
-
-//                                Intent intent = new Intent();
-//                                intent.putExtra("addedWifi", new WiConfiguration(wifiName.toString(), password.toString()));
 
                                 mListener.OnPasswordEntered(new WiConfiguration(wifiName.toString(), password.toString()));
 

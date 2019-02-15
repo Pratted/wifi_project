@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
     private ArrayList<WiInvitation> mInvitations;
     private LinearLayout mScrollView;
+    private WiConfiguredNetworkList mConfiguredNetowrkList;
 
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
@@ -98,21 +99,10 @@ public class MainActivity extends AppCompatActivity {
 
         mNetworkScrollView.addView(mScrollView);
 
+        mConfiguredNetowrkList = new WiConfiguredNetworkList(this, mScrollView);
+
         mAddNetworkDialog = new WiAddNetworkDialog(this);
         mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered(1));
-
-        // Get the phone's configured Wifi networks.
-//        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(MainActivity.this.WIFI_SERVICE);
-//        final List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
-
-//        for(WifiConfiguration item : wifiList) {
-//            System.out.println(counter++ + item.SSID);
-//            temp = new TextView(this);
-//            temp.setText(item.SSID.replace("\"", ""));
-//            temp.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-//            scrollLayout.addView(temp);
-//        }
-
 
         mInvitations.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
         mInvitations.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
@@ -164,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
                 if(users % 2 == 0)
                     ((ImageView) layout.findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
                 //((ImageView) layout.findViewById(R.id.iv_configured_status))
-                mScrollView.addView(layout);
+//                mScrollView.addView(layout);
+                mConfiguredNetowrkList.addView(layout);
             }
         };
     }
