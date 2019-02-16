@@ -2,28 +2,35 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class WiContactListDialog implements WiDialog{
-    private MaterialDialog mDialog;
+public class WiContactListDialog extends WiDialog{
     private WiContactList mContactList;
-    private WeakReference<Context> mContext;
-
     private OnContactSelectedListener mOnContactSelectedListener;
 
     interface OnContactSelectedListener{
         void onContactSelected(WiContact contact);
     }
 
-    public WiContactListDialog(Context context){
-        mContext = new WeakReference<>(context);
-        mContactList = new WiContactList(context);
+    public WiContactListDialog(Context context, Button btnManageContacts){
+        super(context);
 
+        mContactList = new WiContactList(context);
         mContactList.setOnContactListReadyListener(onContactListReady());
+
+        btnManageContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                WiContactListDialog.this.show();
+            }
+        });
+
+        build();
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){
@@ -39,7 +46,7 @@ public class WiContactListDialog implements WiDialog{
         return new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                mOnContactSelectedListener.onContactSelected(new WiContact("Eric", "6107370292"));
+                mOnContactSelectedListener.onContactSelected(mContactList.getWiContacts().get(position));
             }
         };
     }
@@ -56,7 +63,7 @@ public class WiContactListDialog implements WiDialog{
             strings.add(contact.name + " " + contact.phone);
         }
 
-        mDialog = new MaterialDialog.Builder(mContext.get())
+        dialog = builder
                 .title("Manage Contacts")
                 .items(strings)
                 .itemsCallback(onContactClicked())
@@ -64,21 +71,11 @@ public class WiContactListDialog implements WiDialog{
                 .build();
     }
 
-    public void show(){
-        mDialog.show();
-    }
-
     public void loadContacts(){
         mContactList.load();
     }
 
     public void loadContactsAsync(){
-        mContactList.loadAsync(mContext.get());
-    }
-
-    @Override
-    public void refresh(Context context) {
-        mContext = new WeakReference<>(context);
-        build();
+        mContactList.loadAsync(context.get());
     }
 }

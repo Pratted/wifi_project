@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView tvNumberOfInvites;
 
-    private Button btnMyInvitations;
+    private WiMyInvitationsButton btnMyInvitations;
     private Button btnAddNetwork;
     private Button btnManageContacts;
 
@@ -49,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         // contact permission accepted..
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            mContactListDialog = new WiContactListDialog(this);
+            mContactListDialog = new WiContactListDialog(this, btnManageContacts);
 
             mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
                 @Override
@@ -72,30 +73,28 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
-        btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnAddNetwork = findViewById(R.id.btn_add_network);
-        btnMyInvitations = findViewById(R.id.btn_my_invitations);
+        btnManageContacts = findViewById(R.id.btn_manage_contacts);
 
-        tvNumberOfInvites = findViewById(R.id.tv_number_of_invites);
+        // custom wrapper class for My Invitations button. Includes button and text view (badge).
+        btnMyInvitations = new WiMyInvitationsButton((RelativeLayout) findViewById(R.id.ll_my_invitations));
+
 
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
-        // ScrollView can only have 1 child
-        // Adding linear layout as a child solves the problem
+
         mScrollView = new LinearLayout(this);
         mScrollView.setOrientation(LinearLayout.VERTICAL);
-
         mNetworkScrollView.addView(mScrollView);
 
-        mAddNetworkDialog = new WiAddNetworkDialog(this);
+        mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
         mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
-        mInvitations = new ArrayList<>();
-        mInvitations.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
-        mInvitations.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
-        mInvitations.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019", "Never", "None"));
-        mInvitations.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019", "24 hours", "3GB"));
+        mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
+        mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
+        mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
+        mInvitationListDialog.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019", "Never", "None"));
+        mInvitationListDialog.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019", "24 hours", "3GB"));
 
-        mInvitationListDialog = new WiInvitationListDialog(this, mInvitations, tvNumberOfInvites);
 
         /**
          need contact permission to build the ContactListDialog
@@ -103,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
          if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
          **/
         if(WiContactList.hasContactPermissions(this)){
-            mContactListDialog = new WiContactListDialog(this);
+            mContactListDialog = new WiContactListDialog(this, btnManageContacts);
             mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
             mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
@@ -149,34 +148,6 @@ public class MainActivity extends AppCompatActivity {
         if(mContactListDialog != null) {
             mContactListDialog.refresh(this);
         }
-
-        btnAddNetwork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mAddNetworkDialog.show();
-            }
-        });
-
-        btnManageContacts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(!WiContactList.hasContactPermissions(MainActivity.this)){
-                    WiContactList.requestContactPermissions(MainActivity.this);
-                }
-                else{
-                    mContactListDialog.show();
-                }
-            }
-        });
-
-        btnMyInvitations.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                mInvitationListDialog.show();
-            }
-        });
-
-        tvNumberOfInvites.setText(mInvitations.size() + "");
     }
 
     private void plzFirebase(){
