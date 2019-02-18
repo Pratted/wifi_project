@@ -2,6 +2,7 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -41,14 +42,17 @@ public class WiConfiguredNetworkListView extends View {
         private WiConfiguration mConfig;
         private LinearLayout mLayout;
 
-        public WiConfiguredNetworkListViewItem(final WiConfiguration mConfig) {
-            this.mConfig = mConfig;
+        public WiConfiguredNetworkListViewItem(final WiConfiguration config) {
+            this.mConfig = config;
             mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_configured_network_list_item, null);
 
-            int users = mConfig.hashCode() % 5;
+            int users = config.hashCode() % 5;
             if(users < 0) users *= -1;
 
-            ((TextView) mLayout.findViewById(R.id.tv_network_name)).setText(mConfig.getSSID());
+            System.out.println(mConfig.getSSID());
+
+
+            ((TextView) mLayout.findViewById(R.id.tv_network_name)).setText(config.getSSID());
             ((TextView) mLayout.findViewById(R.id.tv_active_users)).setText(users + " active user(s)");
 
             if(users % 2 == 0) {
@@ -59,7 +63,7 @@ public class WiConfiguredNetworkListView extends View {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), NetworkActivity.class);
-                    intent.putExtra("NetworkInfo", (Serializable)mConfig);
+                    intent.putExtra("NetworkInfo", mConfig.getSSID());
                     System.out.println("THIS IS THE SSID " + mConfig.getSSID());
                     System.out.println("\nSTARTING NETWORK ACTIVITY\n");
                     getContext().startActivity(intent);

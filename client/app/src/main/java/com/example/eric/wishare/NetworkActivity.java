@@ -21,10 +21,10 @@ public class NetworkActivity extends AppCompatActivity {
             System.out.println("IT HAS THE INTENT");
         }
 
-        mConfig = (WiConfiguration) getIntent().getSerializableExtra("NetworkInfo");
-        if(mConfig != null) {
-            System.out.println("IN NETWORK ACTIVITY: " + mConfig.getSSID());
-            ((TextView)findViewById(R.id.tv_network_name)).setText(mConfig.getSSID());
+        String networkName = getIntent().getStringExtra("NetworkInfo");
+        if(networkName != null) {
+            ((TextView)findViewById(R.id.tv_network_name)).setText(networkName);
+
         } else {
             ((TextView)findViewById(R.id.tv_network_name)).setText("WHAT");
         }
