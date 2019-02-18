@@ -26,7 +26,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <TextView
-                    android:textSize="20dp"
+                    android:textSize="20sp"
                     android:id="@+id/tv_network_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
 
 
             <TextView
-                android:textSize="16dp"
+                android:textSize="16sp"
                 android:id="@+id/tv_active_users"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

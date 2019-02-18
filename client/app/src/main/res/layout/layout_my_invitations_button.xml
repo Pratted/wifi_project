@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_my_invitations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,7 +13,7 @@
         android:gravity="right">
         <Button
             android:text="My Invitations"
-            android:id="@+id/btn_my_invitations"
+            android:id="@+id/btn_my_invitations2"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_width="match_parent"
