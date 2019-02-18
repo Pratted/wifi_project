@@ -2,7 +2,6 @@ package com.example.eric.wishare;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,8 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
     private ArrayList<WiInvitation> mInvitations;
     private LinearLayout mScrollView;
-    private WiConfiguredNetworkList mConfiguredNetworkList;
-    private WiConfiguredNetworkList.WiConfiguredNetworkListItem mConfiguredNetworkListItem;
+    private WiConfiguredNetworkListView mConfiguredNetworkList;
 
     private TextView tvNumberOfInvites;
 
@@ -87,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         mNetworkScrollView.addView(mScrollView);
 
-        mConfiguredNetworkList = new WiConfiguredNetworkList(this, mScrollView);
+        mConfiguredNetworkList = new WiConfiguredNetworkListView(this, mScrollView);
 
         mAddNetworkDialog = new WiAddNetworkDialog(this);
         mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
@@ -124,24 +122,7 @@ public class MainActivity extends AppCompatActivity {
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override
             public void OnPasswordEntered(WiConfiguration config) {
-                LayoutInflater inflater = getLayoutInflater();
-                LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_configured_network_list_item, null);
-
-                mConfiguredNetworkListItem =
-                        new WiConfiguredNetworkList.WiConfiguredNetworkListItem(MainActivity.this, config);
-
-                // random # of users
-                int users = config.hashCode() % 5;
-                if(users < 0) users *= -1;
-
-                ((TextView) layout.findViewById(R.id.tv_network_name)).setText(config.getSSID());
-                ((TextView) layout.findViewById(R.id.tv_active_users)).setText(users + " active user(s)");
-
-                if(users % 2 == 0)
-                    ((ImageView) layout.findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
-                //((ImageView) layout.findViewById(R.id.iv_configured_status))
-//                mScrollView.addView(layout);
-                mConfiguredNetworkList.addView(layout);
+                mConfiguredNetworkList.addView(config);
             }
         };
     }

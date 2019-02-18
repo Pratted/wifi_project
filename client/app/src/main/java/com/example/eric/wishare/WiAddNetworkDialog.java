@@ -79,7 +79,7 @@ public class WiAddNetworkDialog implements WiDialog {
 
                                 mListener.OnPasswordEntered(new WiConfiguration(wifiName.toString(), password.toString()));
 
-                                Toast.makeText(mContext.get(), "Wifi name " + password, Toast.LENGTH_LONG).show();
+                                Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
                             }})
                         .show();
             }
