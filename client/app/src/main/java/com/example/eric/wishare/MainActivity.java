@@ -2,6 +2,7 @@ package com.example.eric.wishare;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,7 +53,9 @@ public class MainActivity extends AppCompatActivity {
             mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
                 @Override
                 public void onContactSelected(WiContact contact) {
-                    startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                    Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                    intent.putExtra("contact", contact);
+                    startActivity(intent);
                 }
             });
 
@@ -108,8 +111,10 @@ public class MainActivity extends AppCompatActivity {
 
             mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
                 @Override
-                public void onContactSelected(WiContact contact) {
-                    startActivity(new Intent(MainActivity.this, ContactActivity.class));
+                public void onContactSelected(WiContact contact){
+                    Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                    intent.putExtra("contact", contact);
+                    startActivity(intent);
                 }
             });
         }
