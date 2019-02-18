@@ -77,8 +77,8 @@ public class MainActivity extends AppCompatActivity {
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
 
         // custom wrapper class for My Invitations button. Includes button and text view (badge).
-        btnMyInvitations = new WiMyInvitationsButton((RelativeLayout) findViewById(R.id.ll_my_invitations));
-
+        //btnMyInvitations = new WiMyInvitationsButton((RelativeLayout) findViewById(R.id.ll_my_invitations));
+        btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 

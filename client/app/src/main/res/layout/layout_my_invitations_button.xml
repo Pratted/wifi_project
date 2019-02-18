@@ -13,7 +13,7 @@
         android:gravity="right">
         <Button
             android:text="My Invitations"
-            android:id="@+id/btn_my_invitations"
+            android:id="@+id/btn_my_invitations2"
             android:gravity="center"
             android:layout_gravity="center"
             android:layout_width="match_parent"

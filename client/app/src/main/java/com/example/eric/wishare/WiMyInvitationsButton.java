@@ -1,17 +1,32 @@
 package com.example.eric.wishare;
 
+import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class WiMyInvitationsButton {
+public class WiMyInvitationsButton extends RelativeLayout {
     TextView tvInvitationBadge;
     Button btnMyInvitations;
 
-    public WiMyInvitationsButton(RelativeLayout layout){
-        tvInvitationBadge = layout.findViewById(R.id.tv_number_of_invites);
-        btnMyInvitations = layout.findViewById(R.id.btn_my_invitations);
+    public WiMyInvitationsButton(Context context){
+        super(context);
+        init();
+    }
+
+    public WiMyInvitationsButton(Context context, AttributeSet attrs){
+        super(context, attrs);
+        init();
+    }
+
+    private void init(){
+        inflate(getContext(), R.layout.layout_my_invitations_button, this);
+
+        tvInvitationBadge = findViewById(R.id.tv_number_of_invites);
+        btnMyInvitations = findViewById(R.id.btn_my_invitations2);
     }
 
     public void setInvitationCount(int count){
