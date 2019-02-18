@@ -2,39 +2,28 @@ package com.example.eric.wishare;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
     private ScrollView mNetworkScrollView;
-    private ArrayList<WiInvitation> mInvitations;
     private LinearLayout mScrollView;
-
-    private TextView tvNumberOfInvites;
 
     private WiMyInvitationsButton btnMyInvitations;
     private Button btnAddNetwork;
@@ -42,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WiInvitationListDialog mInvitationListDialog;
     private WiAddNetworkDialog mAddNetworkDialog;
-    private WiContactListDialog mContactListDialog;
+    private WiManageContactsDialog mContactListDialog;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -50,9 +39,9 @@ public class MainActivity extends AppCompatActivity {
 
         // contact permission accepted..
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            mContactListDialog = new WiContactListDialog(this, btnManageContacts);
+            mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
 
-            mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
+            mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
                 @Override
                 public void onContactSelected(WiContact contact) {
                     startActivity(new Intent(MainActivity.this, ContactActivity.class));
@@ -75,9 +64,6 @@ public class MainActivity extends AppCompatActivity {
 
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
-
-        // custom wrapper class for My Invitations button. Includes button and text view (badge).
-        //btnMyInvitations = new WiMyInvitationsButton((RelativeLayout) findViewById(R.id.ll_my_invitations));
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
@@ -102,10 +88,10 @@ public class MainActivity extends AppCompatActivity {
          if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
          **/
         if(WiContactList.hasContactPermissions(this)){
-            mContactListDialog = new WiContactListDialog(this, btnManageContacts);
+            mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
             mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
-            mContactListDialog.setOnContactSelectedListener(new WiContactListDialog.OnContactSelectedListener() {
+            mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
                 @Override
                 public void onContactSelected(WiContact contact) {
                     startActivity(new Intent(MainActivity.this, ContactActivity.class));
@@ -142,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
 
         mAddNetworkDialog.refresh(this);
-
         mInvitationListDialog.refresh(this);
 
         if(mContactListDialog != null) {

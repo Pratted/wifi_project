@@ -38,13 +38,11 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
         ((TextView) mCustomView.findViewById(R.id.tv_data_limit)).setText(invitation.dataLimit);
         ((TextView) mCustomView.findViewById(R.id.tv_invitation_expiration)).setText(invitation.expires);
         ((TextView) mCustomView.findViewById(R.id.tv_invitation_owner)).setText(invitation.owner);
-
-        build();
     }
 
     @Override
-    public void build() {
-        dialog = builder
+    public MaterialDialog build() {
+        return new MaterialDialog.Builder(context.get())
                 .title(mInvitation.networkName)
                 .customView(mCustomView, true)
                 .positiveText("Accept")

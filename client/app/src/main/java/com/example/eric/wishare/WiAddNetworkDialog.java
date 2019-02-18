@@ -28,9 +28,9 @@ public class WiAddNetworkDialog extends WiDialog {
     }
 
     @Override
-    public void build() {
-        dialog = builder
-                .title("Select Network")
+    public MaterialDialog build() {
+        return new MaterialDialog.Builder(context.get())
+                .title("Select a Network")
                 .items(mNetworks)
                 .itemsCallback(onNetWorkSelect())
                 .negativeText("Cancel")

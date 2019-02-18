@@ -34,8 +34,6 @@ public class WiInvitationListDialog extends WiDialog{
                 WiInvitationListDialog.this.show();
             }
         });
-
-        build();
     }
 
     public void add(WiInvitation invitation){
@@ -48,8 +46,8 @@ public class WiInvitationListDialog extends WiDialog{
     }
 
     @Override
-    public void build() {
-        dialog = builder
+    public MaterialDialog build() {
+        return new MaterialDialog.Builder(context.get())
                 .title("My Invitations")
                 .customView(mParent, false)
                 .positiveText("Close")

@@ -6,10 +6,9 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-public class WiContactListDialog extends WiDialog{
+public class WiManageContactsDialog extends WiDialog{
     private WiContactList mContactList;
     private OnContactSelectedListener mOnContactSelectedListener;
 
@@ -17,7 +16,7 @@ public class WiContactListDialog extends WiDialog{
         void onContactSelected(WiContact contact);
     }
 
-    public WiContactListDialog(Context context, Button btnManageContacts){
+    public WiManageContactsDialog(Context context, Button btnManageContacts){
         super(context);
 
         mContactList = new WiContactList(context);
@@ -26,11 +25,9 @@ public class WiContactListDialog extends WiDialog{
         btnManageContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                WiContactListDialog.this.show();
+                WiManageContactsDialog.this.show();
             }
         });
-
-        build();
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){
@@ -55,7 +52,7 @@ public class WiContactListDialog extends WiDialog{
         mOnContactSelectedListener = listener;
     }
 
-    public void build(){
+    public MaterialDialog build(){
         ArrayList<String> strings = new ArrayList<>();
         ArrayList<WiContact> contacts = mContactList.getWiContacts();
 
@@ -63,8 +60,8 @@ public class WiContactListDialog extends WiDialog{
             strings.add(contact.name + " " + contact.phone);
         }
 
-        dialog = builder
-                .title("Manage Contacts")
+        return new MaterialDialog.Builder(context.get())
+                .title("Select a Contact")
                 .items(strings)
                 .itemsCallback(onContactClicked())
                 .negativeText("Cancel")
