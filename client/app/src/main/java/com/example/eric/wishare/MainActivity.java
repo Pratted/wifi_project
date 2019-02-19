@@ -21,8 +21,6 @@ import com.google.firebase.iid.InstanceIdResult;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
-    private ScrollView mNetworkScrollView;
-    private LinearLayout mScrollView;
     private WiConfiguredNetworkListView mConfiguredNetworkList;
 
     private WiMyInvitationsButton btnMyInvitations;
@@ -68,13 +66,10 @@ public class MainActivity extends AppCompatActivity {
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
-        mNetworkScrollView = findViewById(R.id.scroll_network_list);
-
 
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
         mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-
         mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);

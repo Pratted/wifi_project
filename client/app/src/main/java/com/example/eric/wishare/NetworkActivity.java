@@ -1,16 +1,16 @@
 package com.example.eric.wishare;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 public class NetworkActivity extends AppCompatActivity {
 
     private WiConfiguration mConfig;
     private TextView mTvNetworkName;
+    private WiInviteContactsDialog mInviteContactsDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +20,16 @@ public class NetworkActivity extends AppCompatActivity {
         if(getIntent().hasExtra("NetworkInfo")) {
             System.out.println("IT HAS THE INTENT");
         }
+
+
+        mInviteContactsDialog = new WiInviteContactsDialog(this);
+
+        ((Button) findViewById(R.id.button)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mInviteContactsDialog.show();
+            }
+        });
 
         String networkName = getIntent().getStringExtra("NetworkInfo");
         if(networkName != null) {
