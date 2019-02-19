@@ -2,11 +2,17 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiConfiguredNetworkListView extends LinearLayout {
 
@@ -21,13 +27,13 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     public void addView(WiConfiguration config) {
         // calls LinearLayout.addView()
         // since WiConfiguredNetworkListItem is a LinearLayout, it can be passed into addView()
-        this.addView(new WiConfiguredNetworkListViewItem(getContext(), config));
+        this.addView(new WiConfiguredNetworkListItem(getContext(), config));
     }
 
-    public class WiConfiguredNetworkListViewItem extends LinearLayout {
+    private class WiConfiguredNetworkListItem extends SwipeLayout {
         private WiConfiguration mConfig;
 
-        public WiConfiguredNetworkListViewItem(Context context, WiConfiguration config){
+        public WiConfiguredNetworkListItem(Context context, WiConfiguration config){
             super(context);
             mConfig = config;
 
@@ -45,14 +51,35 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                 ((ImageView) findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
             }
 
-
-            setOnClickListener(onClick());
+            findViewById(R.id.center_view).setOnClickListener(startNetworkActivity());
+            findViewById(R.id.iv_trash).setOnClickListener(displayConfirmDeleteDialog());
         }
 
-        private View.OnClickListener onClick(){
+        private View.OnClickListener displayConfirmDeleteDialog(){
+            return new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new MaterialDialog.Builder(getContext())
+                            .title("Removing " + mConfig.getSSID())
+                            .content("Are you sure you want to remove " + mConfig.getSSID() + "? This action cannot be undone.")
+                            .checkBoxPrompt("Revoke access for all contacts?", false, null)
+                            .positiveText("Yes")
+                            .negativeText("Cancel")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
+                                }
+                            }).show();
+                }
+            };
+        }
+
+        private View.OnClickListener startNetworkActivity(){
             return new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
+                    System.out.println("CLICKED");
                     Intent intent = new Intent(getContext(), NetworkActivity.class);
                     intent.putExtra("NetworkInfo", mConfig.getSSID());
                     System.out.println("THIS IS THE SSID " + mConfig.getSSID());

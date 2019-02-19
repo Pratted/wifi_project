@@ -37,8 +37,5 @@ dependencies {
 
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
-
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation "com.daimajia.swipelayout:library:1.2.0@aar"
+    implementation 'ru.rambler.android:swipe-layout:1.0.15'
 }
