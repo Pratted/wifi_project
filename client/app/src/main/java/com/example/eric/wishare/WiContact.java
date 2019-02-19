@@ -55,4 +55,9 @@ public class WiContact implements Parcelable{
         dest.writeString(name);
         dest.writeString(phone);
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

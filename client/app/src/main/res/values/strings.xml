@@ -5,4 +5,15 @@
     <string name="btn_my_invitations">My Invitations</string>
     <string name="scroll_network_list">Network List</string>
     <string name="configuredNetWorkListName">Configured Networks</string>
+
+    <string-array name="time_limits">
+        <Item>Never</Item>
+        <Item>1 hour</Item>
+        <Item>3 hours</Item>
+        <Item>12 hours</Item>
+        <Item>1 day</Item>
+        <Item>2 day</Item>
+        <Item>1 week</Item>
+        <Item>Custom</Item>
+    </string-array>
 </resources>

@@ -12,6 +12,8 @@ public class NetworkActivity extends AppCompatActivity {
     private TextView mTvNetworkName;
     private WiInviteContactsDialog mInviteContactsDialog;
 
+    private WiContactList mContactList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,7 +26,15 @@ public class NetworkActivity extends AppCompatActivity {
 
         mInviteContactsDialog = new WiInviteContactsDialog(this);
 
-        ((Button) findViewById(R.id.button)).setOnClickListener(new View.OnClickListener() {
+
+        mContactList = new WiContactList(this);
+        mContactList.load();
+
+        for(WiContact contact: mContactList.getWiContacts()){
+            mInviteContactsDialog.addContact(contact);
+        }
+
+        findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mInviteContactsDialog.show();
@@ -38,5 +48,12 @@ public class NetworkActivity extends AppCompatActivity {
         } else {
             ((TextView)findViewById(R.id.tv_network_name)).setText("WHAT");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
     }
 }
