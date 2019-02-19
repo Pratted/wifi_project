@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override
             public void OnPasswordEntered(WiConfiguration config) {
-                System.out.println("FUCKER");
                 mConfiguredNetworkList.addView(config);
             }
         };
