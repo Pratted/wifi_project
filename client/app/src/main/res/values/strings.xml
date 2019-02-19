@@ -9,11 +9,15 @@
     <string-array name="time_limits">
         <item>Never</item>
         <item>1 hour</item>
-        <item>3 hours</item>
-        <item>12 hours</item>
         <item>1 day</item>
-        <item>2 day</item>
         <item>1 week</item>
+        <item>Custom</item>
+    </string-array>
+    <string-array name="data_limits">
+        <item>Unlimited</item>
+        <item>1Gb</item>
+        <item>10Gb</item>
+        <item>100Gb</item>
         <item>Custom</item>
     </string-array>
 </resources>
