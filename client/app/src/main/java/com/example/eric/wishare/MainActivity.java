@@ -70,11 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
-        mScrollView = new LinearLayout(this);
-        mScrollView.setOrientation(LinearLayout.VERTICAL);
-        mNetworkScrollView.addView(mScrollView);
 
-        mConfiguredNetworkList = new WiConfiguredNetworkListView(this, mScrollView);
+        mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
         mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
 
@@ -111,6 +108,7 @@ public class MainActivity extends AppCompatActivity {
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override
             public void OnPasswordEntered(WiConfiguration config) {
+                System.out.println("FUCKER");
                 mConfiguredNetworkList.addView(config);
             }
         };

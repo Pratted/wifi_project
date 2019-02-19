@@ -26,6 +26,8 @@
                 android:gravity="center"
                 android:textSize="24dp"
                 android:text="Configured Networks"/>
+
+
             <ScrollView
                 android:id="@+id/scroll_network_list"
                 android:layout_width="match_parent"
@@ -34,6 +36,20 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="8dp">
+
+                <!-- Aditya, this is your class. -->
+                <com.example.eric.wishare.WiConfiguredNetworkListView
+                    android:layout_width="match_parent"
+                    android:orientation="vertical"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="8dp"
+                    android:id="@+id/configured_network_list">
+
+                </com.example.eric.wishare.WiConfiguredNetworkListView>
+
             </ScrollView>
 
         </LinearLayout>
