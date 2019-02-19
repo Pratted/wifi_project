@@ -1,7 +1,6 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -95,11 +94,5 @@ public class WiContactList {
             return context.checkSelfPermission(Manifest.permission.READ_CONTACTS) == PackageManager.PERMISSION_GRANTED;
         }
         return false;
-    }
-
-    public static void requestContactPermissions(Activity activity){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            activity.requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 87);
-        }
     }
 }

@@ -1,11 +1,14 @@
 package com.example.eric.wishare;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
-
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
         mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
@@ -97,6 +99,21 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }
+        else{
+            // if there are no permissions, make onClick for the button request permissions...
+            btnManageContacts.setOnClickListener(requestContactPermissions());
+        }
+    }
+
+    private View.OnClickListener requestContactPermissions(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 87);
+                }
+            }
+        };
     }
 
     private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(){
