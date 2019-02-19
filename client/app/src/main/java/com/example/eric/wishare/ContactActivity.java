@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -20,6 +21,12 @@ public class ContactActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
     private LinearLayout mScrollView;
 
+    private Button btnRevokeAccess;
+    private Button btnAddContactToNetwork;
+
+
+    private WiAddContactToNetworkDialog mAddToNetwork;
+    private WiRevokeAccessDialog mRevokeAccessDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +68,12 @@ public class ContactActivity extends AppCompatActivity {
         ((TextView) layout.findViewById(R.id.tv_connection_status)).setText("Invitation expired");
         mScrollView.addView(layout);
 
+
+        btnRevokeAccess = findViewById(R.id.btn_revoke_access);
+        btnAddContactToNetwork = findViewById(R.id.btn_add_contact_to_network);
+
+        mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAccess);
+        mAddToNetwork = new WiAddContactToNetworkDialog(this, btnAddContactToNetwork);
 
 
 
