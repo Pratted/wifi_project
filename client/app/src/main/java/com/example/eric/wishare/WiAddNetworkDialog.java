@@ -2,10 +2,8 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.support.annotation.NonNull;
 import android.text.InputType;
-import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -32,6 +30,7 @@ public class WiAddNetworkDialog extends WiDialog {
 
     @Override
     public MaterialDialog build() {
+        updateNetworks();
         return new MaterialDialog.Builder(context.get())
                 .title("Select a Network")
                 .items(mNetworks)
@@ -40,13 +39,24 @@ public class WiAddNetworkDialog extends WiDialog {
                 .build();
     }
 
+    private void updateNetworks() {
+        ArrayList<String> temp = new ArrayList<>();
+
+        for(WifiConfiguration config : mManager.getNotConfiguredNetworks()) {
+            temp.add(config.SSID.replace("\"", ""));
+        }
+
+        mNetworks = temp;
+    }
+
     public WiAddNetworkDialog(Context context, Button btnAddNetwork){
         super(context);
         mContext = new WeakReference<>(context);
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(MainActivity.WIFI_SERVICE);
-        List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
+        mManager = WiNetworkManager.getInstance();
+        List<WifiConfiguration> wifiList = WiNetworkManager.getConfiguredNetworks(context);
 
         mNetworks = new ArrayList<>();
+
         for(WifiConfiguration config : wifiList) {
             mNetworks.add(config.SSID.replace("\"", ""));
         }
@@ -71,9 +81,10 @@ public class WiAddNetworkDialog extends WiDialog {
                         .input("Password", "", false, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, CharSequence password) {
-
-                                mListener.OnPasswordEntered(new WiConfiguration(wifiName.toString(), password.toString()));
-
+                                WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
+                                mListener.OnPasswordEntered(config);
+                                mManager.addConfiguredNetwork(config);
+                                mManager.removeNotConfiguredNetwork(config);
                                 Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
                             }})
                         .show();

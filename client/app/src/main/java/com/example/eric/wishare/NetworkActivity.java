@@ -42,6 +42,7 @@ public class NetworkActivity extends AppCompatActivity {
         });
 
         String networkName = getIntent().getStringExtra("NetworkInfo");
+
         if(networkName != null) {
             ((TextView)findViewById(R.id.tv_network_name)).setText(networkName);
 

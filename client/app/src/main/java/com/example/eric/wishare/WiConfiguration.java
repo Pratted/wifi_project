@@ -17,6 +17,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
     public WiConfiguration(String mSSID, String mPassword) {
         this.mSSID = mSSID;
         this.mPassword = mPassword;
+        SSID = mSSID;
     }
 
     public WiConfiguration(WiConfiguration config) {
@@ -63,4 +64,5 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         dest.writeString(mSSID);
         dest.writeString(mPassword);
     }
+
 }

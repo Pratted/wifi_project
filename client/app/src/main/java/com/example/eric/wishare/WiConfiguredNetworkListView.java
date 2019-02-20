@@ -12,12 +12,17 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.ArrayList;
+
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiConfiguredNetworkListView extends LinearLayout {
 
+//    private ArrayList<String> mConfiguredNetworks;
+
     public WiConfiguredNetworkListView(Context context){
         super(context);
+//        mConfiguredNetworks = new ArrayList<>();
     }
 
     public WiConfiguredNetworkListView(Context context, AttributeSet attrs){
@@ -27,15 +32,18 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     public void addView(WiConfiguration config) {
         // calls LinearLayout.addView()
         // since WiConfiguredNetworkListItem is a LinearLayout, it can be passed into addView()
+//        mConfiguredNetworks.add(config.getSSID());
         this.addView(new WiConfiguredNetworkListItem(getContext(), config));
     }
 
     private class WiConfiguredNetworkListItem extends SwipeLayout {
         private WiConfiguration mConfig;
+        private WiNetworkManager mNetworkManager;
 
         public WiConfiguredNetworkListItem(Context context, WiConfiguration config){
             super(context);
             mConfig = config;
+            mNetworkManager = WiNetworkManager.getInstance();
 
             inflate(getContext(), R.layout.layout_configured_network_list_item, this);
 
@@ -69,6 +77,9 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
+                                    System.out.println("mConfig.getSSID(): " + mConfig.getSSID()) ;
+                                    mNetworkManager.removeConfiguredNetwork(mConfig);
+                                    mNetworkManager.addNotConfiguredNetwork(mConfig);
                                 }
                             }).show();
                 }

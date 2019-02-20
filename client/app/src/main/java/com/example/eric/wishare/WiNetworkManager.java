@@ -10,21 +10,49 @@ import java.util.List;
 public class WiNetworkManager {
     private static WiNetworkManager sNetManager;
     private WifiManager mManager;
+    private static ArrayList<WiConfiguration> mConfiguredNetworks;
+    private static ArrayList<WifiConfiguration> mNotConfiguredNetworks;
+
+    private WiNetworkManager() {
+        mConfiguredNetworks = new ArrayList<>();
+        mNotConfiguredNetworks = new ArrayList<>();
+    }
 
     public static ArrayList<WifiConfiguration> getConfiguredNetworks(Context context) {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(MainActivity.WIFI_SERVICE);
         List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
-
-        ArrayList<WifiConfiguration> networks = new ArrayList<>();
-
-        for(WifiConfiguration config : wifiList) {
-            networks.add(config);
-        }
-        return networks;
+        mNotConfiguredNetworks.addAll(wifiList);
+        return mNotConfiguredNetworks;
     }
 
-    public void add(WiConfiguration configuration) {
+    public void addConfiguredNetwork(WiConfiguration config) {
        // WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mConfiguredNetworks.add(config);
+    }
+
+    public void addNotConfiguredNetwork(WifiConfiguration config) {
+        mNotConfiguredNetworks.add(config);
+    }
+
+    public void removeConfiguredNetwork(WiConfiguration config) {
+        mNotConfiguredNetworks.remove(config);
+    }
+
+    public void removeNotConfiguredNetwork(WifiConfiguration config) {
+        for(WifiConfiguration configuration : mNotConfiguredNetworks) {
+            if(config.SSID.equals(configuration.SSID.replace("\"", ""))) {
+                mNotConfiguredNetworks.remove(configuration);
+                break;
+            }
+        }
+    }
+
+    public ArrayList<WifiConfiguration> getNotConfiguredNetworks() {
+        return mNotConfiguredNetworks;
+    }
+
+    public ArrayList<WiConfiguration> getConfiguredNetworks() {
+        return mConfiguredNetworks;
     }
 
     public synchronized static WiNetworkManager getInstance() {

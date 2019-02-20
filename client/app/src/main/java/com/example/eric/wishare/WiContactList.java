@@ -84,7 +84,6 @@ public class WiContactList {
         @Override
         protected void onPostExecute(ArrayList<WiContact> contacts) {
             super.onPostExecute(contacts);
-
             mContactListReadyListener.onContactListReady(contacts);
         }
     }
