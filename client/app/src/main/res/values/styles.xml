@@ -8,4 +8,11 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <declare-styleable name="WiEditTextPermHint">
+        <attr name="entries" format="reference" />
+        <attr name="permHint" format="string"/>
+        <attr name="tempHint" format="string"/>
+        <attr name="label" format="string"/>
+    </declare-styleable>
+
 </resources>

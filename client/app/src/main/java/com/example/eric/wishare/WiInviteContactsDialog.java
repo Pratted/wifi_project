@@ -42,6 +42,8 @@ public class WiInviteContactsDialog extends WiDialog {
                 for(Integer i: indices){
                     System.out.println("You invited " + mContacts.get(i).name);
                 }
+
+                new WiCreateInvitationDialog(context.get()).show();
             }
         };
     }

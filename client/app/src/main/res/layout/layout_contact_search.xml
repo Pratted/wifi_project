@@ -1,43 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-
-    <LinearLayout
+    <com.example.eric.wishare.WiEditTextPermHint
+        custom:entries="@array/time_limits"
+        custom:label="Expires:"
+        custom:permHint="hrs"
+        custom:tempHint="72"
+        android:id="@+id/expires"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Expires: "/>
-            <Spinner
-                android:entries="@array/time_limits"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </Spinner>
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <TextView
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:text="Data Limit: "/>
-            <Spinner
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-            </Spinner>
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_height="wrap_content"/>
+
+    <com.example.eric.wishare.WiEditTextPermHint
+        custom:entries="@array/data_limits"
+        custom:label="Data Limit:"
+        custom:permHint="Gb"
+        custom:tempHint="72"
+        android:id="@+id/data_limit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
 </LinearLayout>
