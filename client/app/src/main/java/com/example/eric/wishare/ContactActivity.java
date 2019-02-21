@@ -34,8 +34,16 @@ public class ContactActivity extends AppCompatActivity {
 
         WiContact contact = getIntent().getExtras().getParcelable("contact");
 
+
+        try {
+            getSupportActionBar().setTitle(contact.getName());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            System.out.println("SET TITLE NULL POINTER IN CONTACT ACTIVITY");
+        }
+
         //Set name and phone number
-        ((TextView)findViewById(R.id.tv_contact_name)).setText(contact.getName());
+//        ((TextView)findViewById(R.id.tv_contact_name)).setText(contact.getName());
         ((TextView)findViewById(R.id.tv_contact_number)).setText(contact.getPhone());
 
         //Set up scroll view

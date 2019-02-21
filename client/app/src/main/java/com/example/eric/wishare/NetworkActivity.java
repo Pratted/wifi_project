@@ -41,14 +41,24 @@ public class NetworkActivity extends AppCompatActivity {
             }
         });
 
-        String networkName = getIntent().getStringExtra("NetworkInfo");
+//        String networkName = getIntent().getStringExtra("NetworkInfo");
 
-        if(networkName != null) {
-            ((TextView)findViewById(R.id.tv_network_name)).setText(networkName);
+        mConfig = getIntent().getParcelableExtra("NetworkInfo");
 
-        } else {
-            ((TextView)findViewById(R.id.tv_network_name)).setText("WHAT");
+        try {
+            getSupportActionBar().setTitle(mConfig.getSSID());
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException e) {
+            System.out.println("SET TITLE NULL POINTER IN NETWORK ACTIVITY");
         }
+
+//        if(mConfig != null) {
+//            System.out.println("IN NETWORK ACTIVITY, mCongig.getSSID(): " + mConfig.getSSID());
+//            ((TextView)findViewById(R.id.tv_network_name)).setText(mConfig.getSSID());
+//
+//        } else {
+//            ((TextView)findViewById(R.id.tv_network_name)).setText("WHAT");
+//        }
     }
 
     @Override

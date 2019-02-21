@@ -27,7 +27,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
 
     public WiConfiguration(Parcel source) {
-        System.out.println("SOURCE.READSTRING(SSID = ): " + source.readString());
+//        System.out.println("SOURCE.READSTRING(SSID = ): " + source.readString());
         this.mSSID = source.readString();
         this.mPassword = source.readString();
     }
@@ -60,7 +60,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        super.writeToParcel(dest, flags);
+//        super.writeToParcel(dest, flags);
         dest.writeString(mSSID);
         dest.writeString(mPassword);
     }

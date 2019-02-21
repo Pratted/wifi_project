@@ -31,8 +31,10 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".ContactActivity" />
-        <activity android:name=".NetworkActivity" />
+        <activity android:name=".ContactActivity"
+                  android:parentActivityName=".MainActivity"/>
+        <activity android:name=".NetworkActivity"
+                  android:parentActivityName=".MainActivity"/>
     </application>
 
 </manifest>

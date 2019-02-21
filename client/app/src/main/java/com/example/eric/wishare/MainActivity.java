@@ -54,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
             //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
             mContactListDialog.loadContacts();
             mContactListDialog.refresh(this);
-            mContactListDialog.show();
+            //mContactListDialog.show();
+
+            mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
+            mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
         }
     }
 
@@ -70,9 +73,6 @@ public class MainActivity extends AppCompatActivity {
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
-
-        mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
         mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
@@ -98,10 +98,15 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
+            mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
+            mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
         }
         else{
             // if there are no permissions, make onClick for the button request permissions...
             btnManageContacts.setOnClickListener(requestContactPermissions());
+            btnAddNetwork.setOnClickListener(requestContactPermissions());
+
         }
     }
 
@@ -130,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        mAddNetworkDialog.refresh(this);
+//        mAddNetworkDialog.refresh(this);
         mInvitationListDialog.refresh(this);
 
         if(mContactListDialog != null) {

@@ -92,7 +92,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                 public void onClick(View v) {
                     System.out.println("CLICKED");
                     Intent intent = new Intent(getContext(), NetworkActivity.class);
-                    intent.putExtra("NetworkInfo", mConfig.getSSID());
+                    intent.putExtra("NetworkInfo", mConfig);
                     System.out.println("THIS IS THE SSID " + mConfig.getSSID());
                     System.out.println("\nSTARTING NETWORK ACTIVITY\n");
                     getContext().startActivity(intent);
