@@ -9,7 +9,7 @@ import java.util.List;
 
 public class WiNetworkManager {
     private static WiNetworkManager sNetManager;
-    private WifiManager mManager;
+    private WifiManager mNetworkManager;
     private static ArrayList<WiConfiguration> mConfiguredNetworks;
     private static ArrayList<WifiConfiguration> mNotConfiguredNetworks;
 
@@ -26,7 +26,6 @@ public class WiNetworkManager {
     }
 
     public void addConfiguredNetwork(WiConfiguration config) {
-       // WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
         mConfiguredNetworks.add(config);
     }
 
@@ -45,6 +44,16 @@ public class WiNetworkManager {
                 break;
             }
         }
+    }
+
+    public boolean testConnection(Context context, WiConfiguration config) {
+        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        config.setSSID("\"" + config.getSSID() + "\"");
+//        int netId = wifiManager.addNetwork(config);
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(config.networkId, true);
+        return wifiManager.reconnect();
     }
 
     public ArrayList<WifiConfiguration> getNotConfiguredNetworks() {

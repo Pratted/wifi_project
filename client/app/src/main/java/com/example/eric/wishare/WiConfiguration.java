@@ -15,15 +15,16 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
     private String mPassword;
 
     public WiConfiguration(String mSSID, String mPassword) {
+        super();
         this.mSSID = mSSID;
         this.mPassword = mPassword;
         SSID = mSSID;
     }
 
-    public WiConfiguration(WiConfiguration config) {
-        this.mSSID = config.getSSID();
-        this.mPassword = config.getPassword();
-    }
+//    public WiConfiguration(WiConfiguration config) {
+//        this.mSSID = config.getSSID();
+//        this.mPassword = config.getPassword();
+//    }
 
 
     public WiConfiguration(Parcel source) {
@@ -52,6 +53,13 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         return mPassword;
     }
 
+    public void setPassword(String password) {
+        mPassword = password;
+    }
+
+    public void setSSID(String ssid) {
+        mSSID = ssid;
+    }
 
     @Override
     public int describeContents() {
@@ -60,7 +68,6 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-//        super.writeToParcel(dest, flags);
         dest.writeString(mSSID);
         dest.writeString(mPassword);
     }

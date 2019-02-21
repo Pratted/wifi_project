@@ -3,8 +3,12 @@
     <string name="btn_add_network">Add Network</string>
     <string name="btn_manage_contacts">Manage Contacts</string>
     <string name="btn_my_invitations">My Invitations</string>
+    <string name="btn_edit_network">Edit Network</string>
     <string name="scroll_network_list">Network List</string>
     <string name="configuredNetWorkListName">Configured Networks</string>
+    <string name="btn_invite_contacts">Invite Contacts</string>
+    <string name="test_connection">Test Connection</string>
+    <string name="tv_change_password">Change Password</string>
 
     <string-array name="time_limits">
         <item>Never</item>
