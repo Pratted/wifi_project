@@ -38,4 +38,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     implementation 'ru.rambler.android:swipe-layout:1.0.15'
+
+    implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
+    implementation 'com.ogaclejapan.smarttablayout:utils-v13:1.6.1@aar'
 }

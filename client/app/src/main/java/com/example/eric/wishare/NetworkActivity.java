@@ -1,19 +1,27 @@
 package com.example.eric.wishare;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
+
+import com.ogaclejapan.smarttablayout.SmartTabLayout;
+import com.ogaclejapan.smarttablayout.utils.ViewPagerItemAdapter;
+import com.ogaclejapan.smarttablayout.utils.ViewPagerItems;
 
 public class NetworkActivity extends AppCompatActivity {
 
     private WiConfiguration mConfig;
     private TextView mTvNetworkName;
     private WiInviteContactsDialog mInviteContactsDialog;
+    private WiTabbedScrollView mTabbedScrollView;
 
     private WiContactList mContactList;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,13 +60,21 @@ public class NetworkActivity extends AppCompatActivity {
             System.out.println("SET TITLE NULL POINTER IN NETWORK ACTIVITY");
         }
 
-//        if(mConfig != null) {
-//            System.out.println("IN NETWORK ACTIVITY, mCongig.getSSID(): " + mConfig.getSSID());
-//            ((TextView)findViewById(R.id.tv_network_name)).setText(mConfig.getSSID());
-//
-//        } else {
-//            ((TextView)findViewById(R.id.tv_network_name)).setText("WHAT");
-//        }
+        mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
+
+        /*
+        ViewPagerItemAdapter adapter = new ViewPagerItemAdapter(ViewPagerItems.with(this)
+                .add("fuck!", R.layout.tabbed_view_permitted_contacts)
+                .add("title", R.layout.tabbed_view_permitted_contacts)
+                .create());
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(adapter);
+
+
+        SmartTabLayout viewPagerTab = (SmartTabLayout) findViewById(R.id.viewpagertab);
+        viewPagerTab.setViewPager(viewPager);
+        */
     }
 
     @Override
