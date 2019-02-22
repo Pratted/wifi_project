@@ -5,6 +5,7 @@
     <string name="btn_my_invitations">My Invitations</string>
     <string name="scroll_network_list">Network List</string>
     <string name="configuredNetWorkListName">Configured Networks</string>
+    <string name="btn_show_notification">Show Notification</string>
 
     <string-array name="time_limits">
         <item>Never</item>

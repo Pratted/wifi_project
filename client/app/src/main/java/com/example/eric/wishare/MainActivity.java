@@ -1,10 +1,18 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +28,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,6 +73,37 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        NotificationChannel channel = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            channel = new NotificationChannel("ChanID", "name",
+                    NotificationManager.IMPORTANCE_HIGH);
+            channel.setDescription("desc");
+            final NotificationManager nm = (NotificationManager)
+                    this.getSystemService(Context.NOTIFICATION_SERVICE);
+                nm.createNotificationChannel(channel);
+
+            final Notification notification = new NotificationCompat.Builder(this, "ChanID")
+                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
+                    .setLargeIcon(R.drawable.ic_wifi_black_48dp)
+                    .setColor(255, 0, 0, 1)
+                    .setContentTitle("Notification")
+                    .setContentText("This is a notification")
+                    .setDefaults(Notification.DEFAULT_ALL)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .build();
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    nm.notify(1, notification);
+                }
+            }, 5000);
+
+
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
