@@ -5,6 +5,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -74,23 +75,33 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         NotificationChannel channel = null;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             channel = new NotificationChannel("ChanID", "name",
-                    NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription("desc");
-            final NotificationManager nm = (NotificationManager)
-                    this.getSystemService(Context.NOTIFICATION_SERVICE);
-                nm.createNotificationChannel(channel);
 
+            final NotificationManager nm = (NotificationManager)
+            this.getSystemService(Context.NOTIFICATION_SERVICE);
+            nm.createNotificationChannel(channel);
             final Notification notification = new NotificationCompat.Builder(this, "ChanID")
                     .setSmallIcon(R.drawable.ic_wifi_black_48dp)
-                    .setLargeIcon(R.drawable.ic_wifi_black_48dp)
-                    .setColor(255, 0, 0, 1)
                     .setContentTitle("Notification")
                     .setContentText("This is a notification")
                     .setDefaults(Notification.DEFAULT_ALL)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setContentIntent(resultPendingIntent)
                     .build();
 
             Handler handler = new Handler();
@@ -98,10 +109,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     nm.notify(1, notification);
+                    System.out.println("IN RUN");
                 }
             }, 5000);
-
-
         }
 
         super.onCreate(savedInstanceState);
