@@ -5,13 +5,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -51,6 +47,7 @@ public class WiTabbedScrollView extends LinearLayout {
         mPermittedContacts = new ArrayList<>();
 
         WiPermittedContactsView v = new WiPermittedContactsView(getContext());
+
         for(WiContact contact: mContactList.getWiContacts()){
             if(contact.name.length() % 2 == 0){
                 mPermittedContacts.add(contact);
@@ -63,6 +60,8 @@ public class WiTabbedScrollView extends LinearLayout {
 
         mPagerAdapter = new WiPagerAdapter();
         mViewPager.setAdapter(mPagerAdapter);
+
+        v.sortName(true);
 
         mPagerAdapter.addView(v);
         mPagerAdapter.notifyDataSetChanged();
@@ -98,6 +97,8 @@ public class WiTabbedScrollView extends LinearLayout {
 
             }
         });
+
+
     }
 
     private View buildPage2(ArrayList<WiContact> contacts){
@@ -105,25 +106,6 @@ public class WiTabbedScrollView extends LinearLayout {
         page.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
         return page;
-    }
-
-    private TabLayout.OnTabSelectedListener onTabChange(){
-        return new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        };
     }
 
     private class WiPagerAdapter extends PagerAdapter {
