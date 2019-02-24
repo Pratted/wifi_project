@@ -1,6 +1,5 @@
 package com.example.eric.wishare;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -8,13 +7,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.ContextThemeWrapper;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -42,7 +39,6 @@ public class WiTabbedScrollView extends LinearLayout {
         init();
     }
 
-    @SuppressLint("ResourceType")
     private void init(){
         inflate(getContext(), R.layout.layout_tabbed_scroll_view, this);
 
@@ -54,9 +50,11 @@ public class WiTabbedScrollView extends LinearLayout {
         mInvitableContacts = new ArrayList<>();
         mPermittedContacts = new ArrayList<>();
 
+        WiPermittedContactsView v = new WiPermittedContactsView(getContext());
         for(WiContact contact: mContactList.getWiContacts()){
             if(contact.name.length() % 2 == 0){
                 mPermittedContacts.add(contact);
+                v.addPermittedContact(contact);
             }
             else{
                 mInvitableContacts.add(contact);
@@ -66,70 +64,66 @@ public class WiTabbedScrollView extends LinearLayout {
         mPagerAdapter = new WiPagerAdapter();
         mViewPager.setAdapter(mPagerAdapter);
 
-        mPagerAdapter.addView(buildPage1(mPermittedContacts));
+        mPagerAdapter.addView(v);
         mPagerAdapter.notifyDataSetChanged();
 
         mPagerAdapter.addView(buildPage2(mInvitableContacts));
         mPagerAdapter.notifyDataSetChanged();
 
-        TabLayout tabs = findViewById(R.id.tab_layout);
-        tabs.setupWithViewPager(mViewPager);
+        TabLayout mTabs = findViewById(R.id.tab_layout);
+        mTabs.setupWithViewPager(mViewPager);
 
-        System.out.println(tabs.getTabCount());
-        tabs.getTabAt(0).setText("Permitted Contacts");
-        tabs.getTabAt(1).setText("Invite Contacts");
-    }
+        System.out.println(mTabs.getTabCount());
+        mTabs.getTabAt(0).setText("Permitted Contacts");
+        mTabs.getTabAt(1).setText("Invite Contacts");
 
-    private View buildPage1(ArrayList<WiContact> contacts){
-        LinearLayout page = (LinearLayout) inflate (getContext(), R.layout.tabbed_view_permitted_contacts, null);
+        mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() == 0){
+                    //findViewById(R.id.btn_lhs).setVisibility(View.VISIBLE);
+                }
+                else if(tab.getPosition() == 1){
+                    //findViewById(R.id.btn_lhs).setVisibility(View.GONE);
+                }
+            }
 
-        LinearLayout headers = page.findViewById(R.id.headers);
-        LinearLayout items = page.findViewById(R.id.items);
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
 
-        for(WiContact contact: contacts){
-            LinearLayout row = new LinearLayout(getContext());
-            row.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-            row.setOrientation(HORIZONTAL);
+            }
 
-            row.setWeightSum(10);
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
 
-            CheckBox checkBox = new CheckBox(getContext());
-            checkBox.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1));
-            checkBox.setGravity(Gravity.CENTER);
-            row.addView(checkBox);
-
-            TextView tv1 = new TextView(getContext());
-            tv1.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 4));
-            tv1.setText(contact.name);
-            tv1.setTextSize(18);
-            tv1.setMaxLines(3);
-            tv1.setEllipsize(TextUtils.TruncateAt.END);
-            tv1.setPadding(0,6,0,6);
-            row.addView(tv1);
-
-            TextView tv = new TextView(getContext());
-            tv.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 2));
-            tv.setText("10 Gb");
-            tv.setGravity(Gravity.CENTER);
-            row.addView(tv);
-
-            TextView tv2 = new TextView(getContext());
-            tv2.setLayoutParams(new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 3));
-            tv2.setText("3d 2h");
-            tv2.setGravity(Gravity.CENTER);
-            row.addView(tv2);
-
-            items.addView(row);
-        }
-
-        return page;
+            }
+        });
     }
 
     private View buildPage2(ArrayList<WiContact> contacts){
         LinearLayout page = new LinearLayout(getContext());
         page.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        
+
         return page;
+    }
+
+    private TabLayout.OnTabSelectedListener onTabChange(){
+        return new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        };
     }
 
     private class WiPagerAdapter extends PagerAdapter {
