@@ -39,6 +39,6 @@ dependencies {
 
     implementation 'ru.rambler.android:swipe-layout:1.0.15'
 
-    implementation 'com.ogaclejapan.smarttablayout:library:1.6.1@aar'
-    implementation 'com.ogaclejapan.smarttablayout:utils-v13:1.6.1@aar'
+    // For tab layout...
+    implementation 'com.android.support:design:27.1.1'
 }

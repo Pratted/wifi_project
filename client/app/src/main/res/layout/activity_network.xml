@@ -1,15 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".NetworkActivity">
 
+
+    <Button
+        android:id="@+id/button"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit Network"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_search_black_24dp"/>
+
+        <EditText
+            android:layout_marginLeft="4dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="Search contacts..."/>
+
+
+    </LinearLayout>
+
     <com.example.eric.wishare.WiTabbedScrollView
         android:id="@+id/tabbed_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"></com.example.eric.wishare.WiTabbedScrollView>
+        android:layout_height="400dp">
+
+    </com.example.eric.wishare.WiTabbedScrollView>
 
     <LinearLayout
         android:layout_marginTop="16dp"
@@ -24,23 +56,12 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Select Contacts"/>
+            android:text="Revoke Access"/>
 
         <Button
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Invite"/>
-
+            android:text="New Invitation"/>
     </LinearLayout>
-
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="Modify Network" />
-
 </LinearLayout>
