@@ -47,6 +47,7 @@ public class WiTabbedScrollView extends LinearLayout {
         mPermittedContacts = new ArrayList<>();
 
         WiPermittedContactsView v = new WiPermittedContactsView(getContext());
+        WiInvitableContactsView v2 = new WiInvitableContactsView(getContext());
 
         for(WiContact contact: mContactList.getWiContacts()){
             if(contact.name.length() % 2 == 0){
@@ -55,6 +56,7 @@ public class WiTabbedScrollView extends LinearLayout {
             }
             else{
                 mInvitableContacts.add(contact);
+                v2.add(contact);
             }
         }
 
@@ -66,7 +68,10 @@ public class WiTabbedScrollView extends LinearLayout {
         mPagerAdapter.addView(v);
         mPagerAdapter.notifyDataSetChanged();
 
-        mPagerAdapter.addView(buildPage2(mInvitableContacts));
+        int x = 5;
+        x++;
+
+        mPagerAdapter.addView(v2);
         mPagerAdapter.notifyDataSetChanged();
 
         TabLayout mTabs = findViewById(R.id.tab_layout);
@@ -200,5 +205,4 @@ public class WiTabbedScrollView extends LinearLayout {
         }
     }
 }
-
 

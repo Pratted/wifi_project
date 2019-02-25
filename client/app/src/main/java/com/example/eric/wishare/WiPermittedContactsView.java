@@ -44,7 +44,7 @@ public class WiPermittedContactsView extends LinearLayout {
     }
 
     private void init(){
-        inflate(getContext(), R.layout.tabbed_view_permitted_contacts, this);
+        inflate(getContext(), R.layout.layout_permitted_contacts, this);
         mPermittedContacts = new ArrayList<>();
 
         mHeaderSelectAll = (CheckBox) findViewById(R.id.cb_select_all);
