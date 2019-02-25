@@ -6,15 +6,17 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.media.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.AppCompatActivity;
 
 import java.util.logging.Handler;
 
-public abstract class WiNotification {
+public class WiNotification{
     private NotificationChannel mChannel;
     private NotificationManager mNotificationManager;
     private Notification mNotification;
-    private Notification.Builder mOldBuilder;
+    private NotificationCompat.Builder mOldBuilder;
     private String mChannelID;
 
     public WiNotification(Context context, String title, String text){
@@ -24,16 +26,17 @@ public abstract class WiNotification {
             NotificationManager.IMPORTANCE_HIGH);
             mChannel.setDescription("This is the default channel description.");
 
+            mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.createNotificationChannel(mChannel);
-            mNotification = new Notification.Builder(context, mChannelID)
+            mNotification = new NotificationCompat.Builder(context, mChannelID)
                     .setSmallIcon(R.drawable.ic_wifi_black_48dp)
                     .setContentTitle(title)
                     .setContentText(text)
                     .setDefaults(Notification.DEFAULT_ALL)
-                    .setPriority(Notification.PRIORITY_HIGH)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .build();
         } else {
-            mOldBuilder = new Notification.Builder(context);
+            mOldBuilder = new NotificationCompat.Builder(context);
 
             mOldBuilder.setAutoCancel(true)
                     .setDefaults(Notification.DEFAULT_ALL)
@@ -51,7 +54,9 @@ public abstract class WiNotification {
     }
 
 
-    abstract public void onTap();
+    public void onTap(){
+        //do nothing
+    }
     public void show() {
         onTap();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

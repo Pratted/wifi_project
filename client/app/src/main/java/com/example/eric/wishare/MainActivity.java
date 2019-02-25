@@ -159,6 +159,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
+
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
@@ -195,6 +198,25 @@ public class MainActivity extends AppCompatActivity {
             btnAddNetwork.setOnClickListener(requestContactPermissions());
 
         }
+
+
+
+
+        btnShowNotification.setOnClickListener(sendNotification());
+
+
+
+
+
+    }
+    private View.OnClickListener sendNotification(){
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                WiNotification notification = new WiNotification(MainActivity.this, "Title", "Description");
+                notification.show();
+            }
+        };
     }
 
     private View.OnClickListener requestContactPermissions(){
