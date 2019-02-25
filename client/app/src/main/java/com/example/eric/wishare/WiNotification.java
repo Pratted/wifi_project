@@ -12,14 +12,19 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.logging.Handler;
 
-public class WiNotification{
-    private NotificationChannel mChannel;
-    private NotificationManager mNotificationManager;
-    private Notification mNotification;
-    private NotificationCompat.Builder mOldBuilder;
-    private String mChannelID;
+public abstract class WiNotification{
+    protected String mTitle;
+    protected String mText;
+    protected NotificationChannel mChannel;
+    protected NotificationManager mNotificationManager;
+    protected NotificationCompat.Builder mNotification;
+    protected NotificationCompat.Builder mOldBuilder;
+    protected String mChannelID;
+
 
     public WiNotification(Context context, String title, String text){
+        mTitle = title;
+        mText = text;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             mChannelID = "defaultChannel";
             mChannel = new NotificationChannel(mChannelID, "defaultName",
@@ -33,8 +38,7 @@ public class WiNotification{
                     .setContentTitle(title)
                     .setContentText(text)
                     .setDefaults(Notification.DEFAULT_ALL)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .build();
+                    .setPriority(NotificationCompat.PRIORITY_HIGH);
         } else {
             mOldBuilder = new NotificationCompat.Builder(context);
 
@@ -49,18 +53,22 @@ public class WiNotification{
                     .setContentInfo("Info");
 
             mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
         }
     }
 
-
-    public void onTap(){
-        //do nothing
+    public String getTitle(){
+        return mTitle;
     }
+    public String getText(){
+        return mText;
+    }
+
+
+    public abstract void setOnNotificationClick();
     public void show() {
-        onTap();
+        setOnNotificationClick();
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            mNotificationManager.notify(1, mNotification);
+            mNotificationManager.notify(1, mNotification.build());
         } else {
             mNotificationManager.notify(1, mOldBuilder.build());
         }
