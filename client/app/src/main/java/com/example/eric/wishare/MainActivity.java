@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private WiConfiguredNetworkListView mConfiguredNetworkList;
 
+    private Button btnShowNotification;
+
     private WiMyInvitationsButton btnMyInvitations;
     private Button btnAddNetwork;
     private Button btnManageContacts;
@@ -150,9 +152,12 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
 
+        btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
+
+
 
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
