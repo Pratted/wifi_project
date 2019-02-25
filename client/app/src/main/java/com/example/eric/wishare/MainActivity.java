@@ -1,36 +1,24 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
-
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -77,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
+        plzFirebase();
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(this, MainActivity.class);
@@ -213,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                WiNotification notification = new WiNotification(MainActivity.this, "Title", "Description");
+                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Title", "Description");
                 notification.show();
             }
         };
@@ -267,7 +257,8 @@ public class MainActivity extends AppCompatActivity {
 
                         // Log and toast
                         Log.d(TAG, "The token is: " + token);
-//                Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
+                        System.out.println(token);
+                Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
 
                     }
                 });

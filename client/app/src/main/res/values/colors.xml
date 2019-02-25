@@ -140,6 +140,8 @@
     <color name="DarkBlue">#00008B</color>
     <color name="Navy">#000080</color>
     <color name="Black">#000000</color>
+    <color name="themedarker">#4c4c4c</color>
+    <color name="themedarkest">#333333</color>
     <color name="themedark">#808080</color>
     <color name="themeGreen">#1A964E</color>
 </resources>
