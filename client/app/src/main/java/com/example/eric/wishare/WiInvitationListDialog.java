@@ -45,6 +45,14 @@ public class WiInvitationListDialog extends WiDialog{
         mMyInvitationsButton.setInvitationCount(mInvitations.size());
     }
 
+    public ArrayList<WiInvitation> getInvitations() {
+        ArrayList<WiInvitation> result = new ArrayList<>();
+        for (WiInvitationListItem invite : mInvitations){
+            result.add(invite.mInvitation);
+        }
+        return result;
+    }
+
     @Override
     public MaterialDialog build() {
         return new MaterialDialog.Builder(context.get())
@@ -102,7 +110,7 @@ public class WiInvitationListDialog extends WiDialog{
             tvInvitationOwner = mLayout.findViewById(R.id.tv_invitation_owner);
 
             tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
-            tvInvitationOwner.setText(mInvitation.owner);
+            tvInvitationOwner.setText(mInvitation.owner.getName());
         }
 
         private WiInvitationAcceptDeclineDialog.OnAcceptedListener onAccepted(){

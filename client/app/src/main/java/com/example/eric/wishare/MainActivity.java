@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
 
-        plzFirebase();
+        //plzFirebase();
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(this, MainActivity.class);
@@ -155,10 +155,14 @@ public class MainActivity extends AppCompatActivity {
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
-        mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
-        mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
-        mInvitationListDialog.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019", "Never", "None"));
-        mInvitationListDialog.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019", "24 hours", "3GB"));
+        WiContact contact1 = new WiContact("Eric Pratt", "1");
+        WiContact contact2 = new WiContact("Eric Pratt", "2");
+        WiContact contact3 = new WiContact("Eric Pratt", "3");
+        WiContact contact4 = new WiContact("Eric Pratt", "+12223334444");
+        mInvitationListDialog.add(new WiInvitation("belkin-622", contact1, "Never", "127 hours", "10GB"));
+        mInvitationListDialog.add(new WiInvitation("belkin-048", contact2, "2/28/2019", "36 hours", "5GB"));
+        mInvitationListDialog.add(new WiInvitation("home-255", contact3, "3/15/2019", "Never", "None"));
+        mInvitationListDialog.add(new WiInvitation("home-200", contact4, "3/15/2019", "24 hours", "3GB"));
 
 
         /**
@@ -239,6 +243,22 @@ public class MainActivity extends AppCompatActivity {
 
         if(mContactListDialog != null) {
             mContactListDialog.refresh(this);
+        }
+                if(getIntent().getStringExtra("inviteNetwork") != null){
+            String networkName = getIntent().getStringExtra("inviteNetwork");
+            WiInvitation invitation = null;
+            for (WiInvitation invite: mInvitationListDialog.getInvitations()){
+                if (invite.getNetworkName().equals(networkName))
+                    invitation = invite;
+            }
+            if (invitation != null){
+                WiInvitationAcceptDeclineDialog mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(this, invitation);
+                mAcceptDeclineDialog.show();
+            }
+            else{
+                Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
+            }
+
         }
     }
 

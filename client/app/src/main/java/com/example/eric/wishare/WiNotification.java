@@ -20,11 +20,13 @@ public abstract class WiNotification{
     protected NotificationCompat.Builder mNotification;
     protected NotificationCompat.Builder mOldBuilder;
     protected String mChannelID;
+    protected Context mContext;
 
 
     public WiNotification(Context context, String title, String text){
         mTitle = title;
         mText = text;
+        mContext = context;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             mChannelID = "defaultChannel";
             mChannel = new NotificationChannel(mChannelID, "defaultName",
