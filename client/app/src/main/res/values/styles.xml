@@ -3,15 +3,15 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/themelight</item>
+        <item name="colorPrimary">@color/themeGreen</item>
         <item name="colorPrimaryDark">@color/themedark</item>
         <item name="colorAccent">@color/Black</item>
         <item name="colorControlHighlight">@color/Gold</item>
         <item name="colorBackgroundFloating">@color/DeepPink</item>
         <item name="android:textColorPrimary">@color/WhiteSmoke</item>
     </style>
-    <style name="WhiteCheck">
-        <item name="colorAccent">@color/themelight</item>
+    <style name="greenCheck">
+        <item name="colorAccent">@color/themeGreen</item>
     </style>
 
     <style name="WiShareTheme" parent="AppTheme" />
