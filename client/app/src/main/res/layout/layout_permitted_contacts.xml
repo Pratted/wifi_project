@@ -15,9 +15,9 @@
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            style="@drawable/ripple"
+            android:button="@drawable/cb_selector"
             android:background="@drawable/ripple"
-            android:theme="@style/WhiteCheck" />
+            style="@drawable/ripple"/>
 
         <Button
             android:id="@+id/btn_name"

@@ -12,17 +12,9 @@
         android:layout_height="match_parent"
         android:checked="false"
         android:layout_weight="1"
-        style="@drawable/ripple"
+        android:button="@drawable/cb_selector"
         android:background="@drawable/ripple"
-        android:theme="@style/WhiteCheck"/>
-
-
-    <!--<Button-->
-        <!--android:id="@+id/btn_name"-->
-        <!--android:layout_width="0dp"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_weight="4"-->
-        <!--style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>-->
+        style="@drawable/ripple"/>
 
     <Button
         android:id="@+id/btn_name"
@@ -35,7 +27,6 @@
         style="@drawable/ripple"
         android:background="@drawable/ripple"
         android:gravity="left|center_vertical"/>
-
 
     <TextView
         android:id="@+id/tv_data"
