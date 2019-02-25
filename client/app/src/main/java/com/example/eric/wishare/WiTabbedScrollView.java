@@ -19,9 +19,8 @@ public class WiTabbedScrollView extends LinearLayout {
     private WiPagerAdapter mPagerAdapter;
     private WiContactList mContactList;
 
-    private ArrayList<WiContact> mPermittedContacts;
-    private ArrayList<WiContact> mInvitableContacts;
-
+    private WiPermittedContactsView mPermittedContactsView;
+    private WiInvitableContactsView mInvitableContactsView;
 
     public WiTabbedScrollView(Context context){
         super(context);
@@ -43,35 +42,28 @@ public class WiTabbedScrollView extends LinearLayout {
 
         mViewPager = findViewById(R.id.view_pager);
 
-        mInvitableContacts = new ArrayList<>();
-        mPermittedContacts = new ArrayList<>();
-
-        WiPermittedContactsView v = new WiPermittedContactsView(getContext());
-        WiInvitableContactsView v2 = new WiInvitableContactsView(getContext());
+        mPermittedContactsView = new WiPermittedContactsView(getContext());
+        mInvitableContactsView = new WiInvitableContactsView(getContext());
 
         for(WiContact contact: mContactList.getWiContacts()){
             if(contact.name.length() % 2 == 0){
-                mPermittedContacts.add(contact);
-                v.addPermittedContact(contact);
+                mPermittedContactsView.addPermittedContact(contact);
             }
             else{
-                mInvitableContacts.add(contact);
-                v2.add(contact);
+                mInvitableContactsView.add(contact);
             }
         }
 
         mPagerAdapter = new WiPagerAdapter();
         mViewPager.setAdapter(mPagerAdapter);
 
-        v.sortName(true);
+        mPermittedContactsView.sortName(true);
+        mInvitableContactsView.sortName(true);
 
-        mPagerAdapter.addView(v);
+        mPagerAdapter.addView(mPermittedContactsView);
         mPagerAdapter.notifyDataSetChanged();
 
-        int x = 5;
-        x++;
-
-        mPagerAdapter.addView(v2);
+        mPagerAdapter.addView(mInvitableContactsView);
         mPagerAdapter.notifyDataSetChanged();
 
         TabLayout mTabs = findViewById(R.id.tab_layout);
@@ -80,37 +72,14 @@ public class WiTabbedScrollView extends LinearLayout {
         System.out.println(mTabs.getTabCount());
         mTabs.getTabAt(0).setText("Permitted Contacts");
         mTabs.getTabAt(1).setText("Invite Contacts");
-
-        mTabs.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition() == 0){
-                    //findViewById(R.id.btn_lhs).setVisibility(View.VISIBLE);
-                }
-                else if(tab.getPosition() == 1){
-                    //findViewById(R.id.btn_lhs).setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });
-
-
     }
 
-    private View buildPage2(ArrayList<WiContact> contacts){
-        LinearLayout page = new LinearLayout(getContext());
-        page.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+    public WiInvitableContactsView getInvitableContactsView() {
+        return mInvitableContactsView;
+    }
 
-        return page;
+    public WiPermittedContactsView getPermittedContactsView() {
+        return mPermittedContactsView;
     }
 
     private class WiPagerAdapter extends PagerAdapter {
