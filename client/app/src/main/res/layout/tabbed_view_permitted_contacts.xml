@@ -16,7 +16,10 @@
             android:id="@+id/cb_select_all"
             android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"
+            android:theme="@style/WhiteCheck" />
 
         <Button
             android:id="@+id/btn_name"
@@ -24,7 +27,8 @@
             android:layout_height="wrap_content"
             android:text="Name"
             android:layout_weight="4"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"/>
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"/>
 
         <Button
             android:id="@+id/btn_data"
@@ -32,7 +36,8 @@
             android:layout_height="wrap_content"
             android:text="Data"
             android:layout_weight="2"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"/>
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"/>
 
         <Button
             android:id="@+id/btn_expires"
@@ -40,7 +45,8 @@
             android:layout_height="wrap_content"
             android:text="Expires"
             android:layout_weight="3"
-            style="@style/Base.Widget.AppCompat.Button.Borderless"/>
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"/>
     </LinearLayout>
 
     <ScrollView

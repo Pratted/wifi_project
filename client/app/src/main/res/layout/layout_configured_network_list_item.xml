@@ -8,6 +8,8 @@
         android:id="@+id/center_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        style="@drawable/ripple"
+        android:background="@drawable/ripple"
         android:orientation="vertical">
 
         <LinearLayout

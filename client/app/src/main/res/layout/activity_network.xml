@@ -10,10 +10,11 @@
 
     <Button
         android:id="@+id/button"
-        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        style="@drawable/ripple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Edit Network"/>
+        android:text="Edit Network"
+        android:background="@drawable/ripple"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,6 +58,8 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"
             android:text="Revoke Access"/>
 
         <Button
@@ -64,6 +67,8 @@
             android:layout_weight="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"
             android:text="New Invitation"/>
     </LinearLayout>
 </LinearLayout>

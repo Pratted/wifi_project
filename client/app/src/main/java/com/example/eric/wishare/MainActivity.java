@@ -85,64 +85,64 @@ public class MainActivity extends AppCompatActivity {
         PendingIntent resultPendingIntent =
                 stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        NotificationChannel channel = null;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            channel = new NotificationChannel("ChanID", "name",
-            NotificationManager.IMPORTANCE_HIGH);
-            channel.setDescription("desc");
-
-            final NotificationManager nm = (NotificationManager)
-            this.getSystemService(Context.NOTIFICATION_SERVICE);
-            nm.createNotificationChannel(channel);
-            final Notification notification = new NotificationCompat.Builder(this, "ChanID")
-                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
-                    .setContentTitle("Notification")
-                    .setContentText("This is a notification")
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setContentIntent(resultPendingIntent)
-                    .build();
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    nm.notify(1, notification);
-                    System.out.println("IN RUN");
-                }
-            }, 5000);
-        } else {
-
-            Intent intent = new Intent(this, MainActivity.class);
-            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            @SuppressWarnings("deprecation") final NotificationCompat.Builder b = new NotificationCompat.Builder(this);
-
-            b.setAutoCancel(true)
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setWhen(System.currentTimeMillis())
-                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
-                    .setContentTitle("Notification")
-                    .setContentText("This is a notification")
-                    .setDefaults(Notification.DEFAULT_ALL)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setContentIntent(contentIntent)
-                    .setContentInfo("Info");
-
-
-            final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
-//            notificationManager.notify(1, b.build());
-
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    notificationManager.notify(1, b.build());
-                    System.out.println("IN RUN");
-                }
-            }, 5000);
-        }
+//        NotificationChannel channel = null;
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            channel = new NotificationChannel("ChanID", "name",
+//            NotificationManager.IMPORTANCE_HIGH);
+//            channel.setDescription("desc");
+//
+//            final NotificationManager nm = (NotificationManager)
+//            this.getSystemService(Context.NOTIFICATION_SERVICE);
+//            nm.createNotificationChannel(channel);
+//            final Notification notification = new NotificationCompat.Builder(this, "ChanID")
+//                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
+//                    .setContentTitle("Notification")
+//                    .setContentText("This is a notification")
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .setContentIntent(resultPendingIntent)
+//                    .build();
+//
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    nm.notify(1, notification);
+//                    System.out.println("IN RUN");
+//                }
+//            }, 5000);
+//        } else {
+//
+//            Intent intent = new Intent(this, MainActivity.class);
+//            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//            @SuppressWarnings("deprecation") final NotificationCompat.Builder b = new NotificationCompat.Builder(this);
+//
+//            b.setAutoCancel(true)
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setWhen(System.currentTimeMillis())
+//                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
+//                    .setContentTitle("Notification")
+//                    .setContentText("This is a notification")
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .setContentIntent(contentIntent)
+//                    .setContentInfo("Info");
+//
+//
+////            final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+//////            notificationManager.notify(1, b.build());
+////
+////            Handler handler = new Handler();
+////            handler.postDelayed(new Runnable() {
+////                @Override
+////                public void run() {
+////                    notificationManager.notify(1, b.build());
+////                    System.out.println("IN RUN");
+////                }
+////            }, 5000);
+////        }
 
 
         super.onCreate(savedInstanceState);

@@ -36,6 +36,7 @@ public class WiAddNetworkDialog extends WiDialog {
                 .items(mNetworks)
                 .itemsCallback(onNetWorkSelect())
                 .negativeText("Cancel")
+                //.theme(context.get().getTheme())
                 .build();
     }
 
