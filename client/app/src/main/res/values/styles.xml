@@ -1,29 +1,22 @@
 <resources>
-
-    <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat">
-        <!-- Customize your theme here. -->
-        <item name="actionBarTheme">@style/MyApp.ActionBarTheme</item>
-        <item name="actionBarStyle">@style/MyApp.ActionBarStyle</item>
+        <item name="actionBarTheme">@style/WiShare.ActionBarTheme</item>
+        <item name="actionBarStyle">@style/WiShare.ActionBarStyle</item>
         <item name="colorPrimary">@color/themeGreen</item>
         <item name="colorPrimaryDark">@color/themedark</item>
         <item name="colorAccent">@color/Black</item>
-        <item name="colorControlHighlight">@color/Gold</item>
-        <item name="colorBackgroundFloating">@color/DeepPink</item>
         <item name="android:textColorPrimary">@color/WhiteSmoke</item>
         <item name="colorControlNormal">@color/themedark</item>
     </style>
-    <style name="MyApp.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+    <style name="WiShare.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
         <item name="colorControlNormal">@color/themedarker</item>
         <item name="colorPrimary">@color/themedark</item>
         <item name="android:actionBarItemBackground">@drawable/rippledark</item>
         <item name="android:textSize">12pt</item>
     </style>
-    <style name="MyApp.ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
+    <style name="WiShare.ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
         <item name="elevation">0dp</item>
-        <!-- style for actionBar title -->
         <item name="titleTextStyle">@color/themedark</item>
-        <!-- style for actionBar subtitle -->
         <item name="subtitleTextStyle">@color/themedark</item>
         <item name="background">@color/themeGreen</item>
     </style>
