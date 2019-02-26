@@ -18,19 +18,16 @@ public class WiMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-        String body = remoteMessage.getNotification().getBody();
-        Map<String, String> data = remoteMessage.getData();
-
-        WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this, body, data.get("Nick"));
-        notification.show();
-
-
         System.out.println("DATA RECEIVED" + remoteMessage.toString());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
+            Map<String, String> data = remoteMessage.getData();
+
+            WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this, data.get("title"), data.get("desc"));
+            notification.show();
 
             // TODO: handle the data message
         }

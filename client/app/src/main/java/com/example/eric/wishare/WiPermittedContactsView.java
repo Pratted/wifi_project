@@ -118,6 +118,14 @@ public class WiPermittedContactsView extends LinearLayout {
         }
     }
 
+    public int getSelectedContactCount(){
+        int count = 0;
+        for(WiPermittedContactsViewListItem contact: mPermittedContacts){
+            count += contact.mCheckBox.isChecked() ? 1 : 0;
+        }
+        return count;
+    }
+
     public void hideAllCheckBoxes(){
         mHeaderSelectAll.setVisibility(INVISIBLE);
         mHeaderSelectAll.setChecked(false); // reset select all checkbox

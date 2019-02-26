@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.ArrayList;
 
 public class WiTabbedScrollView extends LinearLayout {
@@ -80,16 +82,17 @@ public class WiTabbedScrollView extends LinearLayout {
         mLhs = findViewById(R.id.btn_lhs);
         mRhs = findViewById(R.id.btn_rhs);
 
-        getPermittedContactsView().setOnContactsEnabledListener(new WiPermittedContactsView.OnSelectContactsEnabledListener() {
+        mPermittedContactsView.setOnContactsEnabledListener(new WiPermittedContactsView.OnSelectContactsEnabledListener() {
             @Override
             public void onSelectContactsEnabled() {
+
 
                 mLhs.setVisibility(VISIBLE);
                 mLhs.setText("Cancel");
                 mLhs.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        getPermittedContactsView().hideAllCheckBoxes();
+                        mPermittedContactsView.hideAllCheckBoxes();
                         mLhs.setVisibility(GONE);
                         mRhs.setVisibility(GONE);
                     }
@@ -101,7 +104,14 @@ public class WiTabbedScrollView extends LinearLayout {
                     @Override
                     public void onClick(View v) {
                         //do something...
-                        getPermittedContactsView().hideAllCheckBoxes();
+                        new MaterialDialog.Builder(getContext())
+                                .title("Revoke access for " + mPermittedContactsView.getSelectedContactCount() + " contact(s)")
+                                .content("Are you sure you want to revoke access for " + mPermittedContactsView.getSelectedContactCount() + " contact(s)? This action cannot be undone.")
+                                .negativeText("Cancel")
+                                .positiveText("Revoke Access")
+                                .show();
+
+                        mPermittedContactsView.hideAllCheckBoxes();
                         mLhs.setVisibility(GONE);
                         mRhs.setVisibility(GONE);
                     }
