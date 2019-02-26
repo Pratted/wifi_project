@@ -10,6 +10,7 @@
     <string name="test_connection">Test Connection</string>
     <string name="tv_change_password">Change Password</string>
     <string name="btn_show_notification">Show Notification</string>
+    <string name="edit_text_search_bar_hint">Search contacts...</string>
 
     <string-array name="time_limits">
         <item>Never</item>

@@ -82,6 +82,10 @@ public class WiTabbedScrollView extends LinearLayout {
         return mPermittedContactsView;
     }
 
+    public void filter(String searchString) {
+        mPermittedContactsView.filter(searchString);
+    }
+
     private class WiPagerAdapter extends PagerAdapter {
         private ArrayList<View> pages = new ArrayList<>();
 

@@ -18,8 +18,6 @@ public class WiMessagingService extends FirebaseMessagingService {
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-
-
         String body = remoteMessage.getNotification().getBody();
         Map<String, String> data = remoteMessage.getData();
 
@@ -27,13 +25,11 @@ public class WiMessagingService extends FirebaseMessagingService {
         notification.show();
 
 
-
         System.out.println("DATA RECEIVED" + remoteMessage.toString());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
 
 
             // TODO: handle the data message

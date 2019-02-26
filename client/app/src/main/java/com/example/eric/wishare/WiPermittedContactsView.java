@@ -131,6 +131,24 @@ public class WiPermittedContactsView extends LinearLayout {
         }
     }
 
+    public void filter(String searchString) {
+        mItems.removeAllViews();
+
+        if(!searchString.isEmpty()) {
+
+            for(WiPermittedContactsViewListItem item : mPermittedContacts) {
+                if(item.getContact().getName().toLowerCase().contains(searchString.toLowerCase())) {
+                    mItems.addView(item);
+                }
+            }
+        } else {
+            for(WiPermittedContactsViewListItem item : mPermittedContacts) {
+                mItems.addView(item);
+            }
+        }
+    }
+
+
     private class WiPermittedContactsViewListItem extends LinearLayout {
 
         private CheckBox mCheckBox;
@@ -192,6 +210,10 @@ public class WiPermittedContactsView extends LinearLayout {
 
             mName.setOnLongClickListener(onLongClick());
             mName.setOnClickListener(startContactActivity(mContact));
+        }
+
+        public WiContact getContact() {
+            return mContact;
         }
 
         private View.OnClickListener resetOnClick(){
