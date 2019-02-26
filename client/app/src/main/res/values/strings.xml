@@ -9,6 +9,7 @@
     <string name="btn_invite_contacts">Invite Contacts</string>
     <string name="test_connection">Test Connection</string>
     <string name="tv_change_password">Change Password</string>
+    <string name="btn_show_notification">Show Notification</string>
 
     <string-array name="time_limits">
         <item>Never</item>

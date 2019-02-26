@@ -50,10 +50,8 @@ public class WiNetworkManager {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
         config.setSSID("\"" + config.getSSID() + "\"");
-//        int netId = wifiManager.addNetwork(config);
         wifiManager.disconnect();
-        wifiManager.enableNetwork(config.networkId, true);
-        return wifiManager.reconnect();
+        return wifiManager.enableNetwork(config.networkId, true) && wifiManager.reconnect();
     }
 
     public ArrayList<WifiConfiguration> getNotConfiguredNetworks() {

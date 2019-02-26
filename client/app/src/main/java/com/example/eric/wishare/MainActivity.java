@@ -1,19 +1,18 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
     private WiConfiguredNetworkListView mConfiguredNetworkList;
+
+    private Button btnShowNotification;
 
     private WiMyInvitationsButton btnMyInvitations;
     private Button btnAddNetwork;
@@ -63,22 +64,105 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        //plzFirebase();
+
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent =
+                stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+//        NotificationChannel channel = null;
+//
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+//            channel = new NotificationChannel("ChanID", "name",
+//            NotificationManager.IMPORTANCE_HIGH);
+//            channel.setDescription("desc");
+//
+//            final NotificationManager nm = (NotificationManager)
+//            this.getSystemService(Context.NOTIFICATION_SERVICE);
+//            nm.createNotificationChannel(channel);
+//            final Notification notification = new NotificationCompat.Builder(this, "ChanID")
+//                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
+//                    .setContentTitle("Notification")
+//                    .setContentText("This is a notification")
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .setContentIntent(resultPendingIntent)
+//                    .build();
+//
+//            Handler handler = new Handler();
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    nm.notify(1, notification);
+//                    System.out.println("IN RUN");
+//                }
+//            }, 5000);
+//        } else {
+//
+//            Intent intent = new Intent(this, MainActivity.class);
+//            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//            @SuppressWarnings("deprecation") final NotificationCompat.Builder b = new NotificationCompat.Builder(this);
+//
+//            b.setAutoCancel(true)
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setWhen(System.currentTimeMillis())
+//                    .setSmallIcon(R.drawable.ic_wifi_black_48dp)
+//                    .setContentTitle("Notification")
+//                    .setContentText("This is a notification")
+//                    .setDefaults(Notification.DEFAULT_ALL)
+//                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+//                    .setContentIntent(contentIntent)
+//                    .setContentInfo("Info");
+//
+//
+////            final NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+//////            notificationManager.notify(1, b.build());
+////
+////            Handler handler = new Handler();
+////            handler.postDelayed(new Runnable() {
+////                @Override
+////                public void run() {
+////                    notificationManager.notify(1, b.build());
+////                    System.out.println("IN RUN");
+////                }
+////            }, 5000);
+////        }
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         FirebaseApp.initializeApp(this);
 
+        btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
+
+
+
+
+
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
-        mInvitationListDialog.add(new WiInvitation("belkin-622", "Eric Pratt", "Never", "127 hours", "10GB"));
-        mInvitationListDialog.add(new WiInvitation("belkin-048", "Joseph Vu", "2/28/2019", "36 hours", "5GB"));
-        mInvitationListDialog.add(new WiInvitation("home-255", "Aditya Khandkar", "3/15/2019", "Never", "None"));
-        mInvitationListDialog.add(new WiInvitation("home-200", "Jacob Fullmer", "3/15/2019", "24 hours", "3GB"));
+        WiContact contact1 = new WiContact("Eric Pratt", "1");
+        WiContact contact2 = new WiContact("Eric Pratt", "2");
+        WiContact contact3 = new WiContact("Eric Pratt", "3");
+        WiContact contact4 = new WiContact("Eric Pratt", "+12223334444");
+        mInvitationListDialog.add(new WiInvitation("belkin-622", contact1, "Never", "127 hours", "10GB"));
+        mInvitationListDialog.add(new WiInvitation("belkin-048", contact2, "2/28/2019", "36 hours", "5GB"));
+        mInvitationListDialog.add(new WiInvitation("home-255", contact3, "3/15/2019", "Never", "None"));
+        mInvitationListDialog.add(new WiInvitation("home-200", contact4, "3/15/2019", "24 hours", "3GB"));
 
 
         /**
@@ -108,6 +192,25 @@ public class MainActivity extends AppCompatActivity {
             btnAddNetwork.setOnClickListener(requestContactPermissions());
 
         }
+
+
+
+
+        btnShowNotification.setOnClickListener(sendNotification());
+
+
+
+
+
+    }
+    private View.OnClickListener sendNotification(){
+        return new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Title", "Description");
+                notification.show();
+            }
+        };
     }
 
     private View.OnClickListener requestContactPermissions(){
@@ -141,6 +244,22 @@ public class MainActivity extends AppCompatActivity {
         if(mContactListDialog != null) {
             mContactListDialog.refresh(this);
         }
+                if(getIntent().getStringExtra("inviteNetwork") != null){
+            String networkName = getIntent().getStringExtra("inviteNetwork");
+            WiInvitation invitation = null;
+            for (WiInvitation invite: mInvitationListDialog.getInvitations()){
+                if (invite.getNetworkName().equals(networkName))
+                    invitation = invite;
+            }
+            if (invitation != null){
+                WiInvitationAcceptDeclineDialog mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(this, invitation);
+                mAcceptDeclineDialog.show();
+            }
+            else{
+                Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
+            }
+
+        }
     }
 
     private void plzFirebase(){
@@ -158,7 +277,8 @@ public class MainActivity extends AppCompatActivity {
 
                         // Log and toast
                         Log.d(TAG, "The token is: " + token);
-//                Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
+                        System.out.println(token);
+                Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
 
                     }
                 });

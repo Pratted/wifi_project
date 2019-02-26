@@ -2,7 +2,7 @@ package com.example.eric.wishare;
 
 public class WiInvitation {
     public String networkName;
-    public String owner;
+    public WiContact owner;
     public String expires;
     public String timeLimit;
     public String dataLimit;
@@ -12,7 +12,7 @@ public class WiInvitation {
         return mConfiguration;
     }
 
-    public WiInvitation(String networkName, String owner, String expires, String timeLimit, String dataLimit) {
+    public WiInvitation(String networkName, WiContact owner, String expires, String timeLimit, String dataLimit) {
         this.networkName = networkName;
         this.owner = owner;
         this.expires = expires;
@@ -21,6 +21,14 @@ public class WiInvitation {
     }
 
     public WiInvitation() {}
+
+    public WiContact getOwner(){
+        return owner;
+    }
+    public String getNetworkName(){
+        return networkName;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

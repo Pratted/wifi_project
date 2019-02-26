@@ -1,12 +1,30 @@
 <resources>
-
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <style name="AppTheme" parent="Theme.AppCompat">
+        <item name="actionBarTheme">@style/WiShare.ActionBarTheme</item>
+        <item name="actionBarStyle">@style/WiShare.ActionBarStyle</item>
+        <item name="colorPrimary">@color/themeGreen</item>
+        <item name="colorPrimaryDark">@color/themedark</item>
+        <item name="colorAccent">@color/Black</item>
+        <item name="android:textColorPrimary">@color/WhiteSmoke</item>
+        <item name="colorControlNormal">@color/themedark</item>
     </style>
+    <style name="WiShare.ActionBarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">@color/themedarker</item>
+        <item name="colorPrimary">@color/themedark</item>
+        <item name="android:actionBarItemBackground">@drawable/rippledark</item>
+        <item name="android:textSize">12pt</item>
+    </style>
+    <style name="WiShare.ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar">
+        <item name="elevation">0dp</item>
+        <item name="titleTextStyle">@color/themedark</item>
+        <item name="subtitleTextStyle">@color/themedark</item>
+        <item name="background">@color/themeGreen</item>
+    </style>
+    <style name="greenCheck">
+        <item name="colorAccent">@color/themeGreen</item>
+    </style>
+
+    <style name="WiShareTheme" parent="AppTheme" />
 
     <declare-styleable name="WiEditTextPermHint">
         <attr name="entries" format="reference" />

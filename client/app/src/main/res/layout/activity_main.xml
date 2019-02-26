@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"  >
 
 
     <LinearLayout
@@ -31,7 +31,7 @@
             <ScrollView
                 android:id="@+id/scroll_network_list"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="150dp"
                 android:layout_marginBottom="8dp"
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
@@ -58,6 +58,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+            <Button
+                android:id="@+id/btn_show_notification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="60dp"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"
+                android:text="@string/btn_show_notification" />
 
             <Button
                 android:id="@+id/btn_add_network"
@@ -65,7 +75,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="40dp"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="10dp"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"
                 android:text="@string/btn_add_network" />
             <Button
                 android:id="@+id/btn_manage_contacts"
@@ -74,6 +86,8 @@
                 android:layout_marginEnd="40dp"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="10dp"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"
                 android:text="@string/btn_manage_contacts" />
 
             <com.example.eric.wishare.WiMyInvitationsButton

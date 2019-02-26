@@ -38,4 +38,8 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
 
     implementation 'ru.rambler.android:swipe-layout:1.0.15'
+
+    // For tab layout...
+    implementation 'com.android.support:design:27.1.1'
+
 }
