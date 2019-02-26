@@ -1,45 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="10">
+    android:layout_height="wrap_content">
 
-    <CheckBox
-        android:visibility="invisible"
-        android:id="@+id/cb_select"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:checked="false"
-        android:layout_weight="1"
-        android:button="@drawable/cb_selector"
-        android:background="@drawable/ripple"
-        style="@drawable/ripple"/>
+    <ru.rambler.libs.swipe_layout.SwipeLayout
+        android:id="@+id/swipe_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="10">
+            <CheckBox
+                android:visibility="invisible"
+                android:id="@+id/cb_select"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:checked="false"
+                android:layout_weight="1"
+                android:button="@drawable/cb_selector"
+                android:background="@drawable/ripple"
+                style="@drawable/ripple"/>
+            <Button
+                android:id="@+id/btn_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:typeface="normal"
+                android:textAllCaps="false"
+                android:text="hello wrold"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"
+                android:gravity="left|center_vertical"/>
 
-    <Button
-        android:id="@+id/btn_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:typeface="normal"
-        android:textAllCaps="false"
-        android:text="hello wrold"
-        style="@drawable/ripple"
-        android:background="@drawable/ripple"
-        android:gravity="left|center_vertical"/>
+            <TextView
+                android:id="@+id/tv_data"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_weight="2"/>
 
-    <TextView
-        android:id="@+id/tv_data"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:layout_weight="2"/>
+            <TextView
+                android:id="@+id/tv_expires"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center"/>
+        </LinearLayout>
+    </ru.rambler.libs.swipe_layout.SwipeLayout>
 
-    <TextView
-        android:id="@+id/tv_expires"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="3"
-        android:gravity="center"/>
+    <net.cachapa.expandablelayout.ExpandableLayout
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:id="@+id/eric"
+        android:background="@color/themedarker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="10">
+
+            <LinearLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:layout_weight="9"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Last Activity:"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="2/25/2019 12:05pm"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Data Usage:"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="10 Gb / 100 Gb"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btn_revoke_access"
+                        android:gravity="left|center_vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Revoke Access"
+                        style="@drawable/ripple"
+                        android:background="@drawable/ripple"/>
+
+                    <Button
+                        android:id="@+id/btn_visit_profile"
+                        android:gravity="left|center_vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Visit Profile"
+                        style="@drawable/ripple"
+                        android:background="@drawable/ripple"/>
+                </LinearLayout>
+
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+
+    </net.cachapa.expandablelayout.ExpandableLayout>
 
 </LinearLayout>

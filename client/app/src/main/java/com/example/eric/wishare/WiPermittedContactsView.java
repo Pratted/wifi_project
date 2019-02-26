@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,8 +15,14 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.util.ArrayList;
 import java.util.Comparator;
+
+import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiPermittedContactsView extends LinearLayout {
 
@@ -144,8 +151,13 @@ public class WiPermittedContactsView extends LinearLayout {
         private Button mName;
         private TextView mData;
         private TextView mExpires;
+        private Button mRevokeAccess;
+        private Button mVisitProfile;
 
         private WiContact mContact;
+
+        private ExpandableLayout mExpandableLayout;
+        private SwipeLayout mSwipeLayout;
 
         public WiPermittedContactsViewListItem(Context context) {
             super(context);
@@ -173,8 +185,38 @@ public class WiPermittedContactsView extends LinearLayout {
             mName = (Button) findViewById(R.id.btn_name);
             mData = (TextView) findViewById(R.id.tv_data);
             mExpires = (TextView) findViewById(R.id.tv_expires);
+            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
+            mVisitProfile = (Button) findViewById(R.id.btn_visit_profile);
+            mSwipeLayout = findViewById(R.id.swipe_layout);
+
+            mName.setOnLongClickListener(onLongClick());
 
             if(mContact != null) setContact(mContact);
+
+            mExpandableLayout = findViewById(R.id.eric);
+
+            mName.setOnClickListener(expand());
+            mData.setOnClickListener(expand());
+            mExpires.setOnClickListener(expand());
+
+            mRevokeAccess.setOnClickListener(dislayRevokeAccessDialog(mContact));
+            mVisitProfile.setOnClickListener(startContactActivity(mContact));
+        }
+
+        private View.OnClickListener expand(){
+            return new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    if(mExpandableLayout.isExpanded()){
+                        mExpandableLayout.collapse();
+                        WiPermittedContactsViewListItem.this.setBackgroundResource(R.color.background_material_dark);
+                    }
+                    else{
+                        mExpandableLayout.expand();
+                        WiPermittedContactsViewListItem.this.setBackgroundResource(R.color.themedarker);
+                    }
+                }
+            };
         }
 
         private View.OnClickListener startContactActivity(final WiContact contact){
@@ -188,6 +230,20 @@ public class WiPermittedContactsView extends LinearLayout {
             };
         }
 
+        private View.OnClickListener dislayRevokeAccessDialog(final WiContact contact){
+            return new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    new MaterialDialog.Builder(getContext())
+                            .title("Revoke Access for " + contact.name)
+                            .content("Are you want to revoke access for " + contact.name + "? This action cannot be undone.")
+                            .negativeText("Cancel")
+                            .positiveText("Revoke")
+                            .show();
+                }
+            };
+        }
+
         public void setContactClickable(boolean clickable){
             mName.setOnClickListener(clickable ? startContactActivity(mContact) : resetOnClick());
         }
@@ -197,7 +253,7 @@ public class WiPermittedContactsView extends LinearLayout {
             mData.setText("10 Gb");
             mExpires.setText("3d 2h");
 
-            mName.setOnLongClickListener(onLongClick());
+
             mName.setOnClickListener(startContactActivity(mContact));
         }
 

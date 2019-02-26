@@ -42,4 +42,6 @@ dependencies {
     // For tab layout...
     implementation 'com.android.support:design:27.1.1'
 
+    implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
+
 }

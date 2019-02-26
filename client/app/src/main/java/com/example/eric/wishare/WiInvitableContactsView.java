@@ -1,6 +1,7 @@
 package com.example.eric.wishare;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -9,6 +10,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,6 +24,7 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private CheckBox mHeaderSelectAll;
     private Button mHeaderName;
+
     private boolean mAscendingName;
 
     public WiInvitableContactsView(Context context) {
@@ -102,6 +107,12 @@ public class WiInvitableContactsView extends LinearLayout {
 
         private CheckBox mCheckBox;
         private Button mName;
+        private ExpandableLayout mExpandableLayout;
+
+        private TextView mTitle;
+        private LinearLayout mItems;
+        private Button mInvite;
+        private Button mVisitProfile;
 
         public WiInvitableContactListItem(Context context) {
             super(context);
@@ -124,7 +135,52 @@ public class WiInvitableContactsView extends LinearLayout {
             mCheckBox = findViewById(R.id.cb_select);
             mName = findViewById(R.id.btn_name);
 
+            mExpandableLayout = findViewById(R.id.eric);
+            mTitle = findViewById(R.id.title);
+            mItems = findViewById(R.id.items);
+            mInvite = findViewById(R.id.btn_invite_contact);
+            mVisitProfile = findViewById(R.id.btn_visit_profile);
+
             mName.setText(mContact.name);
+            mTitle.setText(mContact.name + " has access to these networks");
+
+            mName.setOnClickListener(expand());
+            mInvite.setOnClickListener(displayInvitationDialog());
+            mVisitProfile.setOnClickListener(startContactActivity());
+        }
+
+        private View.OnClickListener expand(){
+            return new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(mExpandableLayout.isExpanded()){
+                        mExpandableLayout.collapse();
+                    }
+                    else{
+                        mExpandableLayout.expand();
+                    }
+                }
+            };
+        }
+
+        private View.OnClickListener displayInvitationDialog(){
+            return new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new WiCreateInvitationDialog(getContext()).show();
+                }
+            };
+        }
+
+        private View.OnClickListener startContactActivity(){
+            return new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(getContext(), ContactActivity.class);
+                    intent.putExtra("contact", mContact);
+                    getContext().startActivity(intent);
+                }
+            };
         }
     }
 }
