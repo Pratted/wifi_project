@@ -5,7 +5,7 @@
 
     <!--CENTER. app:gravity="center" - is default value -->
     <LinearLayout
-        android:id="@+id/center_view"
+        android:id="@+id/middle_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@drawable/ripple"

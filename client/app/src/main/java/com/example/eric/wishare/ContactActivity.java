@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,13 +21,12 @@ import java.util.ArrayList;
 
 public class ContactActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
-    private LinearLayout mScrollView;
+    private LinearLayout mLayout;
 
     private Button btnRevokeAccess;
     private Button btnAddContactToNetwork;
 
     private ArrayList<WifiConfiguration> mNetworks;
-
 
     private WiAddContactToNetworkDialog mAddToNetwork;
     private WiRevokeAccessDialog mRevokeAccessDialog;
@@ -45,7 +45,6 @@ public class ContactActivity extends AppCompatActivity {
 
         WiContact contact = getIntent().getExtras().getParcelable("contact");
 
-
         try {
             getSupportActionBar().setTitle(contact.getName());
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,39 +52,27 @@ public class ContactActivity extends AppCompatActivity {
             System.out.println("SET TITLE NULL POINTER IN CONTACT ACTIVITY");
         }
 
-        //Set name and phone number
-//        ((TextView)findViewById(R.id.tv_contact_name)).setText(contact.getName());
-        ((TextView)findViewById(R.id.tv_contact_number)).setText(contact.getPhone());
+        ((TextView) findViewById(R.id.tv_contact_number)).setText(contact.phone);
 
-        //Set up scroll view
+        ((TextView) findViewById(R.id.tv_permitted_networks)).setText("Networks " + contact.name + " has access to:");
+
+        mLayout = findViewById(R.id.center_view);
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
-        mScrollView = new LinearLayout(this);
-        mScrollView.setOrientation(LinearLayout.VERTICAL);
-        mNetworkScrollView.addView(mScrollView);
+
         LayoutInflater inflater = getLayoutInflater();
-        LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_permitted_network_list_item, null);
-
-
-        //Using hard coded placeholders
-        ((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(0).SSID);
-        ((TextView) layout.findViewById(R.id.tv_connection_status)).setText("Invitation sent");
-        mScrollView.addView(layout);
-        layout = (LinearLayout) inflater.inflate(R.layout.layout_permitted_network_list_item, null);
-        //((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(1).SSID);
-        ((TextView) layout.findViewById(R.id.tv_connection_status)).setText("Connected");
-        mScrollView.addView(layout);
-        layout = (LinearLayout) inflater.inflate(R.layout.layout_permitted_network_list_item, null);
-        //((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(2).SSID);
-        ((TextView) layout.findViewById(R.id.tv_connection_status)).setText("Data limit reached");
-        mScrollView.addView(layout);
-        layout = (LinearLayout) inflater.inflate(R.layout.layout_permitted_network_list_item, null);
-        //((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(3).SSID);
-        ((TextView) layout.findViewById(R.id.tv_connection_status)).setText("Not connected");
-        mScrollView.addView(layout);
-        layout = (LinearLayout) inflater.inflate(R.layout.layout_permitted_network_list_item, null);
-        //((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(4).SSID);
-        ((TextView) layout.findViewById(R.id.tv_connection_status)).setText("Invitation expired");
-        mScrollView.addView(layout);
+        for (int i = 0; i < networkList.size(); i++) {
+            LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_test, null);
+            ((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(i).SSID);
+            ((TextView) layout.findViewById(R.id.tv_connection_status)).setText(i + " Active users");
+//            if(mNetworks.get(i).networkId % 2 == 0) {
+//                ((ImageView) findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
+//            }
+            if(mLayout.getParent() != null) {
+                ((ViewGroup)mLayout.getParent()).removeView(mLayout);
+            }
+            mLayout.addView(layout);
+        }
+        mNetworkScrollView.addView(mLayout);
 
 
         btnRevokeAccess = findViewById(R.id.btn_revoke_access);
