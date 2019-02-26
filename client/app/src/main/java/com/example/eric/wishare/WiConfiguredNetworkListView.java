@@ -59,7 +59,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                 ((ImageView) findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
             }
 
-            findViewById(R.id.center_view).setOnClickListener(startNetworkActivity());
+            findViewById(R.id.middle_view).setOnClickListener(startNetworkActivity());
             findViewById(R.id.iv_trash).setOnClickListener(displayConfirmDeleteDialog());
         }
 

@@ -132,19 +132,8 @@ public class WiPermittedContactsView extends LinearLayout {
     }
 
     public void filter(String searchString) {
-        mItems.removeAllViews();
-
-        if(!searchString.isEmpty()) {
-
-            for(WiPermittedContactsViewListItem item : mPermittedContacts) {
-                if(item.getContact().getName().toLowerCase().contains(searchString.toLowerCase())) {
-                    mItems.addView(item);
-                }
-            }
-        } else {
-            for(WiPermittedContactsViewListItem item : mPermittedContacts) {
-                mItems.addView(item);
-            }
+        for(WiPermittedContactsViewListItem contact: mPermittedContacts){
+            contact.setVisibility(contact.mContact.name.toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
         }
     }
 

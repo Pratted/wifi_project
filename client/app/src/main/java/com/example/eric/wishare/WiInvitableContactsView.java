@@ -52,6 +52,12 @@ public class WiInvitableContactsView extends LinearLayout {
         mItems.addView(item);
     }
 
+    public void filter(String searchString) {
+        for(WiInvitableContactListItem contact: mInvitableContacts){
+            contact.setVisibility(contact.mContact.name.toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
+        }
+    }
+
     private CompoundButton.OnCheckedChangeListener onSelectAll(){
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
