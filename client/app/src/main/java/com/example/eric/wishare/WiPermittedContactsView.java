@@ -38,6 +38,26 @@ public class WiPermittedContactsView extends LinearLayout {
 
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
 
+
+    public interface OnSelectContactsEnabledListener {
+        void onSelectContactsEnabled();
+    }
+
+    public interface OnSelectContactsDisabledListener {
+        void onSelectContactsDisabled();
+    }
+
+    private OnSelectContactsEnabledListener mContactsEnabledListener;
+    private OnSelectContactsDisabledListener mContactsDisabledListener;
+
+    public void setOnContactsEnabledListener(OnSelectContactsEnabledListener listener){
+        mContactsEnabledListener = listener;
+    }
+
+    public void setOnContactsDisabledListener(OnSelectContactsDisabledListener listener){
+        mContactsDisabledListener = listener;
+    }
+
     public WiPermittedContactsView(Context context) {
         super(context);
 
@@ -88,15 +108,27 @@ public class WiPermittedContactsView extends LinearLayout {
         };
     }
 
-    private void showAllCheckBoxes(){
+    public void showAllCheckBoxes(){
         for(WiPermittedContactsViewListItem child: mPermittedContacts){
             child.mCheckBox.setVisibility(VISIBLE);
         }
+
+        if(mContactsEnabledListener != null){
+            mContactsEnabledListener.onSelectContactsEnabled();
+        }
     }
 
-    private void hideAllCheckBoxes(){
+    public void hideAllCheckBoxes(){
+        mHeaderSelectAll.setVisibility(INVISIBLE);
+        mHeaderSelectAll.setChecked(false); // reset select all checkbox
+
         for(WiPermittedContactsViewListItem child: mPermittedContacts){
+            child.mCheckBox.setChecked(false); // reset the checkbox...
             child.mCheckBox.setVisibility(INVISIBLE);
+        }
+
+        if(mContactsDisabledListener != null){
+            mContactsDisabledListener.onSelectContactsDisabled();
         }
     }
 

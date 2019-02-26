@@ -19,7 +19,6 @@ public class NetworkActivity extends AppCompatActivity {
 
     private WiInviteContactsDialog mInviteContactsDialog;
     private WiEditNetworkDialog mEditNetworkDialog;
-    private WiRevokeAccessDialog mRevokeAccessDialog;
 
     private WiTabbedScrollView mTabbedScrollView;
     private WiContactList mContactList;
@@ -66,13 +65,6 @@ public class NetworkActivity extends AppCompatActivity {
             mInviteContactsDialog.addContact(contact);
         }
 
-        findViewById(R.id.btn_invite_contacts).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mInviteContactsDialog.show();
-            }
-        });
-
         findViewById(R.id.btn_edit_network).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -93,20 +85,6 @@ public class NetworkActivity extends AppCompatActivity {
 
         mButtonLhs = findViewById(R.id.btn_lhs);
         mButtonRhs = findViewById(R.id.btn_rhs);
-
-        mButtonLhs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mRevokeAccessDialog.show();
-            }
-        });
-
-        mButtonRhs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mInviteContactsDialog.show();
-            }
-        });
     }
 
     @Override

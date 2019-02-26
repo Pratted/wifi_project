@@ -8,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +22,9 @@ public class WiTabbedScrollView extends LinearLayout {
 
     private WiPermittedContactsView mPermittedContactsView;
     private WiInvitableContactsView mInvitableContactsView;
+
+    private Button mLhs;
+    private Button mRhs;
 
     public WiTabbedScrollView(Context context){
         super(context);
@@ -72,6 +76,38 @@ public class WiTabbedScrollView extends LinearLayout {
         System.out.println(mTabs.getTabCount());
         mTabs.getTabAt(0).setText("Permitted Contacts");
         mTabs.getTabAt(1).setText("Invite Contacts");
+
+        mLhs = findViewById(R.id.btn_lhs);
+        mRhs = findViewById(R.id.btn_rhs);
+
+        getPermittedContactsView().setOnContactsEnabledListener(new WiPermittedContactsView.OnSelectContactsEnabledListener() {
+            @Override
+            public void onSelectContactsEnabled() {
+
+                mLhs.setVisibility(VISIBLE);
+                mLhs.setText("Cancel");
+                mLhs.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getPermittedContactsView().hideAllCheckBoxes();
+                        mLhs.setVisibility(GONE);
+                        mRhs.setVisibility(GONE);
+                    }
+                });
+
+                mRhs.setVisibility(VISIBLE);
+                mRhs.setText("Revoke Access");
+                mRhs.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //do something...
+                        getPermittedContactsView().hideAllCheckBoxes();
+                        mLhs.setVisibility(GONE);
+                        mRhs.setVisibility(GONE);
+                    }
+                });
+            }
+        });
     }
 
     public WiInvitableContactsView getInvitableContactsView() {

@@ -21,15 +21,6 @@
             android:background="@drawable/ripple"
             android:text="@string/btn_edit_network" />
 
-        <Button
-            android:id="@+id/btn_invite_contacts"
-            style="@drawable/ripple"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/ripple"
-            android:text="@string/btn_invite_contacts" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -55,35 +46,9 @@
     <com.example.eric.wishare.WiTabbedScrollView
         android:id="@+id/tabbed_scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="400dp">
+        android:layout_height="match_parent">
 
     </com.example.eric.wishare.WiTabbedScrollView>
 
-    <LinearLayout
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btn_lhs"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@drawable/ripple"
-            android:background="@drawable/ripple"
-            android:text="Revoke Access"/>
-
-        <Button
-            android:id="@+id/btn_rhs"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@drawable/ripple"
-            android:background="@drawable/ripple"
-            android:text="New Invitation"/>
-    </LinearLayout>
 </LinearLayout>
