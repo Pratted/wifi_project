@@ -58,7 +58,7 @@ public class WiManageContactsDialog extends WiDialog{
         ArrayList<WiContact> contacts = mContactList.getWiContacts();
 
         for (WiContact contact : contacts) {
-            strings.add(contact.name + " " + contact.phone);
+            strings.add(contact.getName() + " " + contact.getPhone());
         }
 
         return new MaterialDialog.Builder(context.get())

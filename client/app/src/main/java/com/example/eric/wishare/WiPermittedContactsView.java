@@ -165,8 +165,8 @@ public class WiPermittedContactsView extends LinearLayout {
                 @Override
                 public int compare(WiPermittedContactsViewListItem o1, WiPermittedContactsViewListItem o2) {
                     return ascending ?
-                            o1.mContact.name.compareTo(o2.mContact.name) :
-                            o2.mContact.name.compareTo(o1.mContact.name);
+                            o1.mContact.getName().compareTo(o2.mContact.getName()) :
+                            o2.mContact.getName().compareTo(o1.mContact.getName());
                 }
             });
         }
@@ -180,10 +180,9 @@ public class WiPermittedContactsView extends LinearLayout {
 
     public void filter(String searchString) {
         for(WiPermittedContactsViewListItem contact: mPermittedContacts){
-            contact.setVisibility(contact.mContact.name.toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
+            contact.setVisibility(contact.mContact.getName().toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
         }
     }
-
 
     private class WiPermittedContactsViewListItem extends LinearLayout {
 
@@ -275,8 +274,8 @@ public class WiPermittedContactsView extends LinearLayout {
                 @Override
                 public void onClick(View v) {
                     new MaterialDialog.Builder(getContext())
-                            .title("Revoke Access for " + contact.name)
-                            .content("Are you want to revoke access for " + contact.name + "? This action cannot be undone.")
+                            .title("Revoke Access for " + contact.getName())
+                            .content("Are you want to revoke access for " + contact.getName() + "? This action cannot be undone.")
                             .negativeText("Cancel")
                             .positiveText("Revoke")
                             .show();
@@ -289,7 +288,7 @@ public class WiPermittedContactsView extends LinearLayout {
         }
 
         public void setContact(WiContact contact){
-            mName.setText(mContact.name);
+            mName.setText(mContact.getName());
             mData.setText("10 Gb");
             mExpires.setText("3d 2h");
 

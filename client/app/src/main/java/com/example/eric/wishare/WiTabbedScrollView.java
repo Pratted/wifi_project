@@ -52,7 +52,7 @@ public class WiTabbedScrollView extends LinearLayout {
         mInvitableContactsView = new WiInvitableContactsView(getContext());
 
         for(WiContact contact: mContactList.getWiContacts()){
-            if(contact.name.length() % 2 == 0){
+            if(contact.getName().length() % 2 == 0){
                 mPermittedContactsView.addPermittedContact(contact);
             }
             else{

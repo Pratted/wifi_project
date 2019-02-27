@@ -133,7 +133,7 @@ public class WiInvitableContactsView extends LinearLayout {
 
     public void filter(String searchString) {
         for(WiInvitableContactListItem contact: mInvitableContacts){
-            contact.setVisibility(contact.mContact.name.toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
+            contact.setVisibility(contact.mContact.getName().toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
         }
     }
 
@@ -163,8 +163,8 @@ public class WiInvitableContactsView extends LinearLayout {
                 @Override
                 public int compare(WiInvitableContactListItem o1, WiInvitableContactListItem o2) {
                     return ascending ?
-                            o1.mContact.name.compareTo(o2.mContact.name) :
-                            o2.mContact.name.compareTo(o1.mContact.name);
+                            o1.mContact.getName().compareTo(o2.mContact.getName()) :
+                            o2.mContact.getName().compareTo(o1.mContact.getName());
                 }
             });
         }
@@ -248,8 +248,8 @@ public class WiInvitableContactsView extends LinearLayout {
             });
             //setAnimation(mSwipeLeftAnimation);
 
-            mName.setText(mContact.name);
-            mTitle.setText(mContact.name + " has access to these networks");
+            mName.setText(mContact.getName());
+            mTitle.setText(mContact.getName() + " has access to these networks");
 
             mCheckBox.setVisibility(INVISIBLE);
 

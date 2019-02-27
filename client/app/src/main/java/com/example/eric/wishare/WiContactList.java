@@ -69,7 +69,7 @@ public class WiContactList {
             );
 
             mContactList.add(contact);
-            mPhoneToContact.put(contact.phone, contact);
+            mPhoneToContact.put(contact.getPhone(), contact);
         }
     }
 

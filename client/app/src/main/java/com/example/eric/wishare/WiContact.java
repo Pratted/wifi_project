@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class WiContact implements Parcelable{
-    public String name;
-    public String phone;
+    private String name;
+    private String phone;
 
     public WiContact(String name, String phone){
         this.name = name;

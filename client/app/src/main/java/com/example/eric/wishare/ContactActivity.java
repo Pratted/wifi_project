@@ -53,9 +53,9 @@ public class ContactActivity extends AppCompatActivity {
             System.out.println("SET TITLE NULL POINTER IN CONTACT ACTIVITY");
         }
 
-        ((TextView) findViewById(R.id.tv_contact_number)).setText(contact.phone);
+        ((TextView) findViewById(R.id.tv_contact_number)).setText(contact.getPhone());
 
-        ((TextView) findViewById(R.id.tv_permitted_networks)).setText("Networks " + contact.name + " has access to:");
+        ((TextView) findViewById(R.id.tv_permitted_networks)).setText("Networks " + contact.getName() + " has access to:");
 
         mLayout = findViewById(R.id.center_view);
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
