@@ -15,36 +15,24 @@
     android:orientation="vertical"
     app:layout_constraintTop_toTopOf="parent">
 
-    <LinearLayout
-    android:id="@+id/ll_phone"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="30dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="12dp"
-    android:layout_marginTop="8dp"
-    android:textAlignment="center"
-    app:layout_constraintTop_toTopOf="@id/cl_contact"
-    android:orientation="horizontal">
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Phone Number: "
-        android:textSize="24sp"/>
     <TextView
         android:id="@+id/tv_contact_number"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:textAlignment="center"
         android:text="555-555-5555"
         android:textSize="24sp" />
-    </LinearLayout>
 
 
     <TextView
         android:id="@+id/tv_permitted_networks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/ll_phone"
+        app:layout_constraintTop_toBottomOf="@id/tv_contact_number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="20sp"
@@ -73,35 +61,34 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ll_contact_top">
 
+        <Button
+            android:id="@+id/btn_add_contact_to_network"
+            style="@drawable/ripple"
+            android:layout_width="match_parent"
+            android:layout_height="64dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/ripple"
+            android:text="Invite to network"
+            app:layout_constraintBottom_toTopOf="@id/btn_add_contact_to_network"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/scroll_network_list" />
 
         <Button
             android:id="@+id/btn_revoke_access"
             style="@drawable/ripple"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="64dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/ripple"
-            android:text="Revoke access"
-            app:layout_constraintBottom_toTopOf="@id/btn_add_contact_to_network"
+            android:text="Revoke all access"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/ll_contact_bottom" />
 
-        <Button
-            android:id="@+id/btn_add_contact_to_network"
-            style="@drawable/ripple"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/ripple"
-            android:text="Invite to network"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scroll_network_list" />
 
     </LinearLayout>
     <include layout="@layout/layout_test"/>
