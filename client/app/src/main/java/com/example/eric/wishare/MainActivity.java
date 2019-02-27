@@ -218,9 +218,6 @@ public class MainActivity extends AppCompatActivity {
 
             WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, "", dataLimit);
 
-            int x = 0;
-            x++;
-
             /*
             WiInvitation invitation = null;
 

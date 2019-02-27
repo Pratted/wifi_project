@@ -118,6 +118,41 @@ public class WiTabbedScrollView extends LinearLayout {
                 });
             }
         });
+
+        mInvitableContactsView.setOnContactsEnabledListener(new WiInvitableContactsView.OnSelectContactsEnabledListener() {
+            @Override
+            public void onSelectContactsEnabled() {
+                mLhs.setVisibility(VISIBLE);
+                mLhs.setText("Cancel");
+                mLhs.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mInvitableContactsView.hideAllCheckBoxes();
+                        mLhs.setVisibility(GONE);
+                        mRhs.setVisibility(GONE);
+                    }
+                });
+
+                mRhs.setVisibility(VISIBLE);
+                mRhs.setText("Invite");
+                mRhs.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //do something...
+                        WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext());
+                        dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
+                            @Override
+                            public void onInviationCreated(WiInvitation invitation) {
+                                mInvitableContactsView.animateLeftSwipe();
+                            }
+                        });
+
+                        dialog.show();
+                    }
+                });
+            }
+        });
+
     }
 
     public WiInvitableContactsView getInvitableContactsView() {
