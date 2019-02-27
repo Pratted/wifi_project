@@ -83,13 +83,6 @@ public class MainActivity extends AppCompatActivity {
         // Get the PendingIntent containing the entire back stack
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if(savedInstanceState != null){
-            int x = 0;
-            x++;
-        }
-
-
-
         FirebaseApp.initializeApp(this);
 
         btnShowNotification = findViewById(R.id.btn_show_notification);
@@ -146,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Title", "Description");
+                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
                 notification.show();
             }
         };
@@ -176,10 +169,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
 
-
-        int x = 0;
-        x++;
-
     }
 
     @Override
@@ -205,18 +194,31 @@ public class MainActivity extends AppCompatActivity {
             String temp = intent.getStringExtra("owner");
             String name = "";
             String phone = "";
+            String other = "";
 
-            try {
-                JSONObject t2 = new JSONObject(temp);
-                name = t2.getString("name");
-                phone = t2.getString("phone");
+            if(temp == null){
+                try {
+                    JSONObject t2 = new JSONObject(temp);
+                    name = t2.getString("name");
+                    phone = t2.getString("phone");
 
-            } catch (JSONException e) {
-                e.printStackTrace();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+            else{
+                networkName = "Sample Network";
+                name = "Joe Schmoe";
+                phone = "12345";
+                expires = "Never";
+                other = "";
+                dataLimit = "5 Gb";
+            }
+
+
             intent.removeExtra("inviteNetwork");
 
-            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, "", dataLimit);
+            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, other, dataLimit);
 
             /*
             WiInvitation invitation = null;

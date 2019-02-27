@@ -11,6 +11,7 @@ public class WiNotificationInviteReceived extends WiNotification{
 
     public WiNotificationInviteReceived(Context context, String title, String text) {
         super(context, title, text);
+
     }
 
     public WiNotificationInviteReceived(Context context, String title, String text, Map<String, String> json) {
@@ -23,8 +24,10 @@ public class WiNotificationInviteReceived extends WiNotification{
     public void setOnNotificationClick() {
         Intent intent = new Intent(mContext, MainActivity.class);
 
-        for(String key: mData.keySet()){
-            intent.putExtra(key, mData.get(key));
+        if(mData != null){
+            for(String key: mData.keySet()){
+                intent.putExtra(key, mData.get(key));
+            }
         }
 
         intent.putExtra("inviteNetwork", mTitle);

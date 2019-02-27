@@ -51,7 +51,7 @@ public class WiInvitableContactsView extends LinearLayout {
     public void animateLeftSwipe() {
         for(WiInvitableContactListItem child: mInvitableContacts){
             if(child.mCheckBox.isChecked()){
-                child.startAnimation(child.mSwipeLeftAnimation);
+                child.mName.startAnimation(child.mSwipeLeftAnimation);
             }
         }
     }
@@ -236,6 +236,7 @@ public class WiInvitableContactsView extends LinearLayout {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
+                    mCheckBox.setChecked(false);
                     mHourglass.setButtonDrawable(R.drawable.ic_empty);
                     mName.setText("Invitation Sent!");
                     mName.setOnClickListener(doNothing());

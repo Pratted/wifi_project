@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="24dp"
-                android:text="Configured Networks"/>
+                android:text="My Configured Networks"/>
 
 
             <ScrollView
