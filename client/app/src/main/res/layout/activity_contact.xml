@@ -6,49 +6,49 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ContactActivity">
-<LinearLayout
-    android:id="@+id/ll_contact_top"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="8dp"
-    android:layout_marginStart="8dp"
-    android:orientation="vertical"
-    app:layout_constraintTop_toTopOf="parent">
-
-    <TextView
-        android:id="@+id/tv_contact_number"
+    <LinearLayout
+        android:id="@+id/ll_contact_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textAlignment="center"
-        android:text="555-555-5555"
-        android:textSize="24sp" />
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_contact_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textAlignment="center"
+            android:text="555-555-5555"
+            android:textSize="24sp" />
 
 
-    <TextView
-        android:id="@+id/tv_permitted_networks"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/tv_contact_number"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textSize="20sp"
-        android:textAlignment="center"/>
+        <TextView
+            android:id="@+id/tv_permitted_networks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tv_contact_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:textSize="20sp"
+            android:textAlignment="center"/>
 
-    <ScrollView
-        android:id="@+id/scroll_network_list"
-        android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/themedarker">
+        <ScrollView
+            android:id="@+id/scroll_network_list"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@color/themedarker">
 
-    </ScrollView>
-</LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_contact_bottom"
