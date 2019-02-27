@@ -20,32 +20,30 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_weight="2">
+                android:layout_weight="3">
                 <CheckBox
                     android:visibility="visible"
                     android:id="@+id/cb_select"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     style="@drawable/ripple"
-                    android:layout_marginLeft="14dp"
                     android:background="@drawable/ripple"
                     android:theme="@style/greenCheck"/>
                 <CheckBox
-                    android:visibility="gone"
-                    android:layout_marginLeft="24dp"
-                    android:id="@+id/cb_select_hourglass"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:src="@drawable/ic_full"
+                    android:visibility="gone"
+                    android:id="@+id/cb_select_hourglass"
                     style="@drawable/ripple"
-                    android:layout_gravity="left|center_vertical"
-                    android:background="@drawable/ripple"
                     android:theme="@style/greenCheck"/>
             </LinearLayout>
             <Button
+                android:gravity="left|center_vertical"
                 android:id="@+id/btn_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_weight="7"
                 android:typeface="normal"
                 android:textAllCaps="false"
                 android:text="hello world"
@@ -67,12 +65,12 @@
             android:weightSum="10">
 
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="3"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
-                android:layout_weight="8"
+                android:layout_weight="7"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
@@ -122,6 +120,5 @@
 
 
     </net.cachapa.expandablelayout.ExpandableLayout>
-
 
 </LinearLayout>

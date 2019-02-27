@@ -88,7 +88,7 @@ public class WiTabbedScrollView extends LinearLayout {
 
 
                 mLhs.setVisibility(VISIBLE);
-                mLhs.setText("Cancel");
+                mLhs.setText("Done");
                 mLhs.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -123,7 +123,7 @@ public class WiTabbedScrollView extends LinearLayout {
             @Override
             public void onSelectContactsEnabled() {
                 mLhs.setVisibility(VISIBLE);
-                mLhs.setText("Cancel");
+                mLhs.setText("Done");
                 mLhs.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -313,6 +314,8 @@ public class WiPermittedContactsView extends LinearLayout {
             return new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(40);
                     setContactsClickable(false);
                     showAllCheckBoxes();
                     mHeaderSelectAll.setVisibility(VISIBLE);

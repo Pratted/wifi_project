@@ -3,6 +3,7 @@ package com.example.eric.wishare;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -28,11 +30,9 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private CheckBox mHeaderSelectAll;
     private Button mHeaderName;
-
     private Button mName;
 
-    private CheckBox mHourglass;
-
+    private LinearLayout mHeaders;
     private boolean mAscendingName;
 
     public WiInvitableContactsView(Context context) {
@@ -76,12 +76,13 @@ public class WiInvitableContactsView extends LinearLayout {
     }
 
     public void hideAllCheckBoxes(){
+        mHeaders.setVisibility(GONE);
         mHeaderSelectAll.setVisibility(INVISIBLE);
         mHeaderSelectAll.setChecked(false); // reset select all checkbox
 
         for(WiInvitableContactListItem child: mInvitableContacts){
             child.mCheckBox.setChecked(false); // reset the checkbox...
-            child.mCheckBox.setVisibility(INVISIBLE);
+            child.mCheckBox.setVisibility(GONE);
         }
 
         if(mContactsDisabledListener != null){
@@ -90,8 +91,12 @@ public class WiInvitableContactsView extends LinearLayout {
     }
 
     public void showAllCheckBoxes(){
+        mHeaders.setVisibility(VISIBLE);
+
         for(WiInvitableContactListItem child: mInvitableContacts){
-            child.mCheckBox.setVisibility(VISIBLE);
+            if(child.mHourglass.getVisibility() == GONE){
+                child.mCheckBox.setVisibility(VISIBLE);
+            }
         }
 
         if(mContactsEnabledListener != null){
@@ -112,16 +117,14 @@ public class WiInvitableContactsView extends LinearLayout {
         mInvitableContacts = new ArrayList<>();
 
         mItems = findViewById(R.id.items);
+        mHeaders = findViewById(R.id.headers);
         mHeaderSelectAll = findViewById(R.id.cb_select_all);
         mHeaderName = findViewById(R.id.btn_name);
 
         mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
         mHeaderName.setOnClickListener(sortName());
 
-        mName = findViewById(R.id.btn_name);
-
         hideAllCheckBoxes();
-
     }
 
     public void add(WiContact contact){
@@ -187,6 +190,7 @@ public class WiInvitableContactsView extends LinearLayout {
         private LinearLayout mItems;
         private Button mInvite;
         private Button mVisitProfile;
+        private CheckBox mHourglass;
 
         private SwipeLayout mSwipeLayout;
         private Animation mSwipeLeftAnimation;
@@ -212,7 +216,6 @@ public class WiInvitableContactsView extends LinearLayout {
             mCheckBox = findViewById(R.id.cb_select);
             mHourglass = findViewById(R.id.cb_select_hourglass);
             mName = findViewById(R.id.btn_name);
-
 
             mExpandableLayout = findViewById(R.id.eric);
             mTitle = findViewById(R.id.title);
@@ -249,7 +252,7 @@ public class WiInvitableContactsView extends LinearLayout {
             //setAnimation(mSwipeLeftAnimation);
 
             mName.setText(mContact.getName());
-            mTitle.setText(mContact.getName() + " has access to these networks");
+            mTitle.setText(mContact.getName() + " doesn't have access to any networks");
 
             mCheckBox.setVisibility(INVISIBLE);
 
@@ -317,6 +320,9 @@ public class WiInvitableContactsView extends LinearLayout {
             return new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
+                    Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                    vibe.vibrate(40);
+
                     showAllCheckBoxes();
                     mHeaderSelectAll.setVisibility(VISIBLE);
                     return false;
