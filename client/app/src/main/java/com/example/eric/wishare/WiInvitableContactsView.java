@@ -232,6 +232,7 @@ public class WiInvitableContactsView extends LinearLayout {
                     mCheckBox.setVisibility(GONE);
                     mHourglass.setVisibility(VISIBLE);
                     mHourglass.setButtonDrawable(R.drawable.ic_full);
+                    mCheckBox.setChecked(false);
                 }
 
                 @Override
