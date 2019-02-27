@@ -1,5 +1,7 @@
 package com.example.eric.wishare;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -26,7 +28,7 @@ public class WiMessagingService extends FirebaseMessagingService {
 
             Map<String, String> data = remoteMessage.getData();
 
-            WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this, data.get("title"), data.get("desc"));
+            WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this, data.get("title"), data.get("desc"), data);
             notification.show();
 
             // TODO: handle the data message

@@ -20,6 +20,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
@@ -80,9 +83,12 @@ public class MainActivity extends AppCompatActivity {
         // Get the PendingIntent containing the entire back stack
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        if(savedInstanceState != null && !savedInstanceState.isEmpty()){
-            sendNotification();
+        if(savedInstanceState != null){
+            int x = 0;
+            x++;
         }
+
+
 
         FirebaseApp.initializeApp(this);
 
@@ -166,6 +172,15 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+
+        int x = 0;
+        x++;
+
+    }
 
     @Override
     protected void onResume() {
@@ -177,21 +192,54 @@ public class MainActivity extends AppCompatActivity {
         if(mContactListDialog != null) {
             mContactListDialog.refresh(this);
         }
-                if(getIntent().getStringExtra("inviteNetwork") != null){
-            String networkName = getIntent().getStringExtra("inviteNetwork");
+
+
+        if(getIntent().getStringExtra("inviteNetwork") != null){
+            Intent intent = getIntent();
+
+            String networkName = intent.getStringExtra("network_name");
+
+            String dataLimit = intent.getStringExtra("data_limit");
+            String expires = intent.getStringExtra("expires");
+
+            String temp = intent.getStringExtra("owner");
+            String name = "";
+            String phone = "";
+
+            try {
+                JSONObject t2 = new JSONObject(temp);
+                name = t2.getString("name");
+                phone = t2.getString("phone");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, "", dataLimit);
+            
+            int x = 0;
+            x++;
+
+            /*
             WiInvitation invitation = null;
+
             for (WiInvitation invite: mInvitationListDialog.getInvitations()){
                 if (invite.getNetworkName().equals(networkName))
                     invitation = invite;
             }
-            if (invitation != null){
-                WiInvitationAcceptDeclineDialog mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(this, invitation);
+            */
+
+
+            if (inv != null){
+                WiInvitationAcceptDeclineDialog mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(this, inv);
                 mAcceptDeclineDialog.show();
             }
             else{
                 Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
             }
         }
+
 
         plzFirebase();
     }
