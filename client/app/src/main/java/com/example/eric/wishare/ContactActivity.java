@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -80,12 +81,18 @@ public class ContactActivity extends AppCompatActivity {
 
         mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAccess);
         mAddToNetwork = new WiAddContactToNetworkDialog(this, btnAddContactToNetwork);
+    }
 
 
-
-/*
-        RecyclerView rvNetworkList = ((RecyclerView)findViewById(R.id.rv_network_list));
-*/
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 /*    private WiContactListDialog.OnContactSelectedListener onContactSelected(){
         return new WiContactListDialog.OnContactSelectedListener() {

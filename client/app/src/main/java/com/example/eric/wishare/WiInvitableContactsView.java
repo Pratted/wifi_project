@@ -29,6 +29,10 @@ public class WiInvitableContactsView extends LinearLayout {
     private CheckBox mHeaderSelectAll;
     private Button mHeaderName;
 
+    private Button mName;
+
+    private CheckBox mHourglass;
+
     private boolean mAscendingName;
 
     public WiInvitableContactsView(Context context) {
@@ -114,7 +118,10 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
         mHeaderName.setOnClickListener(sortName());
 
+        mName = findViewById(R.id.btn_name);
+
         hideAllCheckBoxes();
+
     }
 
     public void add(WiContact contact){
@@ -203,7 +210,9 @@ public class WiInvitableContactsView extends LinearLayout {
             inflate(getContext(), R.layout.layout_invitable_contacts_list_item, this);
 
             mCheckBox = findViewById(R.id.cb_select);
+            mHourglass = findViewById(R.id.cb_select_hourglass);
             mName = findViewById(R.id.btn_name);
+
 
             mExpandableLayout = findViewById(R.id.eric);
             mTitle = findViewById(R.id.title);
@@ -217,12 +226,14 @@ public class WiInvitableContactsView extends LinearLayout {
             mSwipeLeftAnimation.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
-                    mCheckBox.setButtonDrawable(R.drawable.ic_full);
+                    mCheckBox.setVisibility(GONE);
+                    mHourglass.setVisibility(VISIBLE);
+                    mHourglass.setButtonDrawable(R.drawable.ic_full);
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    mCheckBox.setButtonDrawable(R.drawable.ic_empty);
+                    mHourglass.setButtonDrawable(R.drawable.ic_empty);
                     mName.setText("Invitation Sent!");
                     mName.setOnClickListener(doNothing());
                     if(mExpandableLayout.isExpanded()) {
@@ -283,7 +294,7 @@ public class WiInvitableContactsView extends LinearLayout {
                     dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                         @Override
                         public void onInviationCreated(WiInvitation invitation) {
-                            WiInvitableContactListItem.this.startAnimation(mSwipeLeftAnimation);
+                            mName.startAnimation(mSwipeLeftAnimation);
                         }
                     });
                     dialog.show();

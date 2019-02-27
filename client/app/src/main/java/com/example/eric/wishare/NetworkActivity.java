@@ -92,10 +92,7 @@ public class NetworkActivity extends AppCompatActivity {
         super.onResume();
     }
 
-    /*
-    This makes it so the (upper left) back button returns to MainActivity without calling onCreate()
-    Smoother overall.
-    */
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
