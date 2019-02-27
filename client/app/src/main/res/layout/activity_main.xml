@@ -34,17 +34,17 @@
                 android:layout_marginEnd="20dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginTop="8dp"
-                android:background="@color/themedarker">
+                android:background="@drawable/scrollview_outline">
 
                 <!-- Aditya, this is your class. -->
                 <com.example.eric.wishare.WiConfiguredNetworkListView
                     android:layout_width="match_parent"
                     android:orientation="vertical"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="8dp"
-                    android:layout_marginEnd="20dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
                     android:id="@+id/configured_network_list">
 
                 </com.example.eric.wishare.WiConfiguredNetworkListView>

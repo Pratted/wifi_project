@@ -23,6 +23,18 @@
     <style name="greenCheck">
         <item name="colorAccent">@color/themeGreen</item>
     </style>
+    <style name="Shadow" parent="@android:style/Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@color/themedarkest</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:gravity">center</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
 
     <style name="WiShareTheme" parent="AppTheme" />
 
