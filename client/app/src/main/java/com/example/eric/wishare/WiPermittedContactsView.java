@@ -1,14 +1,11 @@
 package com.example.eric.wishare;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -38,7 +35,6 @@ public class WiPermittedContactsView extends LinearLayout {
     private boolean mAscendingName;
 
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
-
 
     public interface OnSelectContactsEnabledListener {
         void onSelectContactsEnabled();
@@ -233,13 +229,13 @@ public class WiPermittedContactsView extends LinearLayout {
 
             if(mContact != null) setContact(mContact);
 
-            mExpandableLayout = findViewById(R.id.eric);
+            mExpandableLayout = findViewById(R.id.expandable_contact);
 
             mName.setOnClickListener(expand());
             mData.setOnClickListener(expand());
             mExpires.setOnClickListener(expand());
 
-            mRevokeAccess.setOnClickListener(dislayRevokeAccessDialog(mContact));
+            mRevokeAccess.setOnClickListener(displayRevokeAccessDialog(mContact));
             mVisitProfile.setOnClickListener(startContactActivity(mContact));
         }
 
@@ -270,7 +266,7 @@ public class WiPermittedContactsView extends LinearLayout {
             };
         }
 
-        private View.OnClickListener dislayRevokeAccessDialog(final WiContact contact){
+        private View.OnClickListener displayRevokeAccessDialog(final WiContact contact){
             return new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {

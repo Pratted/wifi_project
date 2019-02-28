@@ -30,7 +30,7 @@
                 android:layout_weight="4"
                 android:typeface="normal"
                 android:textAllCaps="false"
-                android:text="hello wrold"
+                android:text="hello world"
                 style="@drawable/ripple"
                 android:background="@drawable/ripple"
                 android:gravity="left|center_vertical"/>
@@ -54,7 +54,7 @@
     <net.cachapa.expandablelayout.ExpandableLayout
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
-        android:id="@+id/eric"
+        android:id="@+id/expandable_contact"
         android:background="@color/themedarker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
