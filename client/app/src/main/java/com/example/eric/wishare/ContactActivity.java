@@ -61,7 +61,7 @@ public class ContactActivity extends AppCompatActivity {
         LayoutInflater inflater = getLayoutInflater();
 
         for (int i = 0; i < networkList.size(); i++) {
-            LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_contact_network_list_item, null);
+            LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_contact_shared_network_list_item, null);
 //            ((ImageView) layout.findViewById(R.id.iv_wifi_icon_spot)).setImageResource(R.drawable.ic_wifi_black_24dp);
             ((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(i).SSID);
             ((TextView) layout.findViewById(R.id.tv_connection_status)).setText(i + " Active users");
