@@ -120,7 +120,7 @@
                     android:weightSum="2">
 
                     <Button
-                        android:id="@+id/btn_revoke_access"
+                        android:id="@+id/btn_revoke_all_access"
                         android:gravity="left|center_vertical"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

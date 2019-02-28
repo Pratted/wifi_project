@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context=".ContactActivity">
 
@@ -24,7 +24,7 @@
             android:text="Invite to network" />
 
         <Button
-            android:id="@+id/btn_revoke_access"
+            android:id="@+id/btn_revoke_all_access"
             style="@drawable/ripple"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -58,6 +58,7 @@
             android:id="@+id/contactNetworkList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toTopOf="@+id/ll_hidden_btn_layout"
             android:layout_marginLeft="4dp"
             android:layout_marginTop="4dp"
             android:layout_marginRight="4dp"
@@ -65,6 +66,33 @@
             android:orientation="vertical">
 
         </com.example.eric.wishare.WiContactSharedNetworkListView>
+
+        <LinearLayout
+            android:id="@+id/ll_hidden_btn_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/contactNetworkList"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_hide_checkboxes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"/>
+            <Button
+                android:id="@+id/btn_revoke_selective_access"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:background="@drawable/ripple"
+                android:text="Revoke Access"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 </LinearLayout>

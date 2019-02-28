@@ -8,7 +8,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
@@ -23,6 +22,18 @@ public class WiContactSharedNetworkListView extends LinearLayout {
     private LinearLayout mSharedNetworkListItems;
 
     private ArrayList<WiContactSharedNetworkListViewItem> mSharedNetworks;
+
+    public interface OnCheckBoxVisibleListener {
+        void onCheckBoxVisible();
+    }
+
+//    public interface
+
+    private OnCheckBoxVisibleListener listener;
+
+    public void setOnCheckBoxVisibleListener(OnCheckBoxVisibleListener listener) {
+        this.listener = listener;
+    }
 
     public WiContactSharedNetworkListView(Context c) {
         super(c);
@@ -55,7 +66,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
-                    network.mCheckBox.setSelected(isChecked);
+                    network.mCheckBox.setChecked(isChecked);
                 }
             }
         };
@@ -66,6 +77,23 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
         mSharedNetworks.add(item);
         mSharedNetworkListItems.addView(item);
+    }
+
+    public void showAllCheckBoxes() {
+        mSelectAll.setVisibility(VISIBLE);
+        for(WiContactSharedNetworkListViewItem child : mSharedNetworks) {
+            child.mCheckBox.setVisibility(VISIBLE);
+        }
+    }
+
+    public void hideAllCheckBoxes() {
+        mSelectAll.setVisibility(INVISIBLE);
+        mSelectAll.setChecked(false);
+
+        for(WiContactSharedNetworkListViewItem child : mSharedNetworks) {
+            child.mCheckBox.setVisibility(INVISIBLE);
+            child.mCheckBox.setChecked(false);
+        }
     }
 
     private class WiContactSharedNetworkListViewItem extends LinearLayout {
@@ -90,7 +118,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
         public void init() {
             inflate(getContext(), R.layout.layout_contact_shared_network_list_item, this);
-            System.out.println("IN LIST ITEM INIT");
+
             mCheckBox = findViewById(R.id.cb_network_select);
 
             mExpandableLayout = findViewById(R.id.expandable_network);
@@ -102,9 +130,20 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             mContactsWithSharedNetwork = findViewById(R.id.ll_contacts_with_shared_network);
 
             mNetworkName.setOnClickListener(expand());
-//            mNetworkName.setOnClickListener(expand());
+            mNetworkName.setOnLongClickListener(onLongClick());
             (findViewById(R.id.center_view)).setOnClickListener(expand());
-            System.out.println("LEAVING LIST ITEM INIT");
+            (findViewById(R.id.center_view)).setOnLongClickListener(onLongClick());
+        }
+
+        private OnLongClickListener onLongClick() {
+            return new OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    showAllCheckBoxes();
+                    listener.onCheckBoxVisible();
+                    return false;
+                }
+            };
         }
 
         private View.OnClickListener expand() {
@@ -120,5 +159,4 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             };
         }
     }
-
 }

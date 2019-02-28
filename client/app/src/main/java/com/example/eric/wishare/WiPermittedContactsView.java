@@ -221,7 +221,7 @@ public class WiPermittedContactsView extends LinearLayout {
             mName = (Button) findViewById(R.id.btn_name);
             mData = (TextView) findViewById(R.id.tv_data);
             mExpires = (TextView) findViewById(R.id.tv_expires);
-            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
+            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_all_access);
             mVisitProfile = (Button) findViewById(R.id.btn_visit_profile);
             mSwipeLayout = findViewById(R.id.swipe_layout);
 
@@ -288,7 +288,6 @@ public class WiPermittedContactsView extends LinearLayout {
             mName.setText(mContact.getName());
             mData.setText("10 Gb");
             mExpires.setText("3d 2h");
-
 
             mName.setOnClickListener(startContactActivity(mContact));
         }

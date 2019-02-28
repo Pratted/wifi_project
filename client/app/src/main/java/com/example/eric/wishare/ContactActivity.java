@@ -4,18 +4,21 @@ import android.net.wifi.WifiConfiguration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
+
 import java.util.ArrayList;
 
 public class ContactActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
-    private LinearLayout mLayout;
+    private LinearLayout mHiddenLayout;
 
-    private Button btnRevokeAccess;
+    private Button btnRevokeAllAccess;
     private Button btnAddContactToNetwork;
+    private Button btnRevokeSelectiveAccess;
+    private Button btnHideCheckBoxes;
 
     private ArrayList<WifiConfiguration> mNetworks;
 
@@ -51,6 +54,11 @@ public class ContactActivity extends AppCompatActivity {
 //        mNetworkManager = WiNetworkManager.getInstance();
 
         mContactSharedNetworkList = findViewById(R.id.contactNetworkList);
+        mHiddenLayout = findViewById(R.id.ll_hidden_btn_layout);
+
+        btnRevokeSelectiveAccess = findViewById(R.id.btn_revoke_selective_access);
+        btnHideCheckBoxes = findViewById(R.id.btn_hide_checkboxes);
+        mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
 
         mNetworks = WiNetworkManager.getConfiguredNetworks(this);
 
@@ -88,11 +96,42 @@ public class ContactActivity extends AppCompatActivity {
             mContactSharedNetworkList.addSharedNetwork(config);
         }
 
-        btnRevokeAccess = findViewById(R.id.btn_revoke_access);
+        btnRevokeAllAccess = findViewById(R.id.btn_revoke_all_access);
         btnAddContactToNetwork = findViewById(R.id.btn_add_contact_to_network);
 
-        mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAccess);
+        mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAllAccess);
         mAddToNetwork = new WiAddContactToNetworkDialog(this, btnAddContactToNetwork);
+    }
+
+    private WiContactSharedNetworkListView.OnCheckBoxVisibleListener onCheckBoxVisible() {
+        return new WiContactSharedNetworkListView.OnCheckBoxVisibleListener() {
+
+            @Override
+            public void onCheckBoxVisible() {
+                btnHideCheckBoxes.setVisibility(View.VISIBLE);
+                btnHideCheckBoxes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mContactSharedNetworkList.hideAllCheckBoxes();
+                        btnHideCheckBoxes.setVisibility(View.GONE);
+                        btnRevokeSelectiveAccess.setVisibility(View.GONE);
+                    }
+                });
+
+                btnRevokeSelectiveAccess.setVisibility(View.VISIBLE);
+                btnRevokeSelectiveAccess.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Remove selected networks
+
+
+                        mContactSharedNetworkList.hideAllCheckBoxes();
+                        btnHideCheckBoxes.setVisibility(View.GONE);
+                        btnRevokeSelectiveAccess.setVisibility(View.GONE);
+                    }
+                });
+            }
+        };
     }
 
     @Override
