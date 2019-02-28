@@ -1,10 +1,8 @@
 package com.example.eric.wishare;
 
-import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.ViewGroup;
@@ -13,11 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class ContactActivity extends AppCompatActivity {
@@ -31,10 +24,15 @@ public class ContactActivity extends AppCompatActivity {
 
     private WiAddContactToNetworkDialog mAddToNetwork;
     private WiRevokeAccessDialog mRevokeAccessDialog;
+
+    private WiContactSharedNetworkListView mContactNetworkList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+
+        mContactNetworkList = findViewById(R.id.contactNetworkList);
 
         mNetworks = WiNetworkManager.getConfiguredNetworks(this);
 
@@ -54,27 +52,31 @@ public class ContactActivity extends AppCompatActivity {
         }
 
         ((TextView) findViewById(R.id.tv_contact_number)).setText(contact.getPhone());
-
         ((TextView) findViewById(R.id.tv_permitted_networks)).setText("Networks " + contact.getName() + " has access to:");
 
         mLayout = findViewById(R.id.center_view);
+        mLayout.removeAllViews();
         mNetworkScrollView = findViewById(R.id.scroll_network_list);
 
         LayoutInflater inflater = getLayoutInflater();
+
         for (int i = 0; i < networkList.size(); i++) {
-            LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_test, null);
+            LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.layout_contact_network_list_item, null);
+//            ((ImageView) layout.findViewById(R.id.iv_wifi_icon_spot)).setImageResource(R.drawable.ic_wifi_black_24dp);
             ((TextView) layout.findViewById(R.id.tv_network_name)).setText(mNetworks.get(i).SSID);
             ((TextView) layout.findViewById(R.id.tv_connection_status)).setText(i + " Active users");
-//            if(mNetworks.get(i).networkId % 2 == 0) {
-//                ((ImageView) findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
-//            }
+            if(mNetworks.get(i).networkId % 2 == 0) {
+                ((ImageView) layout.findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
+            } else {
+                ((ImageView) layout.findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_warning_orange_24dp);
+            }
             if(mLayout.getParent() != null) {
                 ((ViewGroup)mLayout.getParent()).removeView(mLayout);
             }
             mLayout.addView(layout);
         }
-        mNetworkScrollView.addView(mLayout);
 
+        mNetworkScrollView.addView(mLayout);
 
         btnRevokeAccess = findViewById(R.id.btn_revoke_access);
         btnAddContactToNetwork = findViewById(R.id.btn_add_contact_to_network);
@@ -82,7 +84,6 @@ public class ContactActivity extends AppCompatActivity {
         mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAccess);
         mAddToNetwork = new WiAddContactToNetworkDialog(this, btnAddContactToNetwork);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -60,9 +60,6 @@
 
                 </LinearLayout>
 
-
-
-
                 <TextView
                     android:textSize="16sp"
                     android:id="@+id/tv_active_users"
@@ -82,11 +79,7 @@
         android:layout_marginTop="10dp"
         android:layout_width="60dp"
         android:layout_height="match_parent"
-        android:background="#ca2f2f"
-        app:gravity="right"
-        app:bring_to_clamp="100dp"
-        app:clamp="self"
-        app:sticky="none">
+        android:background="#ca2f2f">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

@@ -12,17 +12,12 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import java.util.ArrayList;
-
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiConfiguredNetworkListView extends LinearLayout {
 
-//    private ArrayList<String> mConfiguredNetworks;
-
     public WiConfiguredNetworkListView(Context context){
         super(context);
-//        mConfiguredNetworks = new ArrayList<>();
     }
 
     public WiConfiguredNetworkListView(Context context, AttributeSet attrs){
@@ -30,9 +25,6 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     }
 
     public void addView(WiConfiguration config) {
-        // calls LinearLayout.addView()
-        // since WiConfiguredNetworkListItem is a LinearLayout, it can be passed into addView()
-//        mConfiguredNetworks.add(config.getSSID());
         this.addView(new WiConfiguredNetworkListItem(getContext(), config));
     }
 
@@ -43,16 +35,22 @@ public class WiConfiguredNetworkListView extends LinearLayout {
         public WiConfiguredNetworkListItem(Context context, WiConfiguration config){
             super(context);
             mConfig = config;
+
+            init();
+        }
+
+        public void init() {
+
             mNetworkManager = WiNetworkManager.getInstance();
 
             inflate(getContext(), R.layout.layout_configured_network_list_item, this);
 
-            int users = config.hashCode() % 5;
+            int users = mConfig.hashCode() % 5;
             if(users < 0) users *= -1;
 
             System.out.println(mConfig.getSSID());
 
-            ((TextView) findViewById(R.id.tv_network_name)).setText(config.getSSID());
+            ((TextView) findViewById(R.id.tv_network_name)).setText(mConfig.getSSID());
             ((TextView) findViewById(R.id.tv_active_users)).setText(users + " active user(s)");
 
             if(users % 2 == 0) {

@@ -36,11 +36,12 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/scrollview_outline">
 
-                <!-- Aditya, this is your class. -->
+                <!-- Aditya, this is your class.
+                     Nice, Eric.-->
                 <com.example.eric.wishare.WiConfiguredNetworkListView
                     android:layout_width="match_parent"
                     android:orientation="vertical"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginLeft="4dp"
