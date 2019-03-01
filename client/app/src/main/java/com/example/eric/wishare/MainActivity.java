@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity {
             String phone = "";
             String other = "";
 
-            if(temp == null){
+            if(temp != null){
                 try {
                     JSONObject t2 = new JSONObject(temp);
                     name = t2.getString("name");
