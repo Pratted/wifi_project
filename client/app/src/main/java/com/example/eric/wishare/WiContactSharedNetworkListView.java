@@ -151,6 +151,8 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             graph.addSeries(series);
             GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
             graph.getGridLabelRenderer().setHumanRounding(true);
+            int myColor = getContext().getResources().getColor(R.color.themeGreen);
+            series.setColor(myColor);
 //            gridLabel.setHorizontalAxisTitle("Days");
 //            gridLabel.setVerticalAxisTitle("Gb");
         }
