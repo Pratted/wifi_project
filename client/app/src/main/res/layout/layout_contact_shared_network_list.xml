@@ -14,7 +14,7 @@
             android:id="@+id/cb_select_all_networks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            android:visibility="gone"
             android:button="@drawable/cb_selector"
             android:background="@drawable/ripple"
             style="@drawable/ripple"/>

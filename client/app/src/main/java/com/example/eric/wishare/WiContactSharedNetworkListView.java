@@ -10,6 +10,11 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.GridLabelRenderer;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
+
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
@@ -57,7 +62,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
         mSharedNetworkListItems = findViewById(R.id.ll_network_list_items);
 
-        mSelectAll.setVisibility(INVISIBLE);
+        mSelectAll.setVisibility(GONE);
         mSelectAll.setOnCheckedChangeListener(onSelect());
     }
 
@@ -87,11 +92,11 @@ public class WiContactSharedNetworkListView extends LinearLayout {
     }
 
     public void hideAllCheckBoxes() {
-        mSelectAll.setVisibility(INVISIBLE);
+        mSelectAll.setVisibility(GONE);
         mSelectAll.setChecked(false);
 
         for(WiContactSharedNetworkListViewItem child : mSharedNetworks) {
-            child.mCheckBox.setVisibility(INVISIBLE);
+            child.mCheckBox.setVisibility(GONE);
             child.mCheckBox.setChecked(false);
         }
     }
@@ -127,12 +132,27 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             mNetworkName.setText(mConfig.getSSID());
 
             mNetworkActivityButton = findViewById(R.id.btn_network_activity);
-            mContactsWithSharedNetwork = findViewById(R.id.ll_contacts_with_shared_network);
+            //mContactsWithSharedNetwork = findViewById(R.id.ll_contacts_with_shared_network);
 
             mNetworkName.setOnClickListener(expand());
             mNetworkName.setOnLongClickListener(onLongClick());
             (findViewById(R.id.center_view)).setOnClickListener(expand());
             (findViewById(R.id.center_view)).setOnLongClickListener(onLongClick());
+
+
+            GraphView graph = (GraphView) findViewById(R.id.graph);
+            LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
+                    new DataPoint(1, 1),
+                    new DataPoint(2, 5),
+                    new DataPoint(3, 3),
+                    new DataPoint(4, 2),
+                    new DataPoint(5, 6)
+            });
+            graph.addSeries(series);
+            GridLabelRenderer gridLabel = graph.getGridLabelRenderer();
+            graph.getGridLabelRenderer().setHumanRounding(true);
+//            gridLabel.setHorizontalAxisTitle("Days");
+//            gridLabel.setVerticalAxisTitle("Gb");
         }
 
         private OnLongClickListener onLongClick() {
