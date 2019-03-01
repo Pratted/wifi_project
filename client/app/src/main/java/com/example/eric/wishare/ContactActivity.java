@@ -108,6 +108,7 @@ public class ContactActivity extends AppCompatActivity {
 
             @Override
             public void onCheckBoxVisible() {
+                mHiddenLayout.setVisibility(View.VISIBLE);
                 btnHideCheckBoxes.setVisibility(View.VISIBLE);
                 btnHideCheckBoxes.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -115,6 +116,7 @@ public class ContactActivity extends AppCompatActivity {
                         mContactSharedNetworkList.hideAllCheckBoxes();
                         btnHideCheckBoxes.setVisibility(View.GONE);
                         btnRevokeSelectiveAccess.setVisibility(View.GONE);
+                        mHiddenLayout.setVisibility(View.GONE);
                     }
                 });
 
@@ -128,6 +130,7 @@ public class ContactActivity extends AppCompatActivity {
                         mContactSharedNetworkList.hideAllCheckBoxes();
                         btnHideCheckBoxes.setVisibility(View.GONE);
                         btnRevokeSelectiveAccess.setVisibility(View.GONE);
+                        mHiddenLayout.setVisibility(View.GONE);
                     }
                 });
             }

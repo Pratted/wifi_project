@@ -54,44 +54,56 @@
         <!--android:text="555-555-5555"-->
         <!--android:textSize="24sp" />-->
 
-        <com.example.eric.wishare.WiContactSharedNetworkListView
-            android:id="@+id/contactNetworkList"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@+id/ll_hidden_btn_layout"
-            android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"
             android:orientation="vertical">
 
-        </com.example.eric.wishare.WiContactSharedNetworkListView>
-
-        <LinearLayout
-            android:id="@+id/ll_hidden_btn_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/contactNetworkList"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/btn_hide_checkboxes"
+            <com.example.eric.wishare.WiContactSharedNetworkListView
+                android:id="@+id/contactNetworkList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="8"
+                app:layout_constraintBottom_toTopOf="@+id/ll_hidden_btn_layout"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
+                android:orientation="vertical">
+
+            </com.example.eric.wishare.WiContactSharedNetworkListView>
+
+            <LinearLayout
+                android:id="@+id/ll_hidden_btn_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="1"
                 android:visibility="gone"
-                style="@drawable/ripple"
-                android:background="@drawable/ripple"/>
-            <Button
-                android:id="@+id/btn_revoke_selective_access"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:visibility="gone"
-                android:background="@drawable/ripple"
-                android:text="Revoke Access"/>
+                android:layout_gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/contactNetworkList"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="horizontal">
 
+                <Button
+                    android:id="@+id/btn_hide_checkboxes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    style="@drawable/ripple"
+                    android:background="@drawable/ripple"
+                    android:text="Cancel"/>
+
+                <Button
+                    android:id="@+id/btn_revoke_selective_access"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:background="@drawable/ripple"
+                    android:text="Revoke Access"/>
+
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
