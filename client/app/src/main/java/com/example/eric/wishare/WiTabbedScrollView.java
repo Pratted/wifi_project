@@ -1,6 +1,7 @@
 package com.example.eric.wishare;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
@@ -82,42 +85,24 @@ public class WiTabbedScrollView extends LinearLayout {
         mLhs = findViewById(R.id.btn_lhs);
         mRhs = findViewById(R.id.btn_rhs);
 
-        mPermittedContactsView.setOnContactsEnabledListener(new WiPermittedContactsView.OnSelectContactsEnabledListener() {
+        mPermittedContactsView.setOnCheckBoxVisibilitiesChangedListener(new WiPermittedContactsView.OnCheckBoxVisibilitiesChangedListener() {
             @Override
-            public void onSelectContactsEnabled() {
+            public void onCheckBoxVisibilitiesChanged(int visibilty) {
+                setButtonVisibilities(visibilty == VISIBLE ? VISIBLE : GONE);
 
-
-                mLhs.setVisibility(VISIBLE);
-                mLhs.setText("Done");
                 mLhs.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mPermittedContactsView.hideAllCheckBoxes();
-                        mLhs.setVisibility(GONE);
-                        mRhs.setVisibility(GONE);
+                        mPermittedContactsView.deselectAll();
+                        mPermittedContactsView.setCheckBoxVisibilities(INVISIBLE);
+                        setButtonVisibilities(GONE);
                     }
                 });
 
-                mRhs.setVisibility(VISIBLE);
-                mRhs.setText("Revoke Access");
-                mRhs.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //do something...
-                        new MaterialDialog.Builder(getContext())
-                                .title("Revoke access for " + mPermittedContactsView.getSelectedContactCount() + " contact(s)")
-                                .content("Are you sure you want to revoke access for " + mPermittedContactsView.getSelectedContactCount() + " contact(s)? This action cannot be undone.")
-                                .negativeText("Cancel")
-                                .positiveText("Revoke Access")
-                                .show();
-
-                        mPermittedContactsView.hideAllCheckBoxes();
-                        mLhs.setVisibility(GONE);
-                        mRhs.setVisibility(GONE);
-                    }
-                });
+                mRhs.setOnClickListener(displayMultiRevokeAccessDialog());
             }
         });
+
 
         mInvitableContactsView.setOnContactsEnabledListener(new WiInvitableContactsView.OnSelectContactsEnabledListener() {
             @Override
@@ -155,12 +140,44 @@ public class WiTabbedScrollView extends LinearLayout {
 
     }
 
-    public WiInvitableContactsView getInvitableContactsView() {
-        return mInvitableContactsView;
+    public void setButtonLabels(String b1, String b2){
+        mLhs.setText(b1);
+        mRhs.setText(b2);
     }
 
-    public WiPermittedContactsView getPermittedContactsView() {
-        return mPermittedContactsView;
+    public void setButtonVisibilities(int visibility){
+        mLhs.setVisibility(visibility);
+        mRhs.setVisibility(visibility);
+    }
+
+    public View.OnClickListener displayMultiRevokeAccessDialog(){
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int qty = mPermittedContactsView.getSelectedContactCount();
+
+                if(qty > 0){
+                    new MaterialDialog.Builder(getContext())
+                            .title("Revoke access for " + qty + " contacts?")
+                            .content("Are you sure you want to revoke access for " + qty + " contacts? This action cannot be undone.")
+                            .negativeText("Cancel")
+                            .positiveText("Revoke Access")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    // after revoking contacts, remove them and hide the checkboxes...
+                                    mPermittedContactsView.removeSelectedContacts();
+                                    mPermittedContactsView.setCheckBoxVisibilities(INVISIBLE);
+                                    setButtonVisibilities(GONE);
+                                }
+                            })
+                            .show();
+                }
+                else{
+                    Toast.makeText(getContext(), "No contacts selected!", Toast.LENGTH_SHORT);
+                }
+            }
+        };
     }
 
     public void filter(String searchString) {

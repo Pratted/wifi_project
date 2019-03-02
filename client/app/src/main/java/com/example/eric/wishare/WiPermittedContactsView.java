@@ -1,14 +1,11 @@
 package com.example.eric.wishare;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -22,11 +19,11 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.function.Predicate;
 
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiPermittedContactsView extends LinearLayout {
-
     private CheckBox mHeaderSelectAll;
     private Button mHeaderName;
     private Button mHeaderData;
@@ -36,28 +33,17 @@ public class WiPermittedContactsView extends LinearLayout {
     private LinearLayout mItems;
 
     private boolean mAscendingName;
+    private boolean mMultiSelectEnabled;
 
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
 
 
-    public interface OnSelectContactsEnabledListener {
-        void onSelectContactsEnabled();
+    public interface OnCheckBoxVisibilitiesChangedListener{
+        void onCheckBoxVisibilitiesChanged(int visibilty);
     }
 
-    public interface OnSelectContactsDisabledListener {
-        void onSelectContactsDisabled();
-    }
+    private OnCheckBoxVisibilitiesChangedListener mCheckBoxVisibilitiesChangedListener;
 
-    private OnSelectContactsEnabledListener mContactsEnabledListener;
-    private OnSelectContactsDisabledListener mContactsDisabledListener;
-
-    public void setOnContactsEnabledListener(OnSelectContactsEnabledListener listener){
-        mContactsEnabledListener = listener;
-    }
-
-    public void setOnContactsDisabledListener(OnSelectContactsDisabledListener listener){
-        mContactsDisabledListener = listener;
-    }
 
     public WiPermittedContactsView(Context context) {
         super(context);
@@ -90,13 +76,16 @@ public class WiPermittedContactsView extends LinearLayout {
         mHeaderName.setOnClickListener(sortName());
     }
 
+    public void setOnCheckBoxVisibilitiesChangedListener(OnCheckBoxVisibilitiesChangedListener listener){
+        mCheckBoxVisibilitiesChangedListener = listener;
+    }
+
     public void addPermittedContact(WiContact contact){
         WiPermittedContactsViewListItem item = new WiPermittedContactsViewListItem(getContext(), contact);
 
         mPermittedContacts.add(item);
         mItems.addView(item);
     }
-
 
     private CompoundButton.OnCheckedChangeListener onSelectAll(){
         return new CompoundButton.OnCheckedChangeListener() {
@@ -109,13 +98,40 @@ public class WiPermittedContactsView extends LinearLayout {
         };
     }
 
-    public void showAllCheckBoxes(){
+    public void setCheckBoxVisibilities(int visibility){
+        mHeaderSelectAll.setVisibility(visibility);
+        mHeaderSelectAll.setChecked(false);
+
+        // checkboxes turned on -> multiSelection is possible...
+        mMultiSelectEnabled = (visibility == VISIBLE);
+
         for(WiPermittedContactsViewListItem child: mPermittedContacts){
-            child.mCheckBox.setVisibility(VISIBLE);
+            child.mCheckBox.setVisibility(visibility);
         }
 
-        if(mContactsEnabledListener != null){
-            mContactsEnabledListener.onSelectContactsEnabled();
+        if(mCheckBoxVisibilitiesChangedListener != null){
+            mCheckBoxVisibilitiesChangedListener.onCheckBoxVisibilitiesChanged(visibility);
+        }
+    }
+
+    public void deselectAll(){
+        for(WiPermittedContactsViewListItem child: mPermittedContacts){
+            child.mCheckBox.setChecked(false);
+        }
+    }
+
+    public void removeSelectedContacts(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mPermittedContacts.removeIf(new Predicate<WiPermittedContactsViewListItem>() {
+                @Override
+                public boolean test(WiPermittedContactsViewListItem wiPermittedContactsViewListItem) {
+                    if(wiPermittedContactsViewListItem.mCheckBox.isChecked()){
+                        mItems.removeView(wiPermittedContactsViewListItem); //remove from scrollview
+                    }
+
+                    return wiPermittedContactsViewListItem.mCheckBox.isChecked();
+                }
+            });
         }
     }
 
@@ -125,30 +141,6 @@ public class WiPermittedContactsView extends LinearLayout {
             count += contact.mCheckBox.isChecked() ? 1 : 0;
         }
         return count;
-    }
-
-    public void hideAllCheckBoxes(){
-        mHeaderSelectAll.setVisibility(INVISIBLE);
-        mHeaderSelectAll.setChecked(false); // reset select all checkbox
-
-        for(WiPermittedContactsViewListItem child: mPermittedContacts){
-            child.mCheckBox.setChecked(false); // reset the checkbox...
-            child.mCheckBox.setVisibility(INVISIBLE);
-        }
-
-        if(mContactsDisabledListener != null){
-            mContactsDisabledListener.onSelectContactsDisabled();
-        }
-    }
-
-    private boolean areCheckBoxesEnabled(){
-        return mHeaderSelectAll.getVisibility() == VISIBLE;
-    }
-
-    private void setContactsClickable(boolean clickable){
-        for(WiPermittedContactsViewListItem contact: mPermittedContacts){
-            contact.setContactClickable(clickable);
-        }
     }
 
     private View.OnClickListener sortName(){
@@ -185,8 +177,14 @@ public class WiPermittedContactsView extends LinearLayout {
         }
     }
 
-    private class WiPermittedContactsViewListItem extends LinearLayout {
+    public void refresh(){
+        mHeaderSelectAll.setVisibility(INVISIBLE);
+        mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
 
+        mHeaderName.setOnClickListener(sortName());
+    }
+
+    private class WiPermittedContactsViewListItem extends LinearLayout {
         private CheckBox mCheckBox;
         private Button mName;
         private TextView mData;
@@ -199,21 +197,11 @@ public class WiPermittedContactsView extends LinearLayout {
         private ExpandableLayout mExpandableLayout;
         private SwipeLayout mSwipeLayout;
 
-        public WiPermittedContactsViewListItem(Context context) {
-            super(context);
-
-            init();
-        }
+        private LinearLayout mRow;
 
         public WiPermittedContactsViewListItem(Context context, WiContact contact) {
             super(context);
             mContact = contact;
-
-            init();
-        }
-
-        public WiPermittedContactsViewListItem(Context context, @Nullable AttributeSet attrs) {
-            super(context, attrs);
 
             init();
         }
@@ -228,6 +216,7 @@ public class WiPermittedContactsView extends LinearLayout {
             mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
             mVisitProfile = (Button) findViewById(R.id.btn_visit_profile);
             mSwipeLayout = findViewById(R.id.swipe_layout);
+            mRow = findViewById(R.id.row);
 
             mName.setOnLongClickListener(onLongClick());
 
@@ -235,11 +224,10 @@ public class WiPermittedContactsView extends LinearLayout {
 
             mExpandableLayout = findViewById(R.id.eric);
 
-            mName.setOnClickListener(expand());
-            mData.setOnClickListener(expand());
-            mExpires.setOnClickListener(expand());
+            mRow.setOnClickListener(expand());
+            mName.setOnClickListener(null);
 
-            mRevokeAccess.setOnClickListener(dislayRevokeAccessDialog(mContact));
+            mRevokeAccess.setOnClickListener(displayRevokeAccessDialog(mContact));
             mVisitProfile.setOnClickListener(startContactActivity(mContact));
         }
 
@@ -270,7 +258,7 @@ public class WiPermittedContactsView extends LinearLayout {
             };
         }
 
-        private View.OnClickListener dislayRevokeAccessDialog(final WiContact contact){
+        private View.OnClickListener displayRevokeAccessDialog(final WiContact contact){
             return new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
@@ -284,15 +272,10 @@ public class WiPermittedContactsView extends LinearLayout {
             };
         }
 
-        public void setContactClickable(boolean clickable){
-            mName.setOnClickListener(clickable ? startContactActivity(mContact) : resetOnClick());
-        }
-
         public void setContact(WiContact contact){
             mName.setText(mContact.getName());
             mData.setText("10 Gb");
             mExpires.setText("3d 2h");
-
 
             mName.setOnClickListener(startContactActivity(mContact));
         }
@@ -314,11 +297,14 @@ public class WiPermittedContactsView extends LinearLayout {
             return new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(40);
-                    setContactsClickable(false);
-                    showAllCheckBoxes();
-                    mHeaderSelectAll.setVisibility(VISIBLE);
+                    // Vibrate and display checkboxes if not already displayed
+                    if(!mMultiSelectEnabled){
+                        Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                        vibe.vibrate(40);
+
+                        setCheckBoxVisibilities(VISIBLE);
+                    }
+
                     return false;
                 }
             };
