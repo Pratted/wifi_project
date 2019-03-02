@@ -44,4 +44,13 @@ dependencies {
 
     implementation 'net.cachapa.expandablelayout:expandablelayout:2.9.2'
     implementation 'com.android.support:cardview-v7:27.1.1'
+<<<<<<< HEAD
+=======
+    implementation 'com.github.bumptech.glide:glide:4.9.0'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.16'
+    implementation 'com.jjoe64:graphview:4.2.2'
+
+
+
+>>>>>>> 52f5aec67bbb0f17c4ad5b5f8a29f9054b71b218
 }

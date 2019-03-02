@@ -21,10 +21,10 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         SSID = mSSID;
     }
 
-//    public WiConfiguration(WiConfiguration config) {
-//        this.mSSID = config.getSSID();
-//        this.mPassword = config.getPassword();
-//    }
+    public WiConfiguration(WifiConfiguration config, String pwd) {
+        this.mSSID = config.SSID;
+        this.mPassword = pwd;
+    }
 
 
     public WiConfiguration(Parcel source) {

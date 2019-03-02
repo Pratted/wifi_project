@@ -37,8 +37,7 @@ public class WiPermittedContactsView extends LinearLayout {
 
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
 
-
-    public interface OnCheckBoxVisibilitiesChangedListener{
+    public interface OnCheckBoxVisibilitiesChangedListener {
         void onCheckBoxVisibilitiesChanged(int visibilty);
     }
 
@@ -213,7 +212,7 @@ public class WiPermittedContactsView extends LinearLayout {
             mName = (Button) findViewById(R.id.btn_name);
             mData = (TextView) findViewById(R.id.tv_data);
             mExpires = (TextView) findViewById(R.id.tv_expires);
-            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
+            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_all_access);
             mVisitProfile = (Button) findViewById(R.id.btn_visit_profile);
             mSwipeLayout = findViewById(R.id.swipe_layout);
             mRow = findViewById(R.id.row);
@@ -222,7 +221,7 @@ public class WiPermittedContactsView extends LinearLayout {
 
             if(mContact != null) setContact(mContact);
 
-            mExpandableLayout = findViewById(R.id.eric);
+            mExpandableLayout = findViewById(R.id.expandable_contact);
 
             mRow.setOnClickListener(expand());
             mName.setOnClickListener(null);

@@ -90,6 +90,7 @@ public class WiTabbedScrollView extends LinearLayout {
             public void onCheckBoxVisibilitiesChanged(int visibilty) {
                 setButtonVisibilities(visibilty == VISIBLE ? VISIBLE : GONE);
 
+                mLhs.setText("Done");
                 mLhs.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -100,25 +101,7 @@ public class WiTabbedScrollView extends LinearLayout {
                 });
 
                 mRhs.setOnClickListener(displayMultiRevokeAccessDialog());
-            }
-        });
 
-
-        mInvitableContactsView.setOnContactsEnabledListener(new WiInvitableContactsView.OnSelectContactsEnabledListener() {
-            @Override
-            public void onSelectContactsEnabled() {
-                mLhs.setVisibility(VISIBLE);
-                mLhs.setText("Done");
-                mLhs.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mInvitableContactsView.hideAllCheckBoxes();
-                        mLhs.setVisibility(GONE);
-                        mRhs.setVisibility(GONE);
-                    }
-                });
-
-                mRhs.setVisibility(VISIBLE);
                 mRhs.setText("Invite");
                 mRhs.setOnClickListener(new OnClickListener() {
                     @Override
@@ -135,14 +118,7 @@ public class WiTabbedScrollView extends LinearLayout {
                         dialog.show();
                     }
                 });
-            }
-        });
-
-    }
-
-    public void setButtonLabels(String b1, String b2){
-        mLhs.setText(b1);
-        mRhs.setText(b2);
+        }});
     }
 
     public void setButtonVisibilities(int visibility){

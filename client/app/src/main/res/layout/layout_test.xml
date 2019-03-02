@@ -1,4 +1,7 @@
-<LinearLayout android:id="@+id/center_view"
+<!--Safe delete this file.
+    Meaning, nothing should stop working when this file is deleted-->
+<LinearLayout
+    android:id="@+id/center_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     style="@drawable/ripple"
@@ -13,9 +16,11 @@
         android:orientation="horizontal"
         android:layout_marginLeft="4dp">
         <ImageView
+            android:id="@+id/iv_wifi_icon_spot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_wifi_black_48dp"/>
+
         <LinearLayout
             android:layout_marginLeft="16dp"
             android:layout_width="match_parent"
@@ -29,8 +34,7 @@
                     android:textSize="20sp"
                     android:id="@+id/tv_network_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="belkin-6022"/>
+                    android:layout_height="wrap_content" />
 
                 <ImageView
                     android:layout_marginLeft="8dp"
@@ -39,22 +43,13 @@
                     android:layout_gravity="center"
                     android:id="@+id/iv_configured_status"
                     android:src="@drawable/ic_warning_orange_24dp"/>
-
             </LinearLayout>
 
             <TextView
                 android:textSize="16sp"
                 android:id="@+id/tv_connection_status"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="3 active users"/>
+                android:layout_height="wrap_content"/>
         </LinearLayout>
-
     </LinearLayout>
-    <LinearLayout
-        android:layout_marginTop="4dp"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#837d7d"></LinearLayout>
-
 </LinearLayout>

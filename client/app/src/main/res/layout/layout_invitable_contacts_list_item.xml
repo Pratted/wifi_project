@@ -54,7 +54,7 @@
     </ru.rambler.libs.swipe_layout.SwipeLayout>
 
     <net.cachapa.expandablelayout.ExpandableLayout
-        android:id="@+id/eric"
+        android:id="@+id/expandable_contact"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

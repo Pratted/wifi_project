@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -217,7 +216,7 @@ public class WiInvitableContactsView extends LinearLayout {
             mHourglass = findViewById(R.id.cb_select_hourglass);
             mName = findViewById(R.id.btn_name);
 
-            mExpandableLayout = findViewById(R.id.eric);
+            mExpandableLayout = findViewById(R.id.expandable_contact);
             mTitle = findViewById(R.id.title);
             mItems = findViewById(R.id.items);
             mInvite = findViewById(R.id.btn_invite_contact);

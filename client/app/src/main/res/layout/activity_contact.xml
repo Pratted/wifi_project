@@ -1,97 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cl_contact"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".ContactActivity">
-    <LinearLayout
-        android:id="@+id/ll_contact_top"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tv_contact_number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textAlignment="center"
-            android:text="555-555-5555"
-            android:textSize="24sp" />
-
-
-        <TextView
-            android:id="@+id/tv_permitted_networks"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tv_contact_number"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textSize="20sp"
-            android:textAlignment="center"/>
-
-        <ScrollView
-            android:id="@+id/scroll_network_list"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:background="@color/themedarker">
-
-        </ScrollView>
-    </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_contact_bottom"
+        android:id="@+id/ll_contact_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="@id/cl_contact"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/ll_contact_top">
+        android:gravity="bottom"
+        android:orientation="horizontal">
 
         <Button
             android:id="@+id/btn_add_contact_to_network"
             style="@drawable/ripple"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/ripple"
-            android:text="Invite to network"
-            app:layout_constraintBottom_toTopOf="@id/btn_add_contact_to_network"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/scroll_network_list" />
+            android:text="Invite to network" />
 
         <Button
-            android:id="@+id/btn_revoke_access"
+            android:id="@+id/btn_revoke_all_access"
             style="@drawable/ripple"
-            android:layout_width="match_parent"
-            android:layout_height="64dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@drawable/ripple"
-            android:text="Revoke all access"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ll_contact_bottom" />
+            android:text="Revoke all access" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/ll_contact_network_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="top"
+        android:orientation="vertical">
+
+        <!--<TextView-->
+        <!--android:id="@+id/tv_contact_number"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_marginTop="16dp"-->
+        <!--android:layout_marginBottom="16dp"-->
+        <!--app:layout_constraintEnd_toEndOf="parent"-->
+        <!--app:layout_constraintStart_toStartOf="parent"-->
+        <!--android:textAlignment="center"-->
+        <!--android:text="555-555-5555"-->
+        <!--android:textSize="24sp" />-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <com.example.eric.wishare.WiContactSharedNetworkListView
+                android:id="@+id/contactNetworkList"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="8"
+                app:layout_constraintBottom_toTopOf="@+id/ll_hidden_btn_layout"
+                android:layout_marginLeft="4dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginBottom="4dp"
+                android:orientation="vertical">
+
+            </com.example.eric.wishare.WiContactSharedNetworkListView>
+
+            <LinearLayout
+                android:id="@+id/ll_hidden_btn_layout"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/contactNetworkList"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_hide_checkboxes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    style="@drawable/ripple"
+                    android:background="@drawable/ripple"
+                    android:text="Cancel"/>
+
+                <Button
+                    android:id="@+id/btn_revoke_selective_access"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:visibility="gone"
+                    android:background="@drawable/ripple"
+                    android:text="Revoke Access"/>
+
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
-    <include layout="@layout/layout_test"/>
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

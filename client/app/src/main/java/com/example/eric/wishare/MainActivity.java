@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         System.out.println("Called oncreate...");
 
         //plzFirebase();
@@ -135,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         btnShowNotification.setOnClickListener(sendNotification());
 
     }
+
     private View.OnClickListener sendNotification(){
         return new View.OnClickListener(){
             @Override
