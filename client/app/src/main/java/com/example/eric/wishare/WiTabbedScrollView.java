@@ -45,13 +45,15 @@ public class WiTabbedScrollView extends LinearLayout {
 
     private void init(){
         inflate(getContext(), R.layout.layout_tabbed_scroll_view, this);
+        mLhs = findViewById(R.id.btn_lhs);
+        mRhs = findViewById(R.id.btn_rhs);
 
         mContactList = new WiContactList(getContext());
         mContactList.load();
 
         mViewPager = findViewById(R.id.view_pager);
 
-        mPermittedContactsView = new WiPermittedContactsView(getContext());
+        mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, new WiConfiguration("belkin", "hunter2"));
         mInvitableContactsView = new WiInvitableContactsView(getContext());
 
         for(WiContact contact: mContactList.getWiContacts()){
@@ -66,7 +68,6 @@ public class WiTabbedScrollView extends LinearLayout {
         mPagerAdapter = new WiPagerAdapter();
         mViewPager.setAdapter(mPagerAdapter);
 
-        mPermittedContactsView.sortName(true);
         mInvitableContactsView.sortName(true);
 
         mPagerAdapter.addView(mPermittedContactsView);
@@ -75,83 +76,37 @@ public class WiTabbedScrollView extends LinearLayout {
         mPagerAdapter.addView(mInvitableContactsView);
         mPagerAdapter.notifyDataSetChanged();
 
-        TabLayout mTabs = findViewById(R.id.tab_layout);
+        final TabLayout mTabs = findViewById(R.id.tab_layout);
         mTabs.setupWithViewPager(mViewPager);
 
         System.out.println(mTabs.getTabCount());
         mTabs.getTabAt(0).setText("Permitted Contacts");
         mTabs.getTabAt(1).setText("Invite Contacts");
 
-        mLhs = findViewById(R.id.btn_lhs);
-        mRhs = findViewById(R.id.btn_rhs);
+        mTabs.addOnTabSelectedListener(onTabSelected());
 
-        mPermittedContactsView.setOnCheckBoxVisibilitiesChangedListener(new WiPermittedContactsView.OnCheckBoxVisibilitiesChangedListener() {
-            @Override
-            public void onCheckBoxVisibilitiesChanged(int visibilty) {
-                setButtonVisibilities(visibilty == VISIBLE ? VISIBLE : GONE);
+        mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //descending order
+        mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //ascending order
 
-                mLhs.setText("Done");
-                mLhs.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mPermittedContactsView.deselectAll();
-                        mPermittedContactsView.setCheckBoxVisibilities(INVISIBLE);
-                        setButtonVisibilities(GONE);
-                    }
-                });
-
-                mRhs.setOnClickListener(displayMultiRevokeAccessDialog());
-
-                mRhs.setText("Invite");
-                mRhs.setOnClickListener(new OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //do something...
-                        WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext());
-                        dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
-                            @Override
-                            public void onInviationCreated(WiInvitation invitation) {
-                                mInvitableContactsView.animateLeftSwipe();
-                            }
-                        });
-
-                        dialog.show();
-                    }
-                });
-        }});
+        mPermittedContactsView.refresh();
     }
 
-    public void setButtonVisibilities(int visibility){
-        mLhs.setVisibility(visibility);
-        mRhs.setVisibility(visibility);
-    }
-
-    public View.OnClickListener displayMultiRevokeAccessDialog(){
-        return new OnClickListener() {
+    private TabLayout.OnTabSelectedListener onTabSelected(){
+        return new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onClick(View v) {
-                int qty = mPermittedContactsView.getSelectedContactCount();
+            public void onTabSelected(TabLayout.Tab tab) {
+                if(tab.getPosition() == 0) mPermittedContactsView.refresh();
+                //if(tab.getPosition() == 1) mInvitableContactsView.refresh();
+            }
 
-                if(qty > 0){
-                    new MaterialDialog.Builder(getContext())
-                            .title("Revoke access for " + qty + " contacts?")
-                            .content("Are you sure you want to revoke access for " + qty + " contacts? This action cannot be undone.")
-                            .negativeText("Cancel")
-                            .positiveText("Revoke Access")
-                            .onPositive(new MaterialDialog.SingleButtonCallback() {
-                                @Override
-                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    // after revoking contacts, remove them and hide the checkboxes...
-                                    mPermittedContactsView.removeSelectedContacts();
-                                    mPermittedContactsView.setCheckBoxVisibilities(INVISIBLE);
-                                    setButtonVisibilities(GONE);
-                                }
-                            })
-                            .show();
-                }
-                else{
-                    Toast.makeText(getContext(), "No contacts selected!", Toast.LENGTH_SHORT);
-                }
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
             }
         };
     }

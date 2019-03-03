@@ -4,170 +4,165 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.function.Predicate;
 
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
-public class WiPermittedContactsView extends LinearLayout {
-    private CheckBox mHeaderSelectAll;
+public class WiPermittedContactsView extends WiPage{
     private Button mHeaderName;
     private Button mHeaderData;
     private Button mHeaderExpires;
 
-    private LinearLayout mHeaders;
-    private LinearLayout mItems;
+    private Button mBtnLhs;
+    private Button mBtnRhs;
 
-    private boolean mAscendingName;
-    private boolean mMultiSelectEnabled;
+    public static final int COL_NAME = 0;
+    public static final int COL_DATA = 1;
+    public static final int COL_EXPIRES = 2;
+
+    private HashMap<Integer, Boolean> mSortCriteria;
 
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
+    private WiConfiguration mNetwork;
 
-    public interface OnCheckBoxVisibilitiesChangedListener {
-        void onCheckBoxVisibilitiesChanged(int visibilty);
-    }
-
-    private OnCheckBoxVisibilitiesChangedListener mCheckBoxVisibilitiesChangedListener;
-
-
-    public WiPermittedContactsView(Context context) {
+    public WiPermittedContactsView(Context context, Button lhs, Button rhs, WiConfiguration network) {
         super(context);
 
+        mSortCriteria = new HashMap<>();
+        mSortCriteria.put(COL_NAME, false);
+        mSortCriteria.put(COL_DATA, false);
+        mSortCriteria.put(COL_EXPIRES, false);
+
+        mBtnLhs = lhs;
+        mBtnRhs = rhs;
+        mNetwork = network;
+
         init();
+
+        setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus) refresh();
+            }
+        });
     }
 
-    public WiPermittedContactsView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-
-        init();
-    }
-
-    private void init(){
+    protected void init(){
         inflate(getContext(), R.layout.layout_permitted_contacts, this);
         mPermittedContacts = new ArrayList<>();
 
-        mHeaderSelectAll = (CheckBox) findViewById(R.id.cb_select_all);
         mHeaderName = (Button) findViewById(R.id.btn_name);
         mHeaderData = (Button) findViewById(R.id.btn_data);
         mHeaderExpires = (Button) findViewById(R.id.btn_expires);
 
-        mHeaders = findViewById(R.id.headers);
-        mItems = findViewById(R.id.items);
-
-        mHeaderSelectAll.setVisibility(INVISIBLE);
-        mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
-
-        mAscendingName = true;
-        mHeaderName.setOnClickListener(sortName());
-    }
-
-    public void setOnCheckBoxVisibilitiesChangedListener(OnCheckBoxVisibilitiesChangedListener listener){
-        mCheckBoxVisibilitiesChangedListener = listener;
+        mHeaderName.setOnClickListener(sort(COL_NAME, 0));
+        mHeaderData.setOnClickListener(sort(COL_DATA, 0));
+        mHeaderExpires.setOnClickListener(sort(COL_EXPIRES, 0));
     }
 
     public void addPermittedContact(WiContact contact){
         WiPermittedContactsViewListItem item = new WiPermittedContactsViewListItem(getContext(), contact);
 
         mPermittedContacts.add(item);
-        mItems.addView(item);
+        addListItem(item);
     }
 
-    private CompoundButton.OnCheckedChangeListener onSelectAll(){
-        return new CompoundButton.OnCheckedChangeListener() {
+    public MaterialDialog.SingleButtonCallback removeSelectedContacts(){
+        return new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                for(WiPermittedContactsViewListItem child: mPermittedContacts){
-                    child.mCheckBox.setChecked(isChecked);
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    mPermittedContacts.removeIf(new Predicate<WiPermittedContactsViewListItem>() {
+                        @Override
+                        public boolean test(WiPermittedContactsViewListItem wiPermittedContactsViewListItem) {
+                            if(wiPermittedContactsViewListItem.mCheckBox.isChecked()){
+                                removeListItem(wiPermittedContactsViewListItem);
+                            }
+
+                            return wiPermittedContactsViewListItem.mCheckBox.isChecked();
+                        }
+                    });
                 }
             }
         };
     }
 
-    public void setCheckBoxVisibilities(int visibility){
-        mHeaderSelectAll.setVisibility(visibility);
-        mHeaderSelectAll.setChecked(false);
-
-        // checkboxes turned on -> multiSelection is possible...
-        mMultiSelectEnabled = (visibility == VISIBLE);
-
-        for(WiPermittedContactsViewListItem child: mPermittedContacts){
-            child.mCheckBox.setVisibility(visibility);
-        }
-
-        if(mCheckBoxVisibilitiesChangedListener != null){
-            mCheckBoxVisibilitiesChangedListener.onCheckBoxVisibilitiesChanged(visibility);
-        }
-    }
-
-    public void deselectAll(){
-        for(WiPermittedContactsViewListItem child: mPermittedContacts){
-            child.mCheckBox.setChecked(false);
-        }
-    }
-
-    public void removeSelectedContacts(){
+    // sort mPermittedContacts
+    private void sort(final int column, final boolean ascending){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mPermittedContacts.removeIf(new Predicate<WiPermittedContactsViewListItem>() {
-                @Override
-                public boolean test(WiPermittedContactsViewListItem wiPermittedContactsViewListItem) {
-                    if(wiPermittedContactsViewListItem.mCheckBox.isChecked()){
-                        mItems.removeView(wiPermittedContactsViewListItem); //remove from scrollview
-                    }
+            switch (column) {
+                case COL_NAME:
+                    mPermittedContacts.sort(new Comparator<WiPermittedContactsViewListItem>() {
+                        @Override
+                        public int compare(WiPermittedContactsViewListItem o1, WiPermittedContactsViewListItem o2) {
+                            return ascending ?
+                                    o1.mContact.getName().compareTo(o2.mContact.getName()) :
+                                    o2.mContact.getName().compareTo(o1.mContact.getName());
+                        }
+                    });
+                    break;
 
-                    return wiPermittedContactsViewListItem.mCheckBox.isChecked();
-                }
-            });
+                case COL_DATA:
+                    mPermittedContacts.sort(new Comparator<WiPermittedContactsViewListItem>() {
+                        @Override
+                        public int compare(WiPermittedContactsViewListItem o1, WiPermittedContactsViewListItem o2) {
+                            return ascending ?
+                                    o1.mContact.getDataUsage().compareTo(o2.mContact.getDataUsage()) :
+                                    o2.mContact.getDataUsage().compareTo(o1.mContact.getDataUsage());
+                        }
+                    });
+                    break;
+
+                case COL_EXPIRES:
+                    mPermittedContacts.sort(new Comparator<WiPermittedContactsViewListItem>() {
+                        @Override
+                        public int compare(WiPermittedContactsViewListItem o1, WiPermittedContactsViewListItem o2) {
+                            return ascending ?
+                                    o1.mContact.getExpiresIn().compareTo(o2.mContact.getExpiresIn()) :
+                                    o2.mContact.getExpiresIn().compareTo(o1.mContact.getExpiresIn());
+                        }
+                    });
+                    break;
+            }
         }
-    }
 
-    public int getSelectedContactCount(){
-        int count = 0;
+        mSortCriteria.put(column, !ascending);
+
+        int x = 0;
+        removeAllItems();
+
         for(WiPermittedContactsViewListItem contact: mPermittedContacts){
-            count += contact.mCheckBox.isChecked() ? 1 : 0;
+            addListItem(contact);
         }
-        return count;
     }
 
-    private View.OnClickListener sortName(){
+    public void sort(int column){
+        sort(column, mSortCriteria.get(column));
+    }
+
+    private OnClickListener sort(final int column, int temp){
         return new OnClickListener() {
             @Override
             public void onClick(View v) {
-                sortName(mAscendingName);
+                sort(column, mSortCriteria.get(column));
             }
         };
-    }
-
-    public void sortName(final boolean ascending){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mPermittedContacts.sort(new Comparator<WiPermittedContactsViewListItem>() {
-                @Override
-                public int compare(WiPermittedContactsViewListItem o1, WiPermittedContactsViewListItem o2) {
-                    return ascending ?
-                            o1.mContact.getName().compareTo(o2.mContact.getName()) :
-                            o2.mContact.getName().compareTo(o1.mContact.getName());
-                }
-            });
-        }
-
-        mAscendingName = !ascending;
-        mItems.removeAllViewsInLayout();
-        for(WiPermittedContactsViewListItem contact: mPermittedContacts){
-            mItems.addView(contact);
-        }
     }
 
     public void filter(String searchString) {
@@ -176,11 +171,48 @@ public class WiPermittedContactsView extends LinearLayout {
         }
     }
 
-    public void refresh(){
-        mHeaderSelectAll.setVisibility(INVISIBLE);
-        mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
+    private void setButtonVisibilities(int visibility){
+        mBtnLhs.setVisibility(visibility);
+        mBtnRhs.setVisibility(visibility);
+    }
 
-        mHeaderName.setOnClickListener(sortName());
+    @Override
+    public void refresh(){
+        mBtnLhs.setText("Done");
+        mBtnRhs.setText("Revoke");
+
+        mBtnLhs.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCheckBoxVisibilities(INVISIBLE);
+                setButtonVisibilities(GONE);
+            }
+        });
+
+        mBtnRhs.setOnClickListener(displayMultiRevokeAccessDialog());
+    }
+
+    private OnClickListener displayMultiRevokeAccessDialog() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int qty = getSelectedItemCount();
+                String contacts = qty > 1 ? " contacts" : " contact";
+
+                if(qty == 0){
+                    Toast.makeText(getContext(), "No Contacts Selected!", Toast.LENGTH_LONG);
+                }
+                else{
+                    new MaterialDialog.Builder(getContext())
+                            .title("Revoke Access to " + mNetwork.getSSID())
+                            .content("Are you want to revoke access for " + qty + contacts + "? This action cannot be undone.")
+                            .negativeText("Cancel")
+                            .positiveText("Revoke")
+                            .onPositive(removeSelectedContacts())
+                            .show();
+                }
+            }
+        };
     }
 
     private class WiPermittedContactsViewListItem extends LinearLayout {
@@ -212,7 +244,7 @@ public class WiPermittedContactsView extends LinearLayout {
             mName = (Button) findViewById(R.id.btn_name);
             mData = (TextView) findViewById(R.id.tv_data);
             mExpires = (TextView) findViewById(R.id.tv_expires);
-            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_all_access);
+            mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
             mVisitProfile = (Button) findViewById(R.id.btn_visit_profile);
             mSwipeLayout = findViewById(R.id.swipe_layout);
             mRow = findViewById(R.id.row);
@@ -224,7 +256,6 @@ public class WiPermittedContactsView extends LinearLayout {
             mExpandableLayout = findViewById(R.id.expandable_contact);
 
             mRow.setOnClickListener(expand());
-            mName.setOnClickListener(null);
 
             mRevokeAccess.setOnClickListener(displayRevokeAccessDialog(mContact));
             mVisitProfile.setOnClickListener(startContactActivity(mContact));
@@ -266,6 +297,7 @@ public class WiPermittedContactsView extends LinearLayout {
                             .content("Are you want to revoke access for " + contact.getName() + "? This action cannot be undone.")
                             .negativeText("Cancel")
                             .positiveText("Revoke")
+                            .onPositive(removeContact(WiPermittedContactsViewListItem.this))
                             .show();
                 }
             };
@@ -273,23 +305,19 @@ public class WiPermittedContactsView extends LinearLayout {
 
         public void setContact(WiContact contact){
             mName.setText(mContact.getName());
-            mData.setText("10 Gb");
-            mExpires.setText("3d 2h");
 
-            mName.setOnClickListener(startContactActivity(mContact));
+            int hours = mContact.getExpiresIn() / 24;
+            int min = mContact.getExpiresIn() - (24 * hours);
+
+            String expires = mContact.getExpiresIn() == -1 ? "-" : hours + "h " + min + "m";
+            String data = mContact.getDataUsage() == -1 ? "-" : mContact.getDataUsage() + " Gb";
+
+            mData.setText(data);
+            mExpires.setText(expires);
         }
 
         public WiContact getContact() {
             return mContact;
-        }
-
-        private View.OnClickListener resetOnClick(){
-            return new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            };
         }
 
         private View.OnLongClickListener onLongClick(){
@@ -297,14 +325,24 @@ public class WiPermittedContactsView extends LinearLayout {
                 @Override
                 public boolean onLongClick(View v) {
                     // Vibrate and display checkboxes if not already displayed
-                    if(!mMultiSelectEnabled){
+                    if(getCheckBoxVisibilties() == INVISIBLE){
                         Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                         vibe.vibrate(40);
 
                         setCheckBoxVisibilities(VISIBLE);
+                        setButtonVisibilities(VISIBLE);
                     }
 
                     return false;
+                }
+            };
+        }
+
+        private MaterialDialog.SingleButtonCallback removeContact(final WiPermittedContactsViewListItem item){
+            return new MaterialDialog.SingleButtonCallback() {
+                @Override
+                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    removeListItem(item);
                 }
             };
         }

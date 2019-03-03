@@ -33,6 +33,14 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private LinearLayout mHeaders;
     private boolean mAscendingName;
+    private boolean mMultiSelectEnabled;
+
+    public interface OnCheckBoxVisibilitiesChangedListener {
+        void onCheckBoxVisibilitiesChanged(int visibilty);
+    }
+
+    private OnCheckBoxVisibilitiesChangedListener mCheckBoxVisibilitiesChangedListener;
+
 
     public WiInvitableContactsView(Context context) {
         super(context);
@@ -54,53 +62,8 @@ public class WiInvitableContactsView extends LinearLayout {
             }
         }
     }
-
-    public interface OnSelectContactsEnabledListener {
-        void onSelectContactsEnabled();
-    }
-
-    public interface OnSelectContactsDisabledListener {
-        void onSelectContactsDisabled();
-    }
-
-    private OnSelectContactsEnabledListener mContactsEnabledListener;
-    private OnSelectContactsDisabledListener mContactsDisabledListener;
-
-    public void setOnContactsEnabledListener(OnSelectContactsEnabledListener listener){
-        mContactsEnabledListener = listener;
-    }
-
-    public void setOnContactsDisabledListener(OnSelectContactsDisabledListener listener){
-        mContactsDisabledListener = listener;
-    }
-
-    public void hideAllCheckBoxes(){
-        mHeaders.setVisibility(GONE);
-        mHeaderSelectAll.setVisibility(INVISIBLE);
-        mHeaderSelectAll.setChecked(false); // reset select all checkbox
-
-        for(WiInvitableContactListItem child: mInvitableContacts){
-            child.mCheckBox.setChecked(false); // reset the checkbox...
-            child.mCheckBox.setVisibility(GONE);
-        }
-
-        if(mContactsDisabledListener != null){
-            mContactsDisabledListener.onSelectContactsDisabled();
-        }
-    }
-
-    public void showAllCheckBoxes(){
-        mHeaders.setVisibility(VISIBLE);
-
-        for(WiInvitableContactListItem child: mInvitableContacts){
-            if(child.mHourglass.getVisibility() == GONE){
-                child.mCheckBox.setVisibility(VISIBLE);
-            }
-        }
-
-        if(mContactsEnabledListener != null){
-            mContactsEnabledListener.onSelectContactsEnabled();
-        }
+    public void setOnCheckBoxVisibilitiesChangedListener(OnCheckBoxVisibilitiesChangedListener listener){
+        mCheckBoxVisibilitiesChangedListener = listener;
     }
 
     public int getSelectedContactCount(){
@@ -114,6 +77,7 @@ public class WiInvitableContactsView extends LinearLayout {
     private void init(){
         inflate(getContext(), R.layout.layout_invitable_contacts, this);
         mInvitableContacts = new ArrayList<>();
+        mMultiSelectEnabled = false;
 
         mItems = findViewById(R.id.items);
         mHeaders = findViewById(R.id.headers);
@@ -122,8 +86,6 @@ public class WiInvitableContactsView extends LinearLayout {
 
         mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
         mHeaderName.setOnClickListener(sortName());
-
-        hideAllCheckBoxes();
     }
 
     public void add(WiContact contact){
@@ -175,6 +137,22 @@ public class WiInvitableContactsView extends LinearLayout {
         mItems.removeAllViewsInLayout();
         for(WiInvitableContactListItem contact: mInvitableContacts){
             mItems.addView(contact);
+        }
+    }
+
+    public void setCheckBoxVisibilities(int visibility){
+        mHeaderSelectAll.setVisibility(visibility);
+        mHeaderSelectAll.setChecked(false);
+
+        // checkboxes turned on -> multiSelection is possible...
+        mMultiSelectEnabled = (visibility == VISIBLE);
+
+        for(WiInvitableContactListItem child: mInvitableContacts){
+            child.mCheckBox.setVisibility(visibility);
+        }
+
+        if(mCheckBoxVisibilitiesChangedListener != null){
+            mCheckBoxVisibilitiesChangedListener.onCheckBoxVisibilitiesChanged(visibility);
         }
     }
 
@@ -267,7 +245,6 @@ public class WiInvitableContactsView extends LinearLayout {
             return new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
                 }
             };
         }
@@ -324,8 +301,7 @@ public class WiInvitableContactsView extends LinearLayout {
                     Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
                     vibe.vibrate(40);
 
-                    showAllCheckBoxes();
-                    mHeaderSelectAll.setVisibility(VISIBLE);
+                    setCheckBoxVisibilities(VISIBLE);
                     return false;
                 }
             };

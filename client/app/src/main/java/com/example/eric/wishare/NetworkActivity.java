@@ -20,9 +20,6 @@ public class NetworkActivity extends AppCompatActivity {
     private WiTabbedScrollView mTabbedScrollView;
     private WiContactList mContactList;
 
-    private Button mButtonLhs;
-    private Button mButtonRhs;
-
     private EditText searchBar;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -40,7 +37,6 @@ public class NetworkActivity extends AppCompatActivity {
         mContactList.load();
 
         searchBar = findViewById(R.id.edit_text_search_bar);
-
         searchBar.addTextChangedListener(search());
 
         for(WiContact contact: mContactList.getWiContacts()){
@@ -64,9 +60,6 @@ public class NetworkActivity extends AppCompatActivity {
         }
 
         mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
-    
-        mButtonLhs = findViewById(R.id.btn_lhs);
-        mButtonRhs = findViewById(R.id.btn_rhs);
     }
 
     @Override
