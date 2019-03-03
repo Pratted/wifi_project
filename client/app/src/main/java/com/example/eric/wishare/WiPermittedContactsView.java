@@ -329,7 +329,7 @@ public class WiPermittedContactsView extends WiPage{
                     // Vibrate and display checkboxes if not already displayed
                     if(getCheckBoxVisibilties() == INVISIBLE){
                         Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        vibe.vibrate(40);
+                        vibe.vibrate(10);
 
                         setCheckBoxVisibilities(VISIBLE);
                         setButtonVisibilities(VISIBLE);
