@@ -32,17 +32,18 @@
                 android:weightSum="9"
                 android:background="@drawable/ripple"
                 style="@drawable/ripple">
-                <Button
+                <TextView
                     android:clickable="false"
-                    android:paddingLeft="4dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="8dp"
+                    android:textSize="16sp"
                     android:id="@+id/btn_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:typeface="normal"
                     android:textAllCaps="false"
-                    android:text="hello wrold"
-                    android:background="@drawable/ripple"
                     android:gravity="left|center_vertical"/>
                 <TextView
                     android:id="@+id/tv_data"

@@ -217,7 +217,7 @@ public class WiPermittedContactsView extends WiPage{
 
     private class WiPermittedContactsViewListItem extends LinearLayout {
         private CheckBox mCheckBox;
-        private Button mName;
+        private TextView mName;
         private TextView mData;
         private TextView mExpires;
         private Button mRevokeAccess;
@@ -241,7 +241,7 @@ public class WiPermittedContactsView extends WiPage{
             inflate(getContext(), R.layout.layout_permitted_contacts_list_item, this);
 
             mCheckBox = (CheckBox) findViewById(R.id.cb_select);
-            mName = (Button) findViewById(R.id.btn_name);
+            mName = (TextView) findViewById(R.id.btn_name);
             mData = (TextView) findViewById(R.id.tv_data);
             mExpires = (TextView) findViewById(R.id.tv_expires);
             mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
@@ -249,13 +249,15 @@ public class WiPermittedContactsView extends WiPage{
             mSwipeLayout = findViewById(R.id.swipe_layout);
             mRow = findViewById(R.id.row);
 
-            mName.setOnLongClickListener(onLongClick());
+            //mName.setOnLongClickListener(onLongClick());
+            mRow.setOnLongClickListener(onLongClick());
+            mRow.setOnClickListener(expand());
 
             if(mContact != null) setContact(mContact);
 
             mExpandableLayout = findViewById(R.id.expandable_contact);
 
-            mRow.setOnClickListener(expand());
+            //mRow.setOnClickListener(expand());
 
             mRevokeAccess.setOnClickListener(displayRevokeAccessDialog(mContact));
             mVisitProfile.setOnClickListener(startContactActivity(mContact));
