@@ -3,8 +3,12 @@ package com.example.eric.wishare;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -37,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     private WiInvitationListDialog mInvitationListDialog;
     private WiAddNetworkDialog mAddNetworkDialog;
     private WiManageContactsDialog mContactListDialog;
+
+    private SQLiteDatabase mDatabase;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -139,6 +145,18 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                WiSQLiteDatabase.getInstance(MainActivity.this).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+                    @Override
+                    public void onDBReady(SQLiteDatabase db) {
+                        mDatabase = db;
+                        ContentValues values = new ContentValues();
+                        values.put("name", "John Doe");
+                        values.put("phone", "123456");
+                        values.put("token", "iAmAToken");
+                        mDatabase.insert("synchronizedContacts", null, values);
+                        mDatabase.close();
+                    }
+                });
                 WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
                 notification.show();
             }
@@ -263,5 +281,9 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    public static Context getAppContext(){
+        return MainActivity.getAppContext();
     }
 }

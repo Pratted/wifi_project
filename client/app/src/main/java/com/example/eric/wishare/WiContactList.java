@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
@@ -18,7 +19,9 @@ public class WiContactList {
     private ArrayList<WiContact> mContactList;
     private HashMap<String, WiContact> mPhoneToContact;
     private WiContactListLoader mLoader;
-    private WeakReference<Context> mContext;
+    private Context mContext;
+
+    private SQLiteDatabase mDatabase;
 
     private OnContactListReadyListener mContactListReadyListener;
 
@@ -26,12 +29,13 @@ public class WiContactList {
         mContactList = new ArrayList<>();
         mPhoneToContact = new HashMap<>();
         mLoader = new WiContactListLoader();
+        mContext = context;
 
         refreshContext(context);
     }
 
     public void refreshContext(Context context){
-        mContext = new WeakReference<>(context);
+        mContext = context;
     }
 
     public void loadAsync(Context context){
@@ -58,7 +62,29 @@ public class WiContactList {
     }
 
     public void load(){
-        ContentResolver resolver = mContext.get().getContentResolver();
+
+        WiSQLiteDatabase.getInstance(mContext).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase db) {
+                mDatabase = db;
+                String[] columns = {"name", "phone", "token"};
+                Cursor c = mDatabase.query("synchronizedContacts", columns, null, null, null, null, "name desc");
+                if (c.moveToFirst()) {
+                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                    mContactList.add(contact);
+                    mPhoneToContact.put(contact.getPhone(), contact);
+                    while(c.moveToNext()) {
+                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                        mContactList.add(contact);
+                        mPhoneToContact.put(contact.getPhone(), contact);
+                    }
+                }
+                c.close();
+                db.close();
+            }
+        });
+
+/*        ContentResolver resolver = mContext.get().getContentResolver();
 
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
@@ -70,7 +96,7 @@ public class WiContactList {
 
             mContactList.add(contact);
             mPhoneToContact.put(contact.getPhone(), contact);
-        }
+        }*/
     }
 
     private class WiContactListLoader extends AsyncTask<Void, Void, ArrayList<WiContact>> {

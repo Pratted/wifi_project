@@ -13,16 +13,16 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     private static final int mDATABASE_VERSION = 1;
     private static final String mDATABASE_NAME = "wishare.db";
-    private static WiSQLiteDatabase mTheDb;
+    private static WiSQLiteDatabase mDB;
 
 
     //Table with variables
     //Common variable types include INT, FLOAT, DATE, TIME, varchar([max characters])    <-- string, BIT <-- boolean with 0 | 1
     private static final String mSQL_CREATE_ENTRIES =
             "CREATE TABLE synchronizedContacts (" +
-                    "token varchar(255) NOT NULL PRIMARY KEY," +
+                    "phone varchar(255) NOT NULL PRIMARY KEY," +
                     "name varchar(255)," +
-                    "phone varchar(255))";
+                    "token varchar(255))";
 
     //Not sure if this will really be used
     private static final String mSQL_DELETE_ENTRIES =
@@ -33,10 +33,10 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     }
 
     public static synchronized WiSQLiteDatabase getInstance(Context context) {
-        if (mTheDb == null) {
-            mTheDb = new WiSQLiteDatabase(context);
+        if (mDB == null) {
+            mDB = new WiSQLiteDatabase(context);
         }
-        return mTheDb;
+        return mDB;
     }
 
     @Override
@@ -65,7 +65,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         @Override
         protected SQLiteDatabase doInBackground(OnDBReadyListener... params){
             listener = params[0];
-            return WiSQLiteDatabase.mTheDb.getWritableDatabase();
+            return WiSQLiteDatabase.mDB.getWritableDatabase();
         }
 
         @Override
