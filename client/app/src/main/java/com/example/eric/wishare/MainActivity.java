@@ -3,6 +3,7 @@ package com.example.eric.wishare;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -148,12 +150,25 @@ public class MainActivity extends AppCompatActivity {
                 WiSQLiteDatabase.getInstance(MainActivity.this).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
                     @Override
                     public void onDBReady(SQLiteDatabase db) {
+                        ContentResolver resolver = MainActivity.this.getContentResolver();
+                        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+
+
                         mDatabase = db;
-                        ContentValues values = new ContentValues();
-                        values.put("name", "John Doe");
-                        values.put("phone", "123456");
-                        values.put("token", "iAmAToken");
-                        mDatabase.insert("synchronizedContacts", null, values);
+
+                        while(cursor != null && cursor.moveToNext()) {
+
+                            ContentValues values = new ContentValues();
+                            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                            String phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                            values.put("name", name);
+                            values.put("phone", phone);
+                            values.put("token", "iAmAToken");
+                            mDatabase.insert("synchronizedContacts", null, values);
+
+                        }
+
+                        cursor.close();
                         mDatabase.close();
                     }
                 });
@@ -283,7 +298,4 @@ public class MainActivity extends AppCompatActivity {
                 });
     }
 
-    public static Context getAppContext(){
-        return MainActivity.getAppContext();
-    }
 }

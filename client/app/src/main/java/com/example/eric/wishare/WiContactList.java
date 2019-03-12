@@ -68,7 +68,7 @@ public class WiContactList {
             public void onDBReady(SQLiteDatabase db) {
                 mDatabase = db;
                 String[] columns = {"name", "phone", "token"};
-                Cursor c = mDatabase.query("synchronizedContacts", columns, null, null, null, null, "name desc");
+                Cursor c = mDatabase.query("synchronizedContacts", columns, null, null, null, null, "name asc");
                 if (c.moveToFirst()) {
                     WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
                     mContactList.add(contact);
