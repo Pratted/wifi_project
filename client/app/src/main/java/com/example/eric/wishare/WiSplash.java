@@ -7,7 +7,7 @@ import android.os.Handler;
 
 public class WiSplash extends Activity {
 
-    private static int SPLASH_TIME_OUT = 5000;
+    private static int SPLASH_TIME_OUT = 0;//5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

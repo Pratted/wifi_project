@@ -1,7 +1,13 @@
 package com.example.eric.wishare;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.wifi.WifiConfiguration;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
@@ -19,6 +25,7 @@ public class WiAddNetworkDialog extends WiDialog {
     private ArrayList<String> mNetworks;
     private OnPasswordEnteredListener mListener;
     private WeakReference<Context> mContext;
+    private SQLiteDatabase mDatabase;
 
     interface OnPasswordEnteredListener {
         void OnPasswordEntered(WiConfiguration config);
@@ -81,9 +88,25 @@ public class WiAddNetworkDialog extends WiDialog {
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                         .input("Password", "", false, new MaterialDialog.InputCallback() {
                             @Override
-                            public void onInput(@NonNull MaterialDialog dialog, CharSequence password) {
+                            public void onInput(@NonNull MaterialDialog dialog, final CharSequence password) {
                                 WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
                                 mListener.OnPasswordEntered(config);
+                                WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+                                    @Override
+                                    public void onDBReady(SQLiteDatabase db) {
+                                        mDatabase = db;
+
+                                        Cursor c = mDatabase.query("configuredNetworks", null, null, null, null, null, null);
+                                        ContentValues values = new ContentValues();
+                                        values.put("id", c.getCount()+1);
+                                        values.put("name", wifiName.toString());
+                                        values.put("passwordHash", password.toString());
+                                        mDatabase.insert("configuredNetworks", null, values);
+                                        c.close();
+                                        db.close();
+                                    }
+                                });
+
                                 mManager.addConfiguredNetwork(config);
                                 mManager.removeNotConfiguredNetwork(config);
                                 Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();

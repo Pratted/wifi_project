@@ -1,6 +1,11 @@
 package com.example.eric.wishare;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.Button;
 
@@ -11,20 +16,21 @@ import java.util.ArrayList;
 public class WiManageContactsDialog extends WiDialog{
     private WiContactList mContactList;
     private OnContactSelectedListener mOnContactSelectedListener;
+    private SQLiteDatabase mDatabase;
 
     interface OnContactSelectedListener{
         void onContactSelected(WiContact contact);
     }
 
-    public WiManageContactsDialog(Context context, Button btnManageContacts){
+    public WiManageContactsDialog(final Context context, Button btnManageContacts){
         super(context);
-
         mContactList = new WiContactList(context);
         mContactList.setOnContactListReadyListener(onContactListReady());
 
         btnManageContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 System.out.println("HEREEEEEEEEEEEEEEEEEe");
                 WiManageContactsDialog.this.show();
             }

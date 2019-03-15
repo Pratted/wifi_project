@@ -18,11 +18,17 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     //Table with variables
     //Common variable types include INT, FLOAT, DATE, TIME, varchar([max characters])    <-- string, BIT <-- boolean with 0 | 1
-    private static final String mSQL_CREATE_ENTRIES =
+    private static final String mSQL_CREATE_CONTACTS =
             "CREATE TABLE synchronizedContacts (" +
                     "phone varchar(255) NOT NULL PRIMARY KEY," +
                     "name varchar(255)," +
                     "token varchar(255))";
+    private static final String mSQL_CREATE_CONFIGUREDNETWORKS =
+            "CREATE TABLE configuredNetworks (" +
+                    "id INT NOT NULL PRIMARY KEY," +
+                    "name varchar(255)," +
+                    "SSID varchar(255)," +
+                    "passwordHash varchar(255))";
 
     //Not sure if this will really be used
     private static final String mSQL_DELETE_ENTRIES =
@@ -41,7 +47,8 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(mSQL_CREATE_ENTRIES);
+        db.execSQL(mSQL_CREATE_CONTACTS);
+        db.execSQL(mSQL_CREATE_CONFIGUREDNETWORKS);
     }
 
     @Override

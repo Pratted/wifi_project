@@ -52,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
 
         // contact permission accepted..
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
+
+            mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
 
             mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
                 @Override
@@ -62,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
             //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
             mContactListDialog.loadContacts();
             mContactListDialog.refresh(this);
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         System.out.println("Called oncreate...");
 
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
 
+
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
         WiContact contact1 = new WiContact("Eric Pratt", "1");
         WiContact contact2 = new WiContact("Eric Pratt", "2");
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
          if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
          **/
         if(WiContactList.hasContactPermissions(this)){
+            //addContacts(MainActivity.this);
             mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
             mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
@@ -147,31 +150,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                WiSQLiteDatabase.getInstance(MainActivity.this).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-                    @Override
-                    public void onDBReady(SQLiteDatabase db) {
-                        ContentResolver resolver = MainActivity.this.getContentResolver();
-                        Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-
-
-                        mDatabase = db;
-
-                        while(cursor != null && cursor.moveToNext()) {
-
-                            ContentValues values = new ContentValues();
-                            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                            String phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            values.put("name", name);
-                            values.put("phone", phone);
-                            values.put("token", "iAmAToken");
-                            mDatabase.insert("synchronizedContacts", null, values);
-
-                        }
-
-                        cursor.close();
-                        mDatabase.close();
-                    }
-                });
+                addContacts(MainActivity.this);
                 WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
                 notification.show();
             }
@@ -296,6 +275,33 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private void addContacts(final Context context){
+        WiSQLiteDatabase.getInstance(context).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase db) {
+                ContentResolver resolver = context.getContentResolver();
+                Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
+
+
+                mDatabase = db;
+
+                while(cursor != null && cursor.moveToNext()) {
+
+                    ContentValues values = new ContentValues();
+                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+                    String phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    values.put("name", name);
+                    values.put("phone", phone);
+                    values.put("token", "iAmAToken");
+                    mDatabase.insert("synchronizedContacts", null, values);
+
+                }
+
+                cursor.close();
+            }
+        });
     }
 
 }
