@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+            addContacts(this);
             //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
             mContactListDialog.loadContacts();
             mContactListDialog.refresh(this);
@@ -150,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                addContacts(MainActivity.this);
+                //addContacts(MainActivity.this);
                 WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
                 notification.show();
             }

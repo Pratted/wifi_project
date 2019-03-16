@@ -96,28 +96,7 @@ public class WiContactList {
             mPhoneToContact.put(contact.getPhone(), contact);
         }*/
     }
-    public void load2(){
 
-        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase db) {
-                mDatabase = db;
-                Cursor c = mDatabase.rawQuery("SELECT * FROM synchronizedContacts ORDER BY name asc;", null);
-                if (c.moveToFirst()) {
-                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
-                    mContactList.add(contact);
-                    mPhoneToContact.put(contact.getPhone(), contact);
-                    while(c.moveToNext()) {
-                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
-                        mContactList.add(contact);
-                        mPhoneToContact.put(contact.getPhone(), contact);
-                    }
-                }
-                c.close();
-            }
-        });
-
-    }
 
 
     private class WiContactListLoader extends AsyncTask<Void, Void, ArrayList<WiContact>> {
