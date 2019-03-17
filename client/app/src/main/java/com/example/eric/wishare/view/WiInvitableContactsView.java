@@ -15,6 +15,10 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
+import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
+
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;

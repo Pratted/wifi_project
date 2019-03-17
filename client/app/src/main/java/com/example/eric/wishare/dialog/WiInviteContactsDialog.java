@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
 

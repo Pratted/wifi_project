@@ -7,6 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiInvitation;
 
 import java.util.ArrayList;
 

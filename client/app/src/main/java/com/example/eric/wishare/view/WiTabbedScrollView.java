@@ -1,7 +1,6 @@
 package com.example.eric.wishare;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -12,10 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
 

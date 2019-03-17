@@ -7,6 +7,8 @@ import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
 
 public class WiCreateInvitationDialog extends WiDialog {
     private LinearLayout mCustomView;
