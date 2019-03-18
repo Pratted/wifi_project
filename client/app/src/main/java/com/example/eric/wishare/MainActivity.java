@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-
         btnShowNotification.setOnClickListener(sendNotification());
 
     }
@@ -149,6 +148,12 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                Thread thread = new Thread(new Runnable(){
+                    public void run() {
+                        WiDataMessage.send();
+                }});
+
+                thread.start();
                 WiSQLiteDatabase.getInstance(MainActivity.this).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
                     @Override
                     public void onDBReady(SQLiteDatabase db) {
