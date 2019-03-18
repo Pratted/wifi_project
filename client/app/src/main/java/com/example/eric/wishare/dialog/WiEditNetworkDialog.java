@@ -26,6 +26,7 @@ public class WiEditNetworkDialog extends WiDialog {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         mCustomView = (LinearLayout) inflater.inflate(R.layout.layout_edit_network, null);
+        /*
         mNetworkManager = WiNetworkManager.getInstance();
         mCustomView.findViewById(R.id.btn_test_connection).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +41,7 @@ public class WiEditNetworkDialog extends WiDialog {
                 Toast.makeText(context, toToast, Toast.LENGTH_SHORT).show();
             }
         });
+        */
 
         mConfig = config;
     }

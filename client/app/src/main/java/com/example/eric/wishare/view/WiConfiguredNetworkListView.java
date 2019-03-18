@@ -44,8 +44,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
         }
 
         public void init() {
-
-            mNetworkManager = WiNetworkManager.getInstance();
+            mNetworkManager = WiNetworkManager.getInstance(getContext().getApplicationContext());
 
             inflate(getContext(), R.layout.layout_configured_network_list_item, this);
 

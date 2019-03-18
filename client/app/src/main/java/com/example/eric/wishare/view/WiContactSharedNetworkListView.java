@@ -10,7 +10,8 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-//import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.R;
+import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.*;
 import com.jjoe64.graphview.GraphView;
