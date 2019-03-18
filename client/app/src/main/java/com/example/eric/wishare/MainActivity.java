@@ -6,7 +6,6 @@ import android.app.TaskStackBuilder;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -37,6 +36,10 @@ import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
+import com.example.eric.wishare.dialog.*;
+import com.example.eric.wishare.model.*;
+import com.example.eric.wishare.view.*;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;

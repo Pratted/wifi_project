@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
-import com.example.eric.wishare.view.WiMyInvitationsButton;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.view.WiMyInvitationsButton;
 
 import java.util.ArrayList;
 

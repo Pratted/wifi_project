@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 
+import com.example.eric.wishare.model.WiConfiguration;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
