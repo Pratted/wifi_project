@@ -29,6 +29,9 @@ import com.google.firebase.iid.InstanceIdResult;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
@@ -49,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+
 
         // contact permission accepted..
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
@@ -79,6 +85,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        String phone = formatPhoneNumber("1231231234");
+        String phone2 = formatPhoneNumber("(123) 123-1234");
+        String phone3 = formatPhoneNumber("123-123-1234");
+        String phone4 = formatPhoneNumber("+11231231234");
 
         System.out.println("Called oncreate...");
 
@@ -292,17 +302,31 @@ public class MainActivity extends AppCompatActivity {
 
                     ContentValues values = new ContentValues();
                     String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                    String phone = formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                     values.put("name", name);
                     values.put("phone", phone);
                     values.put("token", "iAmAToken");
-                    mDatabase.insert("synchronizedContacts", null, values);
+                    mDatabase.insert("SynchronizedContacts", null, values);
 
                 }
 
                 cursor.close();
             }
         });
+    }
+    public static String formatPhoneNumber(String phone){
+        String revised = "";
+
+        /***********************************************************************************
+         Source - https://stackoverflow.com/a/16702965
+         ************************************************************************************/
+        Pattern regex = Pattern.compile("^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$");
+        Matcher matcher = regex.matcher(phone);
+
+        if(matcher.matches()){
+            revised = matcher.group(2) + "-" + matcher.group(3) + "-" + matcher.group(4);
+        }
+        return revised;
     }
 
 }

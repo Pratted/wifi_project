@@ -21,12 +21,18 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     //Table with variables
     //Common variable types include INT, FLOAT, DATE, TIME, varchar([max characters])    <-- string, BIT <-- boolean with 0 | 1
     private static final String mSQL_CREATE_CONTACTS =
-            "CREATE TABLE synchronizedContacts (" +
+            "CREATE TABLE SynchronizedContacts (" +
                     "phone varchar(255) NOT NULL PRIMARY KEY," +
                     "name varchar(255)," +
                     "token varchar(255))";
     private static final String mSQL_CREATE_CONFIGUREDNETWORKS =
-            "CREATE TABLE configuredNetworks (" +
+            "CREATE TABLE ConfiguredNetworks (" +
+                    "id INT NOT NULL PRIMARY KEY," +
+                    "name varchar(255)," +
+                    "SSID varchar(255)," +
+                    "passwordHash varchar(255))";
+    private static final String mSQL_CREATE_PERMITTEDCONTACTS =
+            "CREATE TABLE PermittedContacts (" +
                     "id INT NOT NULL PRIMARY KEY," +
                     "name varchar(255)," +
                     "SSID varchar(255)," +
@@ -34,7 +40,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     //Not sure if this will really be used
     private static final String mSQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS synchronizedContacts";
+            "DROP TABLE IF EXISTS SynchronizedContacts";
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
@@ -55,6 +61,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(mSQL_CREATE_CONTACTS);
         db.execSQL(mSQL_CREATE_CONFIGUREDNETWORKS);
+        db.execSQL(mSQL_CREATE_PERMITTEDCONTACTS);
     }
 
     @Override
