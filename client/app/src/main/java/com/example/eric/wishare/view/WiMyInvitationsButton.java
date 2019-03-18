@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.example.eric.wishare.R;
 
 public class WiMyInvitationsButton extends RelativeLayout {
     TextView tvInvitationBadge;

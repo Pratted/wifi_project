@@ -9,6 +9,12 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.example.eric.wishare.dialog.WiAddContactToNetworkDialog;
+import com.example.eric.wishare.dialog.WiRevokeAccessDialog;
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.view.WiContactSharedNetworkListView;
+
 import java.util.ArrayList;
 
 public class ContactActivity extends AppCompatActivity {

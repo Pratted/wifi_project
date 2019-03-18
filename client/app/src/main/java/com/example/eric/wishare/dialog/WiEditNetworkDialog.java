@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;

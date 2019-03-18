@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.model;
 
 import android.annotation.SuppressLint;
 import android.net.wifi.WifiConfiguration;

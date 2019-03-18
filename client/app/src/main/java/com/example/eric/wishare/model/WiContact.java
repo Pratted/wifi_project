@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

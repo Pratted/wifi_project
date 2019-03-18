@@ -4,6 +4,8 @@ import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
+import com.example.eric.wishare.model.WiConfiguration;
+
 import java.util.ArrayList;
 import java.util.List;
 

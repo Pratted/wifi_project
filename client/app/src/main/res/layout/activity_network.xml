@@ -49,12 +49,12 @@
             android:inputType="textPersonName" />
     </LinearLayout>
 
-    <com.example.eric.wishare.WiTabbedScrollView
+    <com.example.eric.wishare.view.WiTabbedScrollView
         android:id="@+id/tabbed_scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.example.eric.wishare.WiTabbedScrollView>
+    </com.example.eric.wishare.view.WiTabbedScrollView>
 
 
 </LinearLayout>

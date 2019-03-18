@@ -1,10 +1,12 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
+
+import com.example.eric.wishare.R;
 
 import java.util.ArrayList;
 

@@ -10,6 +10,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.eric.wishare.dialog.WiEditNetworkDialog;
+import com.example.eric.wishare.dialog.WiInviteContactsDialog;
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.view.WiTabbedScrollView;
+
 public class NetworkActivity extends AppCompatActivity {
 
     private WiConfiguration mConfig;

@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.provider.ContactsContract;
 
+import com.example.eric.wishare.model.WiContact;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +55,7 @@ public class WiContactList {
     }
 
 
-    interface OnContactListReadyListener{
+    public interface OnContactListReadyListener{
         void onContactListReady(ArrayList<WiContact> contacts);
     }
 
