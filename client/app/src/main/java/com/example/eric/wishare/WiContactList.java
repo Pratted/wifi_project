@@ -16,10 +16,11 @@ import java.util.HashMap;
 
 public class WiContactList {
 
-    private ArrayList<WiContact> mContactList;
-    private HashMap<String, WiContact> mPhoneToContact;
-    private WiContactListLoader mLoader;
+    private static ArrayList<WiContact> mContactList;
+    private static HashMap<String, WiContact> mPhoneToContact;
+    private static WiContactListLoader mLoader;
     private WeakReference<Context> mContext;
+    private static WiContactList mCL;
 
     private SQLiteDatabase mDatabase;
 
@@ -29,17 +30,17 @@ public class WiContactList {
         mContactList = new ArrayList<>();
         mPhoneToContact = new HashMap<>();
         mLoader = new WiContactListLoader();
-        mContext = new WeakReference<Context>(context);
+        mContext = new WeakReference<Context>(context.getApplicationContext());
 
-        refreshContext(context);
+        refreshContext(context.getApplicationContext());
     }
 
     public void refreshContext(Context context){
-        mContext = new WeakReference<Context>(context);
+        mContext = new WeakReference<Context>(context.getApplicationContext());
     }
 
     public void loadAsync(Context context){
-        refreshContext(context);
+        refreshContext(context.getApplicationContext());
 
         mLoader.execute();
     }
@@ -82,7 +83,6 @@ public class WiContactList {
                 c.close();
             }
         });
-
 /*        ContentResolver resolver = mContext.get().getContentResolver();
 
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
@@ -96,6 +96,17 @@ public class WiContactList {
             mContactList.add(contact);
             mPhoneToContact.put(contact.getPhone(), contact);
         }*/
+    }
+
+    private synchronized void loadDevice(){
+
+    }
+
+    public static synchronized WiContactList getInstance(Context context){
+        if (mCL == null){
+            mCL = new WiContactList(context.getApplicationContext());
+        }
+        return mCL;
     }
 
 

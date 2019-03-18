@@ -42,7 +42,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     public static synchronized WiSQLiteDatabase getInstance(Context context) {
         if (mDB == null) {
-            mDB = new WiSQLiteDatabase(context);
+            mDB = new WiSQLiteDatabase(context.getApplicationContext());
         }
         return mDB;
     }

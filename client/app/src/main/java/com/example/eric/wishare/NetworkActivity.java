@@ -20,7 +20,6 @@ public class NetworkActivity extends AppCompatActivity {
     private WiEditNetworkDialog mEditNetworkDialog;
 
     private WiTabbedScrollView mTabbedScrollView;
-    private WiContactList mContactList;
 
     private EditText searchBar;
 
@@ -35,10 +34,6 @@ public class NetworkActivity extends AppCompatActivity {
         mInviteContactsDialog = new WiInviteContactsDialog(this);
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
 
-        mContactList = new WiContactList(this);
-        mContactList.setOnContactListReadyListener(onContactListReady());
-        mContactList.load();
-        mContactList.loadAsync(this);
 
         searchBar = findViewById(R.id.edit_text_search_bar);
         searchBar.addTextChangedListener(search());
@@ -69,9 +64,7 @@ public class NetworkActivity extends AppCompatActivity {
             @Override
             public void onContactListReady(ArrayList<WiContact> contacts) {
                 //Build Tabbed List
-                for(WiContact contact: mContactList.getWiContacts()){
-                    mInviteContactsDialog.addContact(contact);
-                }
+
             }
         };
     }

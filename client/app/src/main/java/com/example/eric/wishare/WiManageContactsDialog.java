@@ -24,7 +24,7 @@ public class WiManageContactsDialog extends WiDialog{
 
     public WiManageContactsDialog(final Context context, Button btnManageContacts){
         super(context);
-        mContactList = new WiContactList(context);
+        mContactList = WiContactList.getInstance(context);
         mContactList.setOnContactListReadyListener(onContactListReady());
 
         btnManageContacts.setOnClickListener(new View.OnClickListener() {

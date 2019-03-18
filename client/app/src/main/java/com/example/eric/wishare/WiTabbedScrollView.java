@@ -17,13 +17,17 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class WiTabbedScrollView extends LinearLayout {
 
+    private WiTabbedScrollView mTabbedScrollView;
     private WiTabbedScrollViewPager mViewPager;
     private WiPagerAdapter mPagerAdapter;
     private WiContactList mContactList;
+    private WeakReference<Context> mContext;
+
 
     private WiPermittedContactsView mPermittedContactsView;
     private WiInvitableContactsView mInvitableContactsView;
@@ -32,15 +36,21 @@ public class WiTabbedScrollView extends LinearLayout {
     private Button mRhs;
 
     public WiTabbedScrollView(Context context){
-        super(context);
+        super(context.getApplicationContext());
 
         init();
     }
 
     public WiTabbedScrollView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-
+        mContext = new WeakReference<Context>(context.getApplicationContext());
         init();
+    }
+
+    private WiTabbedScrollView getInstance(Context context){
+        if (mTabbedScrollView == null)
+            mTabbedScrollView = new WiTabbedScrollView(context.getApplicationContext());
+        return mTabbedScrollView;
     }
 
     private void init(){
@@ -48,8 +58,8 @@ public class WiTabbedScrollView extends LinearLayout {
         mLhs = findViewById(R.id.btn_lhs);
         mRhs = findViewById(R.id.btn_rhs);
 
-        mContactList = new WiContactList(getContext());
-        mContactList.load();
+        mContactList = WiContactList.getInstance(mContext.get().getApplicationContext());
+        //mContactList.load();
 
         mViewPager = findViewById(R.id.view_pager);
 
