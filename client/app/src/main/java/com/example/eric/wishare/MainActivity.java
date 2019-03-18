@@ -306,6 +306,9 @@ public class MainActivity extends AppCompatActivity {
                     values.put("name", name);
                     values.put("phone", phone);
                     values.put("token", "iAmAToken");
+                    if (phone.contains("+")){
+                        System.out.println("foo");
+                    }
                     mDatabase.insert("SynchronizedContacts", null, values);
 
                 }
