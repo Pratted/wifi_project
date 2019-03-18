@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class NetworkActivity extends AppCompatActivity {
 
     private WiConfiguration mConfig;
@@ -34,14 +36,14 @@ public class NetworkActivity extends AppCompatActivity {
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
 
         mContactList = new WiContactList(this);
+        mContactList.setOnContactListReadyListener(onContactListReady());
         mContactList.load();
+        mContactList.loadAsync(this);
 
         searchBar = findViewById(R.id.edit_text_search_bar);
         searchBar.addTextChangedListener(search());
 
-        for(WiContact contact: mContactList.getWiContacts()){
-            mInviteContactsDialog.addContact(contact);
-        }
+
 
         findViewById(R.id.btn_edit_network).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,10 +64,23 @@ public class NetworkActivity extends AppCompatActivity {
         mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
     }
 
+    private WiContactList.OnContactListReadyListener onContactListReady(){
+        return new WiContactList.OnContactListReadyListener(){
+            @Override
+            public void onContactListReady(ArrayList<WiContact> contacts) {
+                //Build Tabbed List
+                for(WiContact contact: mContactList.getWiContacts()){
+                    mInviteContactsDialog.addContact(contact);
+                }
+            }
+        };
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
     }
+
 
 
     @Override

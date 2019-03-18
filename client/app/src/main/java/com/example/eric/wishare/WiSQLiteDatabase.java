@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     interface OnDBReadyListener {
@@ -43,6 +45,10 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             mDB = new WiSQLiteDatabase(context);
         }
         return mDB;
+    }
+
+    interface OnContactListReadyListener{
+        void onContactListReady(ArrayList<WiContact> contacts);
     }
 
     @Override

@@ -44,6 +44,7 @@ public class WiContactList {
         mLoader.execute();
     }
 
+
     public ArrayList<WiContact> getWiContacts(){
         return mContactList;
     }
