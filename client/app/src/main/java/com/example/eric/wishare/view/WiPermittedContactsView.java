@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +14,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.ContactActivity;
+import com.example.eric.wishare.R;
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 

@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.WiContactList;
+import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
 
@@ -18,7 +20,7 @@ public class WiManageContactsDialog extends WiDialog{
     private OnContactSelectedListener mOnContactSelectedListener;
     private SQLiteDatabase mDatabase;
 
-    interface OnContactSelectedListener{
+    public interface OnContactSelectedListener{
         void onContactSelected(WiContact contact);
     }
 

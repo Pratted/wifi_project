@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.example.eric.wishare.WiEditTextPermHint
+    <com.example.eric.wishare.view.WiEditTextPermHint
         custom:entries="@array/time_limits"
         custom:label="Expires:"
         custom:permHint="hrs"
@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <com.example.eric.wishare.WiEditTextPermHint
+    <com.example.eric.wishare.view.WiEditTextPermHint
         custom:entries="@array/data_limits"
         custom:label="Data Limit:"
         custom:permHint="Gb"

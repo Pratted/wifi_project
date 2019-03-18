@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -7,6 +7,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.R;
+import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.view.WiMyInvitationsButton;
 
 import java.util.ArrayList;
 

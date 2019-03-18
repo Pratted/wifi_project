@@ -1,42 +1,28 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.Context;
-import android.net.wifi.WifiConfiguration;
 import android.support.annotation.NonNull;
-import android.view.View;
-import android.widget.Button;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
 
-public class WiAddContactToNetworkDialog extends WiDialog {
+public class WiInviteContactsDialog extends WiDialog {
 
-
-    private ArrayList<WifiConfiguration> mNetworks;
-
+    private ArrayList<WiContact> mContacts = new ArrayList<>();
 
     @Override
     public MaterialDialog build() {
-
-
-        ArrayList<String> networkList = new ArrayList<>();
-
-        for (WifiConfiguration configuration : mNetworks) {
-            networkList.add(configuration.SSID);
-        }
-
-
         return new MaterialDialog.Builder(context.get())
-                .title("Select networks to add this contact to")
-                .items(networkList)
+                .title("Select Contacts")
+                .items(mContacts)
                 .itemsCallbackMultiChoice(null, ignore())
                 .onPositive(onInviteClick())
                 .positiveText("Invite")
                 .negativeText("Cancel")
                 .build();
-
     }
 
     private MaterialDialog.ListCallbackMultiChoice ignore(){
@@ -55,26 +41,19 @@ public class WiAddContactToNetworkDialog extends WiDialog {
                 Integer indices[] = dialog.getSelectedIndices();
 
                 for(Integer i: indices){
-                    System.out.println("You invited " + mNetworks.get(i).SSID);
+                    System.out.println("You invited " + mContacts.get(i).getName());
                 }
+
+                new WiCreateInvitationDialog(context.get()).show();
             }
         };
     }
 
-
-    public WiAddContactToNetworkDialog(Context context, Button btnAddContactToNetwork) {
+    public WiInviteContactsDialog(Context context){
         super(context);
+    }
 
-        mNetworks = WiNetworkManager.getConfiguredNetworks(context);
-
-
-        btnAddContactToNetwork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WiAddContactToNetworkDialog.this.show();
-            }
-        });
-
-
+    public void addContact(WiContact contact){
+        mContacts.add(contact);
     }
 }

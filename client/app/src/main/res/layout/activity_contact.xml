@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.example.eric.wishare.WiContactSharedNetworkListView
+            <com.example.eric.wishare.view.WiContactSharedNetworkListView
                 android:id="@+id/contactNetworkList"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -71,7 +71,7 @@
                 android:layout_marginBottom="4dp"
                 android:orientation="vertical">
 
-            </com.example.eric.wishare.WiContactSharedNetworkListView>
+            </com.example.eric.wishare.view.WiContactSharedNetworkListView>
 
             <LinearLayout
                 android:id="@+id/ll_hidden_btn_layout"

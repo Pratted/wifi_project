@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiNetworkManager;
+import com.example.eric.wishare.model.WiConfiguration;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -24,6 +26,7 @@ public class WiEditNetworkDialog extends WiDialog {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         mCustomView = (LinearLayout) inflater.inflate(R.layout.layout_edit_network, null);
+        /*
         mNetworkManager = WiNetworkManager.getInstance();
         mCustomView.findViewById(R.id.btn_test_connection).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,6 +41,7 @@ public class WiEditNetworkDialog extends WiDialog {
                 Toast.makeText(context, toToast, Toast.LENGTH_SHORT).show();
             }
         });
+        */
 
         mConfig = config;
     }

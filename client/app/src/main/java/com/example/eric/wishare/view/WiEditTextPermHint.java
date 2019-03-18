@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.example.eric.wishare.R;
 
 public class WiEditTextPermHint extends LinearLayout {
     private EditText editText;

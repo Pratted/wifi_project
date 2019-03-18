@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.support.annotation.NonNull;

@@ -3,15 +3,22 @@ package com.example.eric.wishare;
 import android.Manifest;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiConfiguration;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +26,20 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.dialog.WiAddNetworkDialog;
+import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
+import com.example.eric.wishare.dialog.WiInvitationListDialog;
+import com.example.eric.wishare.dialog.WiManageContactsDialog;
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.view.WiConfiguredNetworkListView;
+import com.example.eric.wishare.view.WiMyInvitationsButton;
+import com.example.eric.wishare.dialog.*;
+import com.example.eric.wishare.model.*;
+import com.example.eric.wishare.view.*;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,7 +49,6 @@ import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,8 +66,10 @@ public class MainActivity extends AppCompatActivity {
     private WiInvitationListDialog mInvitationListDialog;
     private WiAddNetworkDialog mAddNetworkDialog;
     private WiManageContactsDialog mContactListDialog;
+    private WiNetworkManager mNetworkManager;
 
     private SQLiteDatabase mDatabase;
+    private BroadcastReceiver mWifiConnectedReceiver;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -61,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
             mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
 
+
             mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
                 @Override
                 public void onContactSelected(WiContact contact) {
@@ -70,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             addContacts(this);
+
             //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
             mContactListDialog.loadContacts();
             mContactListDialog.refresh(this);
@@ -152,7 +176,13 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        mNetworkManager = WiNetworkManager.getInstance(this);
 
+        final WifiConfiguration config = new WifiConfiguration();
+        config.SSID = "\"305\"";
+        config.preSharedKey = "\"eightautumn\"";
+
+        mNetworkManager.addNetwork(config);
         btnShowNotification.setOnClickListener(sendNotification());
 
     }
@@ -161,7 +191,27 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                //addContacts(MainActivity.this);
+
+                Thread thread = new Thread(new Runnable(){
+                    public void run() {
+                        WiDataMessage.send();
+                }});
+
+                thread.start();
+
+                // Wifi
+                mNetworkManager.testConnection("305");
+
+                final MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this).progress(true, 100).content("Testing connection...").show();
+
+                mNetworkManager.setOnTestConnectionCompleteListener(new WiNetworkManager.OnTestConnectionCompleteListener() {
+                    @Override
+                    public void onTestConnectionComplete(boolean success) {
+                        dialog.dismiss();
+                        new MaterialDialog.Builder(MainActivity.this).title("Connection successful!").positiveText("Ok").show();
+                    }
+                });
+
                 WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
                 notification.show();
             }

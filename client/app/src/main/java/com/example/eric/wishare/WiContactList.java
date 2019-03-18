@@ -1,14 +1,14 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.provider.ContactsContract;
+
+import com.example.eric.wishare.model.WiContact;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class WiContactList {
     }
 
 
-    interface OnContactListReadyListener{
+    public interface OnContactListReadyListener{
         void onContactListReady(ArrayList<WiContact> contacts);
     }
 

@@ -5,11 +5,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 
+import com.example.eric.wishare.model.WiContact;
+
 import java.util.ArrayList;
 
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
-    interface OnDBReadyListener {
+    public interface OnDBReadyListener {
         void onDBReady(SQLiteDatabase theDB);
     }
 
