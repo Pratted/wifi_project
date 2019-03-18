@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.NetworkActivity;
+import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 
 import ru.rambler.libs.swipe_layout.SwipeLayout;
@@ -41,8 +44,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
         }
 
         public void init() {
-
-            mNetworkManager = WiNetworkManager.getInstance();
+            mNetworkManager = WiNetworkManager.getInstance(getContext().getApplicationContext());
 
             inflate(getContext(), R.layout.layout_configured_network_list_item, this);
 

@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.model;
 
 public class WiInvitation {
     public String networkName;

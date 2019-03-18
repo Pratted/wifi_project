@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -7,13 +7,14 @@ import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 
 public class WiCreateInvitationDialog extends WiDialog {
     private LinearLayout mCustomView;
 
-    interface OnInvitationCreatedListener{
+    public interface OnInvitationCreatedListener{
         void onInviationCreated(WiInvitation invitation);
     }
 

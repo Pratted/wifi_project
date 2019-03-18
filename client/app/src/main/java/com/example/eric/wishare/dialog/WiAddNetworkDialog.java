@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 
 import java.lang.ref.WeakReference;
@@ -21,7 +22,7 @@ public class WiAddNetworkDialog extends WiDialog {
     private OnPasswordEnteredListener mListener;
     private WeakReference<Context> mContext;
 
-    interface OnPasswordEnteredListener {
+    public interface OnPasswordEnteredListener {
         void OnPasswordEntered(WiConfiguration config);
     }
 
@@ -54,7 +55,7 @@ public class WiAddNetworkDialog extends WiDialog {
     public WiAddNetworkDialog(Context context, Button btnAddNetwork){
         super(context);
         mContext = new WeakReference<>(context);
-        mManager = WiNetworkManager.getInstance();
+        mManager = WiNetworkManager.getInstance(context.getApplicationContext());
         List<WifiConfiguration> wifiList = WiNetworkManager.getConfiguredNetworks(context);
 
         mNetworks = new ArrayList<>();

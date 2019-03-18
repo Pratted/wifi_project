@@ -1,12 +1,9 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.model;
 
 import android.annotation.SuppressLint;
 import android.net.wifi.WifiConfiguration;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.media.session.PlaybackStateCompat;
-
-import java.io.Serializable;
 
 @SuppressLint("ParcelCreator")
 public class WiConfiguration extends WifiConfiguration implements Parcelable {
