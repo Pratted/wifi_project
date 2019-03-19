@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WiContact implements Parcelable{
     private String name;
@@ -41,6 +43,21 @@ public class WiContact implements Parcelable{
             return new WiContact[size];
         }
     };
+
+    public static String formatPhoneNumber(String phone){
+        String revised = "";
+
+        /***********************************************************************************
+         Source - https://stackoverflow.com/a/16702965
+         ************************************************************************************/
+        Pattern regex = Pattern.compile("^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$");
+        Matcher matcher = regex.matcher(phone);
+
+        if(matcher.matches()){
+            revised = matcher.group(2) + "-" + matcher.group(3) + "-" + matcher.group(4);
+        }
+        return revised;
+    }
 
     public String getName() {
         return name;

@@ -1,27 +1,23 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -37,20 +33,10 @@ import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
-import com.example.eric.wishare.dialog.*;
-import com.example.eric.wishare.model.*;
-import com.example.eric.wishare.view.*;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -66,41 +52,55 @@ public class MainActivity extends AppCompatActivity {
     private WiInvitationListDialog mInvitationListDialog;
     private WiAddNetworkDialog mAddNetworkDialog;
     private WiManageContactsDialog mContactListDialog;
-    private WiNetworkManager mNetworkManager;
-
     private SQLiteDatabase mDatabase;
-    private BroadcastReceiver mWifiConnectedReceiver;
+
+    private WiPermissions mPermissions;
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
+        for(String permission: permissions){
+            if(permission.equals(WiPermissions.CONTACT) && mPermissions.hasPermission(WiPermissions.CONTACT)){
+                Log.d("MainActivity", "CONTACT Permission granted!");
 
+                mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
+                mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
+                    @Override
+                    public void onContactSelected(WiContact contact) {
+                        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                        intent.putExtra("contact", contact);
+                        startActivity(intent);
+                    }
+                });
+                //addContacts(this);
 
+                //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
+                mContactListDialog.loadContacts();
+                mContactListDialog.refresh(this);
 
-        // contact permission accepted..
-        if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
+                mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
+            }
+            if(permission.equals(WiPermissions.PHONE) && mPermissions.hasPermission(WiPermissions.PHONE)){
+                Log.d("MainActivity", "PHONE Permission granted!");
 
-            mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                String token = WiUtils.getDeviceToken(this);
 
+                TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
 
-            mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
-                @Override
-                public void onContactSelected(WiContact contact) {
-                    Intent intent = new Intent(MainActivity.this, ContactActivity.class);
-                    intent.putExtra("contact", contact);
-                    startActivity(intent);
-                }
-            });
-            addContacts(this);
+                phone = WiContact.formatPhoneNumber(phone);
+                editor.putString("phone", phone);
 
-            //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
-            mContactListDialog.loadContacts();
-            mContactListDialog.refresh(this);
-            //mContactListDialog.show();
+                Log.d(TAG, "My phone is: " + phone);
 
-            mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-            mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
+                WiMessagingService.registerDevice(token, phone);
+            }
+            if(permission.equals(WiPermissions.LOCATION) && mPermissions.hasPermission(WiPermissions.LOCATION)){
+
+            }
         }
     }
 
@@ -109,14 +109,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        String phone = formatPhoneNumber("1231231234");
-        String phone2 = formatPhoneNumber("(123) 123-1234");
-        String phone3 = formatPhoneNumber("123-123-1234");
-        String phone4 = formatPhoneNumber("+11231231234");
+        mPermissions = WiPermissions.getInstance(this);
+        mPermissions.requestAllPermissions(this);
 
         System.out.println("Called oncreate...");
-
-        //plzFirebase();
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(this, MainActivity.class);
@@ -176,15 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        mNetworkManager = WiNetworkManager.getInstance(this);
-
-        final WifiConfiguration config = new WifiConfiguration();
-        config.SSID = "\"305\"";
-        config.preSharedKey = "\"eightautumn\"";
-
-        mNetworkManager.addNetwork(config);
         btnShowNotification.setOnClickListener(sendNotification());
-
     }
 
     private View.OnClickListener sendNotification(){
@@ -200,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                 thread.start();
 
                 // Wifi
+                WiNetworkManager mNetworkManager = WiNetworkManager.getInstance(MainActivity.this);
                 mNetworkManager.testConnection("305");
 
                 final MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this).progress(true, 100).content("Testing connection...").show();
@@ -311,31 +300,6 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
             }
         }
-
-
-        plzFirebase();
-    }
-
-    private void plzFirebase(){
-        FirebaseInstanceId.getInstance().getInstanceId()
-                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "getInstanceId failed", task.getException());
-                            return;
-                        }
-
-                        // Get new Instance ID token
-                        String token = task.getResult().getToken();
-
-                        // Log and toast
-                        Log.d(TAG, "The token is: " + token);
-                        System.out.println(token);
-                //Toast.makeText(MainActivity.this, "The token is: " + token , Toast.LENGTH_SHORT).show();
-
-                    }
-                });
     }
 
     private void addContacts(final Context context){
@@ -352,7 +316,7 @@ public class MainActivity extends AppCompatActivity {
 
                     ContentValues values = new ContentValues();
                     String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String phone = formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                    String phone = WiContact.formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                     values.put("name", name);
                     values.put("phone", phone);
                     values.put("token", "iAmAToken");
@@ -367,19 +331,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    public static String formatPhoneNumber(String phone){
-        String revised = "";
-
-        /***********************************************************************************
-         Source - https://stackoverflow.com/a/16702965
-         ************************************************************************************/
-        Pattern regex = Pattern.compile("^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$");
-        Matcher matcher = regex.matcher(phone);
-
-        if(matcher.matches()){
-            revised = matcher.group(2) + "-" + matcher.group(3) + "-" + matcher.group(4);
-        }
-        return revised;
-    }
-
 }
