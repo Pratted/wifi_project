@@ -4,7 +4,7 @@
         <item name="actionBarStyle">@style/WiShare.ActionBarStyle</item>
         <item name="colorPrimary">@color/themeGreen</item>
         <item name="colorPrimaryDark">@color/themedark</item>
-        <item name="colorAccent">@color/Black</item>
+        <item name="colorAccent">@color/themeGreen</item>
         <item name="android:textColorPrimary">@color/WhiteSmoke</item>
         <item name="colorControlNormal">@color/themedark</item>
     </style>

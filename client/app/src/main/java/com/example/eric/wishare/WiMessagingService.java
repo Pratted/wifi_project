@@ -1,20 +1,28 @@
 package com.example.eric.wishare;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 public class WiMessagingService extends FirebaseMessagingService {
     private static final String TAG = "WiMessagingService";
-    private static final String SERVER_IP = "127.0.0.1";
-    private static final Integer SERVER_PORT = 5000;
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -40,27 +48,38 @@ public class WiMessagingService extends FirebaseMessagingService {
         }
     }
 
-    // send a message to our server
-    public boolean sendMessage(String json){
-        try {
-            Socket socket = new Socket(SERVER_IP, SERVER_PORT);
-
-            OutputStream os = socket.getOutputStream();
-            os.write(json.getBytes());
-            return true;
-
-        } catch (Exception e){
-            e.printStackTrace();
-            return false;
-        }
-    }
-
     @Override
     public void onNewToken(String token){
         Log.d(TAG, "The new token is: " + token);
-    }
 
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
+        Map<String, Object> record = new HashMap<>();
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        String phone = "";
+        /*
+        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
+
+        System.out.println("My phone: " + phone);
+        */
+
+        record.put("token", token);
+        record.put("phone", phone);
+        record.put("date_created", FieldValue.serverTimestamp());
+
+        firestore.collection("devices")
+                .add(record)
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        // can't add the token to the DB -> cannot authenticate, (we're fucked)
+                        Log.wtf(TAG, "Failed to add token to database", e);
+                    }
+                })
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(TAG, "Successfully added token to database!");
+                    }
+                });
     }
 }
