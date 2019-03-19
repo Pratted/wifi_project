@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import com.example.eric.wishare.dialog.WiAddNetworkDialog;
 import com.example.eric.wishare.model.WiContact;
 
 import java.lang.ref.WeakReference;
@@ -21,9 +22,9 @@ public class WiContactList {
     private static WiContactListLoader mLoader;
     private WeakReference<Context> mContext;
     private static WiContactList mCL;
-
     private SQLiteDatabase mDatabase;
 
+    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEnteredListener;
     private OnContactListReadyListener mContactListReadyListener;
 
     public WiContactList(Context context) {
@@ -71,11 +72,14 @@ public class WiContactList {
                 mDatabase = db;
                 Cursor c = mDatabase.rawQuery("SELECT * FROM SynchronizedContacts ORDER BY name asc;", null);
                 if (c.moveToFirst()) {
-                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")), mContext.get());
+                    if(contact.getInvitedNetworks() == null)
+                        System.out.println("LIST IS NULL");
+                    else System.out.println("LIST IS NOT NULL");
                     mContactList.add(contact);
                     mPhoneToContact.put(contact.getPhone(), contact);
                     while(c.moveToNext()) {
-                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")), mContext.get());
                         mContactList.add(contact);
                         mPhoneToContact.put(contact.getPhone(), contact);
                     }
@@ -108,8 +112,6 @@ public class WiContactList {
         }
         return mCL;
     }
-
-
 
     private class WiContactListLoader extends AsyncTask<Void, Void, ArrayList<WiContact>> {
 

@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.eric.wishare.dialog.WiAddContactToNetworkDialog;
+import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.dialog.WiRevokeAccessDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
@@ -25,13 +25,13 @@ public class ContactActivity extends AppCompatActivity {
     private WiContact mContact;
 
     private Button btnRevokeAllAccess;
-    private Button btnAddContactToNetwork;
+    private Button btnInviteContactToNetwork;
     private Button btnRevokeSelectiveAccess;
     private Button btnHideCheckBoxes;
 
     private ArrayList<WifiConfiguration> mNetworks;
 
-    private WiAddContactToNetworkDialog mAddToNetwork;
+    private WiInviteContactToNetworkDialog mAddToNetwork;
     private WiRevokeAccessDialog mRevokeAccessDialog;
 
     private WiContactSharedNetworkListView mContactSharedNetworkList;
@@ -77,16 +77,16 @@ public class ContactActivity extends AppCompatActivity {
             networkList.add(new WiConfiguration(configuration, ""));
         }
 
-        for(WiConfiguration config : networkList) {
-            mContactSharedNetworkList.addSharedNetwork(config);
-        }
+//        for(WiConfiguration config : networkList) {
+//            mContactSharedNetworkList.addSharedNetwork(config);
+//        }
 
         btnRevokeAllAccess = findViewById(R.id.btn_revoke_all_access);
-        btnAddContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
+        btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
 
 //        mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAllAccess);
         btnRevokeAllAccess.setOnClickListener(revokeAllAccess());
-        mAddToNetwork = new WiAddContactToNetworkDialog(this, btnAddContactToNetwork);
+        mAddToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
     }
 
     private View.OnClickListener revokeAllAccess() {

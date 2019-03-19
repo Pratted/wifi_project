@@ -1,8 +1,14 @@
 package com.example.eric.wishare.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.example.eric.wishare.WiNetworkManager;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class WiContact implements Parcelable{
@@ -10,10 +16,32 @@ public class WiContact implements Parcelable{
     private String phone;
     private Integer mDataUsage;
     private Integer mExpiresIn;
+    private WeakReference<Context> mContext;
+    private WiNetworkManager mNetworkManager;
+    private List<WiConfiguration> mInvitedNetworks;
 
-    public WiContact(String name, String phone){
+    public WiContact(String name, String phone, Context c){
         this.name = name;
         this.phone = phone;
+        mContext = new WeakReference<>(c);
+        init();
+    }
+
+
+    protected WiContact(Parcel in) {
+        name = in.readString();
+        phone = in.readString();
+        mDataUsage = in.readInt();
+        mExpiresIn = in.readInt();
+
+        init();
+    }
+
+    private void init() {
+//        this.mNetworkManager = WiNetworkManager.getInstance(mContext.get());
+        this.mInvitedNetworks = new ArrayList<>();
+
+//        this.mInvitedNetworks.addAll(mNetworkManager.getConfiguredNetworks());
 
         Random r = new Random();
         mDataUsage = r.nextInt(100);
@@ -21,13 +49,6 @@ public class WiContact implements Parcelable{
 
         if(mDataUsage % 2 == 1) mDataUsage = -1;
         if(mExpiresIn % 2 == 1) mExpiresIn = -1;
-    }
-
-    protected WiContact(Parcel in) {
-        name = in.readString();
-        phone = in.readString();
-        mDataUsage = in.readInt();
-        mExpiresIn = in.readInt();
     }
 
     public static final Creator<WiContact> CREATOR = new Creator<WiContact>() {
@@ -42,8 +63,26 @@ public class WiContact implements Parcelable{
         }
     };
 
+    public void addToInvitedNetworks(WiConfiguration config) {
+        if(mInvitedNetworks != null)
+            this.mInvitedNetworks.add(config);
+        else System.out.println("HOW IS THIS NULL??????");
+    }
+
+    public void updateInvitedNetworks(Context c) {
+        for(WiConfiguration config : WiNetworkManager.getInstance(c).getConfiguredNetworks()) {
+            if(!this.mInvitedNetworks.contains(config)) {
+                this.mInvitedNetworks.add(config);
+            }
+        }
+    }
+
+    public List<WiConfiguration> getInvitedNetworks() {
+        return this.mInvitedNetworks;
+    }
+
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public void setName(String name) {
@@ -51,7 +90,7 @@ public class WiContact implements Parcelable{
     }
 
     public String getPhone() {
-        return phone;
+        return this.phone;
     }
 
     public void setPhone(String phone) {
@@ -59,7 +98,7 @@ public class WiContact implements Parcelable{
     }
 
     public Integer getDataUsage() {
-        return mDataUsage;
+        return this.mDataUsage;
     }
 
     public void setDataUsage(Integer mDataUsage) {
@@ -67,7 +106,7 @@ public class WiContact implements Parcelable{
     }
 
     public Integer getExpiresIn() {
-        return mExpiresIn;
+        return this.mExpiresIn;
     }
 
     public void setExpiresIn(Integer mExpiresIn) {
