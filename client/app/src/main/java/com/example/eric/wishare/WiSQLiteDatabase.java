@@ -22,27 +22,29 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     //Table with variables
     //Common variable types include INT, FLOAT, DATE, TIME, varchar([max characters])    <-- string, BIT <-- boolean with 0 | 1
-    private static final String mSQL_CREATE_CONTACTS =
+    private static final String mSQL_CREATE_SYNCHRONIZEDCONTACTS =
             "CREATE TABLE SynchronizedContacts (" +
-                    "phone varchar(255) NOT NULL PRIMARY KEY," +
+                    "contact_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
+                    "phone varchar(255) UNIQUE," +
                     "name varchar(255)," +
                     "token varchar(255))";
     private static final String mSQL_CREATE_CONFIGUREDNETWORKS =
-            "CREATE TABLE ConfiguredNetworks (" +
-                    "id INT NOT NULL PRIMARY KEY," +
-                    "name varchar(255)," +
+            "CREATE TABLE WifiConfiguration (" +
+                    "network_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                     "SSID varchar(255)," +
-                    "passwordHash varchar(255))";
+                    "password varchar(255))";
     private static final String mSQL_CREATE_PERMITTEDCONTACTS =
             "CREATE TABLE PermittedContacts (" +
-                    "id INT NOT NULL PRIMARY KEY," +
-                    "name varchar(255)," +
-                    "SSID varchar(255)," +
-                    "passwordHash varchar(255))";
+                    "network_id INTEGER NOT NULL PRIMARY KEY," +
+                    "contact_id INTEGER NOT NULL PRIMARY KEY," +
+                    "data_limit varchar(255))";
 
-    //Not sure if this will really be used
-    private static final String mSQL_DELETE_ENTRIES =
+    private static final String mSQL_DELETE_SYNCHRONIZEDCONTACTS =
             "DROP TABLE IF EXISTS SynchronizedContacts";
+    private static final String mSQL_DELETE_CONFIGUREDNETWORKS =
+            "DROP TABLE IF EXISTS WifiConfiguration";
+    private static final String mSQL_DELETE_PERMITTEDCONTACTS =
+            "DROP TABLE IF EXISTS PermittedContacts";
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
@@ -61,14 +63,16 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(mSQL_CREATE_CONTACTS);
+        db.execSQL(mSQL_CREATE_SYNCHRONIZEDCONTACTS);
         db.execSQL(mSQL_CREATE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_CREATE_PERMITTEDCONTACTS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(mSQL_DELETE_ENTRIES);
+        db.execSQL(mSQL_DELETE_SYNCHRONIZEDCONTACTS);
+        db.execSQL(mSQL_DELETE_CONFIGUREDNETWORKS);
+        db.execSQL(mSQL_DELETE_PERMITTEDCONTACTS);
         onCreate(db);
     }
 

@@ -38,6 +38,8 @@ import com.google.firebase.FirebaseApp;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 });
-                //addContacts(this);
+                addContacts(this);
 
                 //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
                 mContactListDialog.loadContacts();
@@ -92,8 +94,9 @@ public class MainActivity extends AppCompatActivity {
                 @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
 
                 phone = WiContact.formatPhoneNumber(phone);
-                editor.putString("phone", phone);
 
+                editor.putString("phone", phone);
+                editor.commit();
                 Log.d(TAG, "My phone is: " + phone);
 
                 WiMessagingService.registerDevice(token, phone);
@@ -309,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
                 ContentResolver resolver = context.getContentResolver();
                 Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-
                 mDatabase = db;
 
                 while(cursor != null && cursor.moveToNext()) {
@@ -319,10 +321,7 @@ public class MainActivity extends AppCompatActivity {
                     String phone = WiContact.formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                     values.put("name", name);
                     values.put("phone", phone);
-                    values.put("token", "iAmAToken");
-                    if (phone.contains("+")){
-                        System.out.println("foo");
-                    }
+                    values.put("token", "TESTING");
                     mDatabase.insert("SynchronizedContacts", null, values);
 
                 }

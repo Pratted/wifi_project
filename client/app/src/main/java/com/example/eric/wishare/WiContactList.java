@@ -69,7 +69,7 @@ public class WiContactList {
             @Override
             public void onDBReady(SQLiteDatabase db) {
                 mDatabase = db;
-                Cursor c = mDatabase.rawQuery("SELECT * FROM SynchronizedContacts ORDER BY name asc;", null);
+                Cursor c = mDatabase.query("SynchronizedContacts", null, null, null,null, null, "name asc;");
                 if (c.moveToFirst()) {
                     WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
                     mContactList.add(contact);
@@ -98,8 +98,25 @@ public class WiContactList {
         }*/
     }
 
-    private synchronized void loadDevice(){
-
+    private synchronized ArrayList<WiContact> getPermittedContacts(final String networkSSID){
+        final ArrayList<WiContact> permittedContacts = new ArrayList<>();
+        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase db) {
+                mDatabase = db;
+                Cursor c = mDatabase.query("PermittedContacts", null, "SSID=?", new String[]{networkSSID}, null, null,"name asc");
+                if (c.moveToFirst()) {
+                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                    permittedContacts.add(contact);
+                    while(c.moveToNext()) {
+                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                        permittedContacts.add(contact);
+                    }
+                }
+                c.close();
+            }
+        });
+        return permittedContacts;
     }
 
     public static synchronized WiContactList getInstance(Context context){

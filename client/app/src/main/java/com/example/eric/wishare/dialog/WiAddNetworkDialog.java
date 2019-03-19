@@ -98,15 +98,8 @@ public class WiAddNetworkDialog extends WiDialog {
                                     @Override
                                     public void onDBReady(SQLiteDatabase db) {
                                         mDatabase = db;
-
-                                        Cursor c = mDatabase.query("ConfiguredNetworks", null, null, null, null, null, null);
-                                        ContentValues values = new ContentValues();
-                                        values.put("id", c.getCount()+1);
-                                        values.put("name", wifiName.toString());
-                                        values.put("passwordHash", password.toString());
-                                        mDatabase.insert("ConfiguredNetworks", null, values);
-                                        c.close();
-                                        db.close();
+                                        mDatabase.rawQuery("INSERT INTO WifiConfiguration(SSID, password)" +
+                                                "VALUES (?, ?);", new String[]{wifiName.toString(), password.toString()});
                                     }
                                 });
 
