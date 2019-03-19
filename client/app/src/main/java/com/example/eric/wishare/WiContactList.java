@@ -73,9 +73,6 @@ public class WiContactList {
                 Cursor c = mDatabase.rawQuery("SELECT * FROM SynchronizedContacts ORDER BY name asc;", null);
                 if (c.moveToFirst()) {
                     WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")), mContext.get());
-                    if(contact.getInvitedNetworks() == null)
-                        System.out.println("LIST IS NULL");
-                    else System.out.println("LIST IS NOT NULL");
                     mContactList.add(contact);
                     mPhoneToContact.put(contact.getPhone(), contact);
                     while(c.moveToNext()) {
