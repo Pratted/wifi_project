@@ -14,20 +14,16 @@ import java.util.ArrayList;
 
 public class WiAddContactToNetworkDialog extends WiDialog {
 
-
     private ArrayList<WifiConfiguration> mNetworks;
-
 
     @Override
     public MaterialDialog build() {
-
 
         ArrayList<String> networkList = new ArrayList<>();
 
         for (WifiConfiguration configuration : mNetworks) {
             networkList.add(configuration.SSID);
         }
-
 
         return new MaterialDialog.Builder(context.get())
                 .title("Select networks to add this contact to")
@@ -62,12 +58,10 @@ public class WiAddContactToNetworkDialog extends WiDialog {
         };
     }
 
-
     public WiAddContactToNetworkDialog(Context context, Button btnAddContactToNetwork) {
         super(context);
 
         mNetworks = WiNetworkManager.getConfiguredNetworks(context);
-
 
         btnAddContactToNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,7 +69,5 @@ public class WiAddContactToNetworkDialog extends WiDialog {
                 WiAddContactToNetworkDialog.this.show();
             }
         });
-
-
     }
 }

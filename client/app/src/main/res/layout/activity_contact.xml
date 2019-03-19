@@ -15,7 +15,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btn_add_contact_to_network"
+            android:id="@+id/btn_invite_contact_to_network"
             style="@drawable/ripple"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -39,11 +39,8 @@ public class NetworkActivity extends AppCompatActivity {
         mInviteContactsDialog = new WiInviteContactsDialog(this);
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
 
-
         searchBar = findViewById(R.id.edit_text_search_bar);
         searchBar.addTextChangedListener(search());
-
-
 
         findViewById(R.id.btn_edit_network).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +77,6 @@ public class NetworkActivity extends AppCompatActivity {
     }
 
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -95,9 +91,7 @@ public class NetworkActivity extends AppCompatActivity {
     public TextWatcher search() {
         return new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -105,9 +99,7 @@ public class NetworkActivity extends AppCompatActivity {
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) {}
         };
     }
 }
