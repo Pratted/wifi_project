@@ -10,6 +10,8 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WiContact implements Parcelable{
     private String name;
@@ -79,6 +81,21 @@ public class WiContact implements Parcelable{
 
     public List<WiConfiguration> getInvitedNetworks() {
         return this.mInvitedNetworks;
+    }
+
+    public static String formatPhoneNumber(String phone){
+        String revised = "";
+
+        /***********************************************************************************
+         Source - https://stackoverflow.com/a/16702965
+         ************************************************************************************/
+        Pattern regex = Pattern.compile("^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$");
+        Matcher matcher = regex.matcher(phone);
+
+        if(matcher.matches()){
+            revised = matcher.group(2) + "-" + matcher.group(3) + "-" + matcher.group(4);
+        }
+        return revised;
     }
 
     public String getName() {

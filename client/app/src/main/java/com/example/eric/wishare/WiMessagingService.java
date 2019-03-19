@@ -1,11 +1,8 @@
 package com.example.eric.wishare;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -16,8 +13,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import java.io.OutputStream;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,15 +47,27 @@ public class WiMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token){
         Log.d(TAG, "The new token is: " + token);
 
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        // immediately save the new token into shared prefs for future use.
+        editor.putString("token", token);
+        editor.commit();
+
+        // if we have access to the phone number, register the device with remote DB
+        // otherwise the device will be registered when permissions are granted in MainActivity
+        if(WiPermissions.getInstance(this).hasPermission(WiPermissions.PHONE)){
+            String phone = prefs.getString("phone", "");
+
+            if(phone.length() > 0){
+                registerDevice(token, phone);
+            }
+        }
+    }
+
+    public static void registerDevice(String token, String phone){
         Map<String, Object> record = new HashMap<>();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        String phone = "";
-        /*
-        TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-        @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
-
-        System.out.println("My phone: " + phone);
-        */
 
         record.put("token", token);
         record.put("phone", phone);
