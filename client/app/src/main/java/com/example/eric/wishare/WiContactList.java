@@ -31,13 +31,13 @@ public class WiContactList {
         mContactList = new ArrayList<>();
         mPhoneToContact = new HashMap<>();
         mLoader = new WiContactListLoader();
-        mContext = new WeakReference<Context>(context.getApplicationContext());
+        mContext = new WeakReference<>(context.getApplicationContext());
 
         refreshContext(context.getApplicationContext());
     }
 
     public void refreshContext(Context context){
-        mContext = new WeakReference<Context>(context.getApplicationContext());
+        mContext = new WeakReference<>(context.getApplicationContext());
     }
 
     public void loadAsync(Context context){
@@ -64,15 +64,22 @@ public class WiContactList {
         mContactListReadyListener = listener;
     }
 
-    public void load(){
+    public void load() {
 
         WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase db) {
                 mDatabase = db;
                 Cursor c = mDatabase.rawQuery("SELECT * FROM SynchronizedContacts ORDER BY name asc;", null);
+                System.out.println("OUTSIDE IF");
+                System.out.println("c.moveToFirst(): " + c.moveToFirst());
                 if (c.moveToFirst()) {
+                    System.out.println("INSIDE IF");
                     WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                    if(contact == null) {
+                        System.out.println("CONTACT IS NULL");
+                    }
+                    System.out.println(contact.getName() + "'s phone: " + contact.getPhone());
                     mContactList.add(contact);
                     mPhoneToContact.put(contact.getPhone(), contact);
                     while(c.moveToNext()) {

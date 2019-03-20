@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
          if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
          **/
         if(WiContactList.hasContactPermissions(this)){
-            //addContacts(MainActivity.this);
+            addContacts(MainActivity.this);
             mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
             mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onContactSelected(WiContact contact){
                     Intent intent = new Intent(MainActivity.this, ContactActivity.class);
                     intent.putExtra("contact", contact);
-                    System.out.println(contact.getName() + "'s phone number is: " + contact.getPhone());
+//                    System.out.println(contact.getName() + "'s phone number is: " + contact.getPhone());
                     System.out.println("STARTING CONTACT ACTIVITY");
                     startActivity(intent);
                 }
@@ -180,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 
     private View.OnClickListener sendNotification(){
         return new View.OnClickListener(){
@@ -284,10 +283,9 @@ public class MainActivity extends AppCompatActivity {
                 dataLimit = "5 Gb";
             }
 
-
             intent.removeExtra("inviteNetwork");
 
-            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone  ), expires, other, dataLimit);
+            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, other, dataLimit);
 
             /*
             WiInvitation invitation = null;
@@ -316,11 +314,8 @@ public class MainActivity extends AppCompatActivity {
                 ContentResolver resolver = context.getContentResolver();
                 Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
-
                 mDatabase = db;
-
                 while(cursor != null && cursor.moveToNext()) {
-
                     ContentValues values = new ContentValues();
                     String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                     String phone = WiContact.formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
@@ -333,7 +328,6 @@ public class MainActivity extends AppCompatActivity {
                     mDatabase.insert("SynchronizedContacts", null, values);
 
                 }
-
                 cursor.close();
             }
         });
