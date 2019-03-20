@@ -35,9 +35,10 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                     "password varchar(255))";
     private static final String mSQL_CREATE_PERMITTEDCONTACTS =
             "CREATE TABLE PermittedContacts (" +
-                    "network_id INTEGER NOT NULL PRIMARY KEY," +
-                    "contact_id INTEGER NOT NULL PRIMARY KEY," +
-                    "data_limit varchar(255))";
+                    "network_id INTEGER NOT NULL," +
+                    "contact_id INTEGER NOT NULL," +
+                    "data_limit varchar(255)," +
+                    "PRIMARY KEY(network_id, contact_id))";
 
     private static final String mSQL_DELETE_SYNCHRONIZEDCONTACTS =
             "DROP TABLE IF EXISTS SynchronizedContacts";

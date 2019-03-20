@@ -65,7 +65,7 @@ public class WiContactList {
 
     public void load(){
 
-        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+        WiSQLiteDatabase.getInstance(mContext.get().getApplicationContext()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase db) {
                 mDatabase = db;
