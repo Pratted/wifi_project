@@ -72,11 +72,11 @@ public class WiContactList {
                 mDatabase = db;
                 Cursor c = mDatabase.rawQuery("SELECT * FROM SynchronizedContacts ORDER BY name asc;", null);
                 if (c.moveToFirst()) {
-                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")), mContext.get());
+                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
                     mContactList.add(contact);
                     mPhoneToContact.put(contact.getPhone(), contact);
                     while(c.moveToNext()) {
-                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")), mContext.get());
+                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
                         mContactList.add(contact);
                         mPhoneToContact.put(contact.getPhone(), contact);
                     }

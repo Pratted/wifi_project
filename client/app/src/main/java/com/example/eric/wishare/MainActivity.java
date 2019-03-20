@@ -88,10 +88,10 @@ public class MainActivity extends AppCompatActivity {
 
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
-        WiContact contact1 = new WiContact("Eric Pratt", "1", this);
-        WiContact contact2 = new WiContact("Eric Pratt", "2", this);
-        WiContact contact3 = new WiContact("Eric Pratt", "3", this);
-        WiContact contact4 = new WiContact("Eric Pratt", "+12223334444", this);
+        WiContact contact1 = new WiContact("Eric Pratt", "1");
+        WiContact contact2 = new WiContact("Eric Pratt", "2");
+        WiContact contact3 = new WiContact("Eric Pratt", "3");
+        WiContact contact4 = new WiContact("Eric Pratt", "+12223334444");
         mInvitationListDialog.add(new WiInvitation("belkin-622", contact1, "Never", "127 hours", "10GB"));
         mInvitationListDialog.add(new WiInvitation("belkin-048", contact2, "2/28/2019", "36 hours", "5GB"));
         mInvitationListDialog.add(new WiInvitation("home-255", contact3, "3/15/2019", "Never", "None"));
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
 
             intent.removeExtra("inviteNetwork");
 
-            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone, this), expires, other, dataLimit);
+            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone  ), expires, other, dataLimit);
 
             /*
             WiInvitation invitation = null;

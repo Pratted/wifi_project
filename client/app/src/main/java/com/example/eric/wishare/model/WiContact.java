@@ -18,17 +18,13 @@ public class WiContact implements Parcelable{
     private String phone;
     private Integer mDataUsage;
     private Integer mExpiresIn;
-    private WeakReference<Context> mContext;
-    private WiNetworkManager mNetworkManager;
     private List<WiConfiguration> mInvitedNetworks;
 
-    public WiContact(String name, String phone, Context c){
+    public WiContact(String name, String phone){
         this.name = name;
         this.phone = phone;
-        mContext = new WeakReference<>(c);
         init();
     }
-
 
     protected WiContact(Parcel in) {
         name = in.readString();
