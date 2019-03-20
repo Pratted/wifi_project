@@ -1,6 +1,7 @@
 package com.example.eric.wishare.view;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -10,6 +11,9 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.R;
@@ -105,6 +109,44 @@ public class WiContactSharedNetworkListView extends LinearLayout {
         }
     }
 
+    public void hideSelectedNetworks() {
+        int networks = 0;
+        for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
+            System.out.println("Checkbox: " + network.getCheckBoxStatus());
+            if(network.getCheckBoxStatus()) {
+                networks++;
+                network.hide();
+            }
+        }
+    }
+
+    public MaterialDialog.SingleButtonCallback hideAllNetworks() {
+
+        return new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
+                    network.hide();
+                }
+            }
+        };
+    }
+//    public MaterialDialog.SingleButtonCallback hideSelectedNetworks() {
+//        return new MaterialDialog.SingleButtonCallback() {
+//            @Override
+//            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
+//                    System.out.println("Network name here: " + network.getName());
+//                    System.out.println("Checkbox: " + network.getCheckBoxStatus());
+//                    if(network.getCheckBoxStatus()) {
+//                        System.out.println("IN IF Network name here: " + network.getName());
+//                        network.hide();
+//                    }
+//                }
+//            }
+//        };
+//    }
+
     private class WiContactSharedNetworkListViewItem extends LinearLayout {
 
         private WiConfiguration mConfig;
@@ -183,6 +225,18 @@ public class WiContactSharedNetworkListView extends LinearLayout {
                     }
                 }
             };
+        }
+
+        private void hide() {
+            mSharedNetworkListItems.removeView(this);
+        }
+
+        private boolean getCheckBoxStatus() {
+            return mCheckBox.isChecked();
+        }
+
+        private String getName() {
+            return mNetworkName.getText().toString();
         }
     }
 }

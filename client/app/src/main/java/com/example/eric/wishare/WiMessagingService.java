@@ -22,7 +22,7 @@ public class WiMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
-
+    
         System.out.println("DATA RECEIVED" + remoteMessage.toString());
 
         // Check if message contains a data payload.

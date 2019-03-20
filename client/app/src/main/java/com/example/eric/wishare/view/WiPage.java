@@ -59,7 +59,6 @@ public abstract class WiPage extends LinearLayout{
         return qty;
     }
 
-
     public void addListItem(View view){
         mItems.addView(view);
         CheckBox checkbox = (CheckBox) view.findViewById(R.id.cb_select);

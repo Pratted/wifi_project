@@ -59,55 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private WiPermissions mPermissions;
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        for(String permission: permissions){
-            if(permission.equals(WiPermissions.CONTACT) && mPermissions.hasPermission(WiPermissions.CONTACT)){
-                Log.d("MainActivity", "CONTACT Permission granted!");
-
-                mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
-                mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
-                    @Override
-                    public void onContactSelected(WiContact contact) {
-                        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
-                        intent.putExtra("contact", contact);
-                        startActivity(intent);
-                    }
-                });
-                addContacts(this);
-
-                //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
-                mContactListDialog.loadContacts();
-                mContactListDialog.refresh(this);
-
-                mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-                mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
-            }
-            if(permission.equals(WiPermissions.PHONE) && mPermissions.hasPermission(WiPermissions.PHONE)){
-                Log.d("MainActivity", "PHONE Permission granted!");
-
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-                String token = WiUtils.getDeviceToken(this);
-
-                TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
-
-                phone = WiContact.formatPhoneNumber(phone);
-
-                editor.putString("phone", phone);
-                editor.commit();
-                Log.d(TAG, "My phone is: " + phone);
-
-                WiMessagingService.registerDevice(token, phone);
-            }
-            if(permission.equals(WiPermissions.LOCATION) && mPermissions.hasPermission(WiPermissions.LOCATION)){
-
-            }
-        }
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -116,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         mPermissions.requestAllPermissions(this);
 
         System.out.println("Called oncreate...");
+
+        System.out.println("DEVICE TOKEN IS: ");
+        System.out.println(WiUtils.getDeviceToken(this));
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(this, MainActivity.class);
@@ -152,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
          if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
          **/
         if(WiContactList.hasContactPermissions(this)){
-            //addContacts(MainActivity.this);
+            addContacts(MainActivity.this);
             mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
             mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
@@ -161,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onContactSelected(WiContact contact){
                     Intent intent = new Intent(MainActivity.this, ContactActivity.class);
                     intent.putExtra("contact", contact);
+//                    System.out.println(contact.getName() + "'s phone number is: " + contact.getPhone());
+                    System.out.println("STARTING CONTACT ACTIVITY");
                     startActivity(intent);
                 }
             });
@@ -172,10 +128,59 @@ public class MainActivity extends AppCompatActivity {
             // if there are no permissions, make onClick for the button request permissions...
             btnManageContacts.setOnClickListener(requestContactPermissions());
             btnAddNetwork.setOnClickListener(requestContactPermissions());
-
         }
 
         btnShowNotification.setOnClickListener(sendNotification());
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        for(String permission: permissions){
+            if(permission.equals(WiPermissions.CONTACT) && mPermissions.hasPermission(WiPermissions.CONTACT)){
+                Log.d("MainActivity", "CONTACT Permission granted!");
+
+                mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
+                mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
+                    @Override
+                    public void onContactSelected(WiContact contact) {
+                        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                        intent.putExtra("contact", contact);
+                        startActivity(intent);
+                    }
+                });
+                addContacts(this);
+
+                //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
+                mContactListDialog.loadContacts();
+                mContactListDialog.refresh(this);
+
+                mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
+                mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
+            }
+            if(permission.equals(WiPermissions.PHONE) && mPermissions.hasPermission(WiPermissions.PHONE)){
+                Log.d("MainActivity", "PHONE Permission granted!");
+
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                String token = WiUtils.getDeviceToken(this);
+
+                TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+                @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
+
+                phone = WiContact.formatPhoneNumber(phone);
+                editor.putString("phone", phone);
+                editor.commit();
+
+                Log.d(TAG, "My phone is: " + phone);
+
+                WiMessagingService.registerDevice(token, phone);
+            }
+            if(permission.equals(WiPermissions.LOCATION) && mPermissions.hasPermission(WiPermissions.LOCATION)){
+
+            }
+        }
     }
 
     private View.OnClickListener sendNotification(){
@@ -280,7 +285,6 @@ public class MainActivity extends AppCompatActivity {
                 dataLimit = "5 Gb";
             }
 
-
             intent.removeExtra("inviteNetwork");
 
             WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, other, dataLimit);
@@ -313,9 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
                 mDatabase = db;
-
                 while(cursor != null && cursor.moveToNext()) {
-
                     ContentValues values = new ContentValues();
                     String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
                     String phone = WiContact.formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
@@ -325,7 +327,6 @@ public class MainActivity extends AppCompatActivity {
                     mDatabase.insert("SynchronizedContacts", null, values);
 
                 }
-
                 cursor.close();
             }
         });

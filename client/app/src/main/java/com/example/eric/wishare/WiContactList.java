@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
 
+import com.example.eric.wishare.dialog.WiAddNetworkDialog;
 import com.example.eric.wishare.model.WiContact;
 
 import java.lang.ref.WeakReference;
@@ -21,22 +22,22 @@ public class WiContactList {
     private static WiContactListLoader mLoader;
     private WeakReference<Context> mContext;
     private static WiContactList mCL;
-
     private SQLiteDatabase mDatabase;
 
+    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEnteredListener;
     private OnContactListReadyListener mContactListReadyListener;
 
     public WiContactList(Context context) {
         mContactList = new ArrayList<>();
         mPhoneToContact = new HashMap<>();
         mLoader = new WiContactListLoader();
-        mContext = new WeakReference<Context>(context.getApplicationContext());
+        mContext = new WeakReference<>(context.getApplicationContext());
 
         refreshContext(context.getApplicationContext());
     }
 
     public void refreshContext(Context context){
-        mContext = new WeakReference<Context>(context.getApplicationContext());
+        mContext = new WeakReference<>(context.getApplicationContext());
     }
 
     public void loadAsync(Context context){
@@ -63,15 +64,21 @@ public class WiContactList {
         mContactListReadyListener = listener;
     }
 
-    public void load(){
+    public void load() {
 
         WiSQLiteDatabase.getInstance(mContext.get().getApplicationContext()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase db) {
                 mDatabase = db;
+
                 Cursor c = mDatabase.query("SynchronizedContacts", null, null, null,null, null, "name asc;");
                 if (c.moveToFirst()) {
+                    System.out.println("INSIDE IF");
                     WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                    if(contact == null) {
+                        System.out.println("CONTACT IS NULL");
+                    }
+                    System.out.println(contact.getName() + "'s phone: " + contact.getPhone());
                     mContactList.add(contact);
                     mPhoneToContact.put(contact.getPhone(), contact);
                     while(c.moveToNext()) {
@@ -125,8 +132,6 @@ public class WiContactList {
         }
         return mCL;
     }
-
-
 
     private class WiContactListLoader extends AsyncTask<Void, Void, ArrayList<WiContact>> {
 
