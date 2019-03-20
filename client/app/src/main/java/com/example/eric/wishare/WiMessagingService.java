@@ -54,6 +54,9 @@ public class WiMessagingService extends FirebaseMessagingService {
         editor.putString("token", token);
         editor.commit();
 
+        // update the token for future outgoing data messages
+        WiDataMessage.setToken(token);
+
         // if we have access to the phone number, register the device with remote DB
         // otherwise the device will be registered when permissions are granted in MainActivity
         if(WiPermissions.getInstance(this).hasPermission(WiPermissions.PHONE)){

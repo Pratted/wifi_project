@@ -24,6 +24,8 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.example.eric.wishare.dialog.WiAddNetworkDialog;
 import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.dialog.WiInvitationListDialog;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private SQLiteDatabase mDatabase;
 
     private WiPermissions mPermissions;
+    private RequestQueue mRequestQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +66,9 @@ public class MainActivity extends AppCompatActivity {
 
         mPermissions = WiPermissions.getInstance(this);
         mPermissions.requestAllPermissions(this);
+
+        WiDataMessage.setToken(WiUtils.getDeviceToken(this));
+        mRequestQueue = Volley.newRequestQueue(this);
 
         System.out.println("Called oncreate...");
 
@@ -186,13 +192,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                Thread thread = new Thread(new Runnable(){
-                    public void run() {
-                        WiDataMessage.send();
-                }});
+                WiDataMessage msg = new WiDataMessage(null);
+                mRequestQueue.add(msg.send());
 
-                thread.start();
-
+                /*
                 // Wifi
                 WiNetworkManager mNetworkManager = WiNetworkManager.getInstance(MainActivity.this);
                 mNetworkManager.testConnection("305");
@@ -209,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
                 WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
                 notification.show();
+                */
             }
         };
     }
