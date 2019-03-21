@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.WiSQLiteDatabase;
@@ -114,6 +115,26 @@ public class WiAddNetworkDialog extends WiDialog {
                                 mManager.removeNotConfiguredNetwork(config);
                                 Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
                             }})
+                        .neutralText("Test Connection")
+                        .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                WiNetworkManager mNetworkManager = WiNetworkManager.getInstance(mContext.get());
+                                mNetworkManager.testConnection("eduroam");
+
+                                final MaterialDialog d2 = new MaterialDialog.Builder(mContext.get()).progress(true, 100).content("Testing connection...").show();
+
+                                System.out.println("About to test...");
+
+                                mNetworkManager.setOnTestConnectionCompleteListener(new WiNetworkManager.OnTestConnectionCompleteListener() {
+                                    @Override
+                                    public void onTestConnectionComplete(boolean success) {
+                                        d2.dismiss();
+                                        new MaterialDialog.Builder(mContext.get()).title("Connection successful!").positiveText("Ok").show();
+                                    }
+                                });
+                            }
+                        })
                         .show();
             }
         };

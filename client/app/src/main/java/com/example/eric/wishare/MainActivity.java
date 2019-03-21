@@ -36,6 +36,7 @@ import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,21 +57,35 @@ public class MainActivity extends AppCompatActivity {
     private WiManageContactsDialog mContactListDialog;
     private SQLiteDatabase mDatabase;
 
-    private WiPermissions mPermissions;
     private RequestQueue mRequestQueue;
+
+
+    @SuppressLint("ApplySharedPref")
+    private void registerDevice(){
+        if(!WiUtils.isDeviceRegistered(this)){
+            WiMessagingService.registerDevice(
+                    WiUtils.getDeviceToken(this),
+                    WiUtils.getDevicePhone(this)
+            );
+
+            PreferenceManager.getDefaultSharedPreferences(this).edit()
+                    .putBoolean("registered", true)
+                    .commit();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mPermissions = WiPermissions.getInstance(this);
-        mPermissions.requestAllPermissions(this);
+        FirebaseApp.initializeApp(this);
+        registerDevice();
 
         WiDataMessage.setToken(WiUtils.getDeviceToken(this));
-        mRequestQueue = Volley.newRequestQueue(this);
+        WiContactList.getInstance(this).synchronizeContacts(); // async...
 
-        System.out.println("Called oncreate...");
+        mRequestQueue = Volley.newRequestQueue(this);
 
         System.out.println("DEVICE TOKEN IS: ");
         System.out.println(WiUtils.getDeviceToken(this));
@@ -83,15 +98,12 @@ public class MainActivity extends AppCompatActivity {
         // Get the PendingIntent containing the entire back stack
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        FirebaseApp.initializeApp(this);
-
         btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
         mConfiguredNetworkList = findViewById(R.id.configured_network_list);
-
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
         WiContact contact1 = new WiContact("Eric Pratt", "1");
@@ -103,88 +115,25 @@ public class MainActivity extends AppCompatActivity {
         mInvitationListDialog.add(new WiInvitation("home-255", contact3, "3/15/2019", "Never", "None"));
         mInvitationListDialog.add(new WiInvitation("home-200", contact4, "3/15/2019", "24 hours", "3GB"));
 
+        //addContacts(MainActivity.this);
+        mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
+        //mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
-        /**
-         need contact permission to build the ContactListDialog
-         if contact permission is not granted, the user will be prompted on Manage Contacts button click
-         if the user grants permission, the callback onPermissionResult() will construct the WiContactListDialog
-         **/
-        if(WiContactList.hasContactPermissions(this)){
-            addContacts(MainActivity.this);
-            mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
-            mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
+        mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
+            @Override
+            public void onContactSelected(WiContact contact){
+                Intent intent = new Intent(MainActivity.this, ContactActivity.class);
+                intent.putExtra("contact", contact);
+                System.out.println("STARTING CONTACT ACTIVITY");
+                startActivity(intent);
+            }
+        });
 
-            mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
-                @Override
-                public void onContactSelected(WiContact contact){
-                    Intent intent = new Intent(MainActivity.this, ContactActivity.class);
-                    intent.putExtra("contact", contact);
-//                    System.out.println(contact.getName() + "'s phone number is: " + contact.getPhone());
-                    System.out.println("STARTING CONTACT ACTIVITY");
-                    startActivity(intent);
-                }
-            });
+        mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
+        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
-            mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-            mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
-        }
-        else{
-            // if there are no permissions, make onClick for the button request permissions...
-            btnManageContacts.setOnClickListener(requestContactPermissions());
-            btnAddNetwork.setOnClickListener(requestContactPermissions());
-        }
 
         btnShowNotification.setOnClickListener(sendNotification());
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-
-        for(String permission: permissions){
-            if(permission.equals(WiPermissions.CONTACT) && mPermissions.hasPermission(WiPermissions.CONTACT)){
-                Log.d("MainActivity", "CONTACT Permission granted!");
-
-                mContactListDialog = new WiManageContactsDialog(MainActivity.this, btnManageContacts);
-                mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
-                    @Override
-                    public void onContactSelected(WiContact contact) {
-                        Intent intent = new Intent(MainActivity.this, ContactActivity.class);
-                        intent.putExtra("contact", contact);
-                        startActivity(intent);
-                    }
-                });
-                //addContacts(this);
-
-                //need the contact list loaded before showing the dialog. do this SYNCHRONOUSLY
-                mContactListDialog.loadContacts();
-                mContactListDialog.refresh(this);
-
-                mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-                mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
-            }
-            if(permission.equals(WiPermissions.PHONE) && mPermissions.hasPermission(WiPermissions.PHONE)){
-                Log.d("MainActivity", "PHONE Permission granted!");
-
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-                String token = WiUtils.getDeviceToken(this);
-
-                TelephonyManager manager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-                @SuppressLint("MissingPermission") String phone = manager.getLine1Number();
-
-                phone = WiContact.formatPhoneNumber(phone);
-                editor.putString("phone", phone);
-                editor.commit();
-
-                Log.d(TAG, "My phone is: " + phone);
-
-                WiMessagingService.registerDevice(token, phone);
-            }
-            if(permission.equals(WiPermissions.LOCATION) && mPermissions.hasPermission(WiPermissions.LOCATION)){
-
-            }
-        }
     }
 
     private View.OnClickListener sendNotification(){
@@ -192,8 +141,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v){
 
-                WiDataMessage msg = new WiDataMessage(null);
-                mRequestQueue.add(msg.send());
+                //WiDataMessage msg = new WiDataMessage(null);
+                //mRequestQueue.add(msg.send());
 
                 /*
                 // Wifi
@@ -217,16 +166,6 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    private View.OnClickListener requestContactPermissions(){
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, 87);
-                }
-            }
-        };
-    }
 
     private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(){
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
@@ -240,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-
     }
 
     @Override

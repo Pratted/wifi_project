@@ -103,7 +103,11 @@ public class WiNetworkManager {
             mEditor.commit(); // save now, blocking
         }
 
+        System.out.println("Target: " + ssid);
+
         for(WifiConfiguration config : sWifiManager.getConfiguredNetworks()){
+            System.out.println("Current: " + config.SSID.replace("\"", ""));
+
             if(config.SSID.replace("\"", "").equals(ssid)){
                 System.out.println("Attempting to connect to " + ssid);
                 return testConnection(config);

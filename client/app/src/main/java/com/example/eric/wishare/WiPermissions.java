@@ -1,12 +1,9 @@
 package com.example.eric.wishare;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-
-import java.util.ArrayList;
 
 public class WiPermissions {
     private Context mContext;
@@ -32,18 +29,6 @@ public class WiPermissions {
             return mContext.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED;
         }
         return false;
-    }
-
-    public void requestAllPermissions(Activity requester){
-        ArrayList<String> request = new ArrayList<>();
-
-        if(!hasPermission(PHONE)) request.add(PHONE);
-        if(!hasPermission(CONTACT)) request.add(CONTACT);
-        if(!hasPermission(LOCATION)) request.add(LOCATION);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && request.size() > 0) {
-            requester.requestPermissions(request.toArray(new String[request.size()]), 5);
-        }
     }
 
     public boolean hasAllPermissions(){

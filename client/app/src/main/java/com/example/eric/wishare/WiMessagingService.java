@@ -5,6 +5,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -57,14 +58,16 @@ public class WiMessagingService extends FirebaseMessagingService {
         // update the token for future outgoing data messages
         WiDataMessage.setToken(token);
 
-        // if we have access to the phone number, register the device with remote DB
-        // otherwise the device will be registered when permissions are granted in MainActivity
-        if(WiPermissions.getInstance(this).hasPermission(WiPermissions.PHONE)){
-            String phone = prefs.getString("phone", "");
+        // get the phone number, register the device with remote DB
+        String phone = prefs.getString("phone", "");
 
-            if(phone.length() > 0){
-                registerDevice(token, phone);
-            }
+        if(!phone.isEmpty()){
+            registerDevice(token, phone);
+            editor.putBoolean("registered", true);
+            editor.commit();
+        }
+        else{
+            Log.d(TAG, "Cannot register device. Phone is empty -> " + phone);
         }
     }
 
@@ -77,7 +80,8 @@ public class WiMessagingService extends FirebaseMessagingService {
         record.put("date_created", FieldValue.serverTimestamp());
 
         firestore.collection("devices")
-                .add(record)
+                .document(phone)
+                .set(record)
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -85,11 +89,12 @@ public class WiMessagingService extends FirebaseMessagingService {
                         Log.wtf(TAG, "Failed to add token to database", e);
                     }
                 })
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
-                    public void onSuccess(DocumentReference documentReference) {
+                    public void onSuccess(Void aVoid) {
                         Log.d(TAG, "Successfully added token to database!");
                     }
                 });
+
     }
 }

@@ -19,6 +19,17 @@ public class WiUtils {
         return prefs.getString("token", "");
     }
 
+    public static boolean isDeviceRegistered(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean("registered", false);
+    }
+
+    public static boolean isFreshInstall(Context context){
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean("fresh_install", true);
+    }
+
+
     public static String formatPhoneNumber(String phone){
         String revised = "";
 

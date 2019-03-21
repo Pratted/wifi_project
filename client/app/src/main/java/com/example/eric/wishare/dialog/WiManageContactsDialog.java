@@ -76,12 +76,4 @@ public class WiManageContactsDialog extends WiDialog{
                 .negativeText("Cancel")
                 .build();
     }
-
-    public void loadContacts(){
-        mContactList.load();
-    }
-
-    public void loadContactsAsync(){
-        mContactList.loadAsync(context.get());
-    }
 }
