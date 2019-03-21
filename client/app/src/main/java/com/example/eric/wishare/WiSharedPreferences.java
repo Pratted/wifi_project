@@ -21,7 +21,7 @@ public class WiSharedPreferences {
 
     private WiSharedPreferences(Context context) {
         keyValue = new HashMap<>();
-        mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(context.getApplicationContext());
         mEditor = mPrefs.edit();
 //        mEditor.apply();
     }
@@ -38,6 +38,13 @@ public class WiSharedPreferences {
 
     public String getFromSharedPrefs(String name) {
         return mPrefs.getString(name, "");
+    }
+
+    public void load() {
+        Map<String, ?> entries = mPrefs.getAll();
+        for (Map.Entry<String, ?> entry : entries.entrySet()) {
+            keyValue.put(entry.getKey(), entry.getValue().toString());
+        }
     }
 
     public static WiSharedPreferences getInstance(Context c) {
