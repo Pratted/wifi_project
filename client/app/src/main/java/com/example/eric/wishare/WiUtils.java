@@ -14,7 +14,7 @@ public class WiUtils {
         return prefs.getString("phone", "");
     }
 
-    public static String getDeviceToken(Context context){
+    public static String getDeviceToken(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         return prefs.getString("token", "");
     }

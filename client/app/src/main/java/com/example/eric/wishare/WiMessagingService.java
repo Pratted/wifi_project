@@ -53,7 +53,7 @@ public class WiMessagingService extends FirebaseMessagingService {
 
         // immediately save the new token into shared prefs for future use.
         editor.putString("token", token);
-        editor.commit();
+        editor.apply();
 
         // update the token for future outgoing data messages
         WiDataMessage.setToken(token);
