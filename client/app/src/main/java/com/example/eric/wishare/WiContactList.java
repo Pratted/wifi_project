@@ -125,6 +125,7 @@ public class WiContactList {
     private ArrayList<WiContact> loadDeviceContacts(){
         ArrayList<WiContact> contacts = new ArrayList<>();
         ContentResolver resolver = mContext.get().getContentResolver();
+
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         while(cursor != null && cursor.moveToNext()) {
@@ -137,21 +138,42 @@ public class WiContactList {
         return contacts;
     }
 
-    private ArrayList<WiContact> loadDbContacts(){
+    private ArrayList<WiContact> loadDbContacts() {
         ArrayList<WiContact> contacts = new ArrayList<>();
         SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
         Cursor cur = db.rawQuery("select * from SynchronizedContacts order by name asc", null);
 
-        if(cur != null && cur.moveToFirst()){
+        if (cur != null && cur.moveToFirst()) {
             do {
                 contacts.add(new WiContact(
                         cur.getString(cur.getColumnIndex("name")),
                         cur.getString(cur.getColumnIndex("phone"))));
-            } while(cur.moveToNext());
+            } while (cur.moveToNext());
         }
         cur.close();
 
         return contacts;
+    }
+
+    private synchronized ArrayList<WiContact> getPermittedContacts(final String networkSSID){
+        final ArrayList<WiContact> permittedContacts = new ArrayList<>();
+        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase db) {
+                mDatabase = db;
+                Cursor c = mDatabase.query("PermittedContacts", null, "SSID=?", new String[]{networkSSID}, null, null,"name asc");
+                if (c.moveToFirst()) {
+                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                    permittedContacts.add(contact);
+                    while(c.moveToNext()) {
+                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
+                        permittedContacts.add(contact);
+                    }
+                }
+                c.close();
+            }
+        });
+        return permittedContacts;
     }
 
     public synchronized void synchronizeContacts(){
