@@ -172,12 +172,14 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
             mCheckBox = findViewById(R.id.cb_network_select);
 
+
             mExpandableLayout = findViewById(R.id.expandable_network);
 
             mNetworkName = findViewById(R.id.btn_network_name);
             mNetworkName.setText(mConfig.getSSID());
 
             mNetworkActivityButton = findViewById(R.id.btn_network_activity);
+
             //mContactsWithSharedNetwork = findViewById(R.id.ll_contacts_with_shared_network);
 
             mNetworkName.setOnClickListener(expand());

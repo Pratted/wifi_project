@@ -11,6 +11,8 @@ import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import java.util.ArrayList;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
@@ -86,6 +88,7 @@ public class WiInvitationListDialog extends WiDialog{
         private TextView tvInvitationTitle;
         private TextView tvInvitationOwner;
         private WiInvitationAcceptDeclineDialog mAcceptDeclineDialog;
+        private ExpandableLayout mExpandableLayout;
         //private TextView tvInvitationExpires;
 
         public WiInvitationListItem(WiInvitation invitation){
@@ -103,7 +106,11 @@ public class WiInvitationListDialog extends WiDialog{
             mLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mAcceptDeclineDialog.show();
+                    if(mExpandableLayout.isExpanded()) {
+                        mExpandableLayout.collapse();
+                    } else {
+                        mExpandableLayout.expand();
+                    }
                 }
             });
         }
@@ -111,6 +118,8 @@ public class WiInvitationListDialog extends WiDialog{
         public void refresh(){
             tvInvitationTitle = mLayout.findViewById(R.id.tv_invitation_title);
             tvInvitationOwner = mLayout.findViewById(R.id.tv_invitation_owner);
+
+            mExpandableLayout = mLayout.findViewById(R.id.expandable_layout_invitation);
 
             tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
             tvInvitationOwner.setText(mInvitation.owner.getName());
