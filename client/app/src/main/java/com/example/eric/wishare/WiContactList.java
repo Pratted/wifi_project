@@ -61,7 +61,7 @@ public class WiContactList {
             @Override
             protected Void doInBackground(Void... voids) {
                 Log.d(TAG, "Begin Synchronize Contacts!");
-                mDeviceContacts = loadDeviceContacts();
+                    mDeviceContacts = loadDeviceContacts();
                 mDbContacts = loadDbContacts();
 
                 msg = new WiDataMessage();
@@ -85,6 +85,7 @@ public class WiContactList {
                     public void onResponse(JSONObject response) {
                         Log.d(TAG, "Received Response from server");
                         Log.d(TAG, response.toString());
+                        mContactListArray = new ArrayList<>();
 
                         HashSet<String> contactsWithWiShare = new HashSet<>();
 
@@ -107,6 +108,9 @@ public class WiContactList {
                                 Log.d(TAG, "It is not the DB. Lets add it lol");
                                 mBuffer.add(mDeviceContacts.get(phone));
                             }
+                            else{
+                                mContactListArray.add(mDbContacts.get(phone));
+                            }
                         }
 
                         WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
@@ -116,20 +120,19 @@ public class WiContactList {
                                 for(WiContact contact: mBuffer){
                                     theDB.insert("SynchronizedContacts", null, contact.toContentValues());
                                     Log.d(TAG, "Adding record to database! " + contact.toString());
+                                    mContactListArray.add(contact);
                                 }
 
                                 mBuffer.clear();
                                 synchronizing = false;
+                                mContactListReadyListener.onContactListReady(mContactListArray);
                             }
                         });
-
-                        //mContactListReadyListener.onContactListReady();
                     }
                 });
 
                 mDataMessageController.send(msg);
 
-                //msg.send();
                 Log.d(TAG, "End Synchronize Contacts!");
                 return null;
             }
@@ -137,15 +140,6 @@ public class WiContactList {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-            }
-        };
-    }
-
-    private WiDataMessage.OnResponseListener onServerContactResponse() {
-        return new WiDataMessage.OnResponseListener(){
-            @Override
-            public void onResponse(JSONObject response) {
-
             }
         };
     }

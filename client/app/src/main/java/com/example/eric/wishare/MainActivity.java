@@ -115,9 +115,7 @@ public class MainActivity extends AppCompatActivity {
         mInvitationListDialog.add(new WiInvitation("home-255", contact3, "3/15/2019", "Never", "None"));
         mInvitationListDialog.add(new WiInvitation("home-200", contact4, "3/15/2019", "24 hours", "3GB"));
 
-        //addContacts(MainActivity.this);
         mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
-        //mContactListDialog.loadContactsAsync(); // start loading the contacts asynchronously.
 
         mContactListDialog.setOnContactSelectedListener(new WiManageContactsDialog.OnContactSelectedListener() {
             @Override
@@ -247,30 +245,5 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private void addContacts(final Context context){
-        WiSQLiteDatabase.getInstance(context).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase db) {
-                ContentResolver resolver = context.getContentResolver();
-                Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
-
-                mDatabase = db;
-                while(cursor != null && cursor.moveToNext()) {
-                    ContentValues values = new ContentValues();
-                    String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-                    String phone = WiContact.formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                    values.put("name", name);
-                    values.put("phone", phone);
-                    if (phone.contains("+")){
-                        System.out.println("foo");
-                    }
-                    mDatabase.insert("SynchronizedContacts", null, values);
-
-                }
-                cursor.close();
-            }
-        });
     }
 }

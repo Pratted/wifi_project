@@ -32,8 +32,6 @@ public class WiManageContactsDialog extends WiDialog{
         btnManageContacts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                System.out.println("HEREEEEEEEEEEEEEEEEEe");
                 WiManageContactsDialog.this.show();
             }
         });
