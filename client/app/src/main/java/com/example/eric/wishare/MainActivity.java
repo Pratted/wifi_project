@@ -55,9 +55,6 @@ public class MainActivity extends AppCompatActivity {
     private WiInvitationListDialog mInvitationListDialog;
     private WiAddNetworkDialog mAddNetworkDialog;
     private WiManageContactsDialog mContactListDialog;
-    private SQLiteDatabase mDatabase;
-
-    private RequestQueue mRequestQueue;
 
 
     @SuppressLint("ApplySharedPref")
@@ -84,8 +81,6 @@ public class MainActivity extends AppCompatActivity {
 
         WiDataMessage.setToken(WiUtils.getDeviceToken(this));
         WiContactList.getInstance(this).synchronizeContacts(); // async...
-
-        mRequestQueue = Volley.newRequestQueue(this);
 
         System.out.println("DEVICE TOKEN IS: ");
         System.out.println(WiUtils.getDeviceToken(this));
@@ -138,9 +133,6 @@ public class MainActivity extends AppCompatActivity {
         return new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
-                //WiDataMessage msg = new WiDataMessage(null);
-                //mRequestQueue.add(msg.send());
 
                 /*
                 // Wifi
