@@ -1,10 +1,13 @@
 package com.example.eric.wishare.model;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 
 import com.example.eric.wishare.WiNetworkManager;
+import com.example.eric.wishare.WiUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -103,7 +106,7 @@ public class WiContact implements Parcelable{
     }
 
     public String getPhone() {
-        return this.phone;
+        return WiUtils.formatPhoneNumber(phone);
     }
 
     public void setPhone(String phone) {
@@ -142,5 +145,12 @@ public class WiContact implements Parcelable{
     @Override
     public String toString() {
         return name;
+    }
+
+    public ContentValues toContentValues(){
+        ContentValues vals = new ContentValues();
+        vals.put("name", name);
+        vals.put("phone", phone);
+        return vals;
     }
 }

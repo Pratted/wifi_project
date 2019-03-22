@@ -26,8 +26,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             "CREATE TABLE SynchronizedContacts (" +
                     "contact_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
                     "phone varchar(255) UNIQUE," +
-                    "name varchar(255)," +
-                    "token varchar(255))";
+                    "name varchar(255))";
     private static final String mSQL_CREATE_CONFIGUREDNETWORKS =
             "CREATE TABLE WifiConfiguration (" +
                     "network_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +

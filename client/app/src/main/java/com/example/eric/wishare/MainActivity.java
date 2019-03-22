@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
                     String phone = WiContact.formatPhoneNumber(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
                     values.put("name", name);
                     values.put("phone", phone);
-                    values.put("token", "iAmAToken");
                     if (phone.contains("+")){
                         System.out.println("foo");
                     }
