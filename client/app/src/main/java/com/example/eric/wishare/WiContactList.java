@@ -65,7 +65,7 @@ public class WiContactList {
                     mDeviceContacts = loadDeviceContacts();
                 mDbContacts = loadDbContacts();
 
-                msg = new WiDataMessage();
+                msg = new WiDataMessage(WiDataMessage.MSG_CONTACT_LIST);
                 Log.d(TAG, "Loaded " + mDeviceContacts.size() + " contacts from phone");
 
                 JSONArray jsonPhones = new JSONArray();
