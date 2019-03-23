@@ -3,8 +3,10 @@ package com.example.eric.wishare.dialog;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TabHost;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
@@ -22,6 +24,7 @@ import java.util.List;
 
 public class WiInviteContactToNetworkDialog extends WiDialog {
 
+    private String TAG = "WiInviteContactToNetworkDialog";
     private List<WiConfiguration> mNetworks;
     private WiNetworkManager mNetworkManager;
     private WiContact mContact;
@@ -35,10 +38,11 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         super(context);
         mContact = contact;
         System.out.println("Contact name: " + mContact.getName());
-//        mContact.updateInvitedNetworks(context);
+
         mNetworkManager = WiNetworkManager.getInstance(context);
-//        mNetworks = WiNetworkManager.getConfiguredNetworks(context);
+
         buildAvailableNetworkList();
+
         btnAddContactToNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,14 +86,20 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
 
     private void buildAvailableNetworkList() {
         mNetworks = mNetworkManager.getConfiguredNetworks();
+
+        Log.d(TAG, "mNetworks.isEmpty()" + mNetworks.isEmpty());
+
         for(WiConfiguration config : mNetworks) {
-            System.out.println("IN BUILD Config SSID: " + config.getSSID());
+            Log.d(TAG, "IN BUILD Config SSID: " + config.getSSID());
         }
+
 
         mNetworks.removeAll(mContact.getInvitedNetworks());
 
+        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty()" + mContact.getInvitedNetworks().isEmpty());
+
         for(WiConfiguration config : mContact.getInvitedNetworks()) {
-            System.out.println("IN BUILD 2 Config SSID: " + config.getSSID());
+            Log.d(TAG, "IN BUILD 2 Config SSID: " + config.getSSID());
         }
     }
 
@@ -106,6 +116,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                     mContact.addToInvitedNetworks(config);
                     mNetworks.remove(config);
                     msg.put(new WiInvitation(config.getSSID(), mContact, "never", "", "500"));
+                    msg.putRecipient(mContact.getPhone());
+                    WiDataMessageController.getInstance(context.get()).send(msg);
 
                 } else {
                     for(int i = indices.length - 1; i >= 0; i--) {
@@ -114,6 +126,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         mContact.addToInvitedNetworks(config);
                         mNetworks.remove(config);
                         msg.put(new WiInvitation(config.getSSID(), mContact, "never", "", "150"));
+                        msg.putRecipient(mContact.getPhone());
+                        WiDataMessageController.getInstance(context.get()).send(msg);
                     }
                 }
 
@@ -136,8 +150,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         spinnyThing.dismiss();
                     }
                 });
-                msg.putRecipient(mContact.getPhone());
-                WiDataMessageController.getInstance(context.get()).send(msg);
+//                msg.putRecipient(mContact.getPhone());
+//                WiDataMessageController.getInstance(context.get()).send(msg);
             }
         };
     }
