@@ -1,31 +1,16 @@
 package com.example.eric.wishare;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.ContactsContract;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.example.eric.wishare.dialog.WiAddNetworkDialog;
 import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.dialog.WiInvitationListDialog;
@@ -36,7 +21,6 @@ import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.messaging.FirebaseMessagingService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,7 +28,8 @@ import org.json.JSONObject;
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
-    private WiConfiguredNetworkListView mConfiguredNetworkList;
+    private WiConfiguredNetworkListView mConfiguredNetworkListView;
+    private WiNetworkManager mConfiguredNetworks;
 
     private Button btnShowNotification;
 
@@ -98,7 +83,11 @@ public class MainActivity extends AppCompatActivity {
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
-        mConfiguredNetworkList = findViewById(R.id.configured_network_list);
+        mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
+        mConfiguredNetworks = new WiNetworkManager(this);
+        for (WiConfiguration configuredNetwork : mConfiguredNetworks.getConfiguredNetworks()){
+            mConfiguredNetworkListView.addView(configuredNetwork);
+        }
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
         WiContact contact1 = new WiContact("Eric Pratt", "1");
@@ -160,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override
             public void OnPasswordEntered(WiConfiguration config) {
-                mConfiguredNetworkList.addView(config);
+                mConfiguredNetworkListView.addView(config);
             }
         };
     }

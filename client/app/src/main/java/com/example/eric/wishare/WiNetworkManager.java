@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
@@ -19,6 +21,7 @@ import com.example.eric.wishare.model.WiConfiguration;
 
 import com.example.eric.wishare.model.WiConfiguration;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,23 +35,29 @@ public class WiNetworkManager {
     private static WifiManager sWifiManager;
     private static ArrayList<WiConfiguration> mConfiguredNetworks;
     private static ArrayList<WifiConfiguration> mNotConfiguredNetworks;
+    private SQLiteDatabase mDatabase;
 
     private static HashMap<String, WifiConfiguration> mConfigured;
     private SharedPreferences.Editor mEditor;
 
-    private Context mContext;
+    private WeakReference<Context> mContext;
 
-    private WiNetworkManager(Context context) {
-        mContext = context;
-        sWifiManager = (WifiManager) mContext.getApplicationContext().getSystemService(WIFI_SERVICE);
+    public WiNetworkManager(Context context) {
+        mContext = new WeakReference<>(context.getApplicationContext());
+        sWifiManager = (WifiManager) mContext.get().getApplicationContext().getSystemService(WIFI_SERVICE);
         mEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
         mConfiguredNetworks = new ArrayList<>();
         mNotConfiguredNetworks = new ArrayList<>();
         mConfigured = new HashMap<>();
+        loadNetworks();
     }
 
-    public static ArrayList<WifiConfiguration> getConfiguredNetworks(Context context) {
+    public static ArrayList<WiConfiguration> getConfiguredNetworks(Context context) {
+        return mConfiguredNetworks;
+    }
+
+    public static ArrayList<WifiConfiguration> getNotConfiguredNetworks(Context context) {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(WIFI_SERVICE);
         List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
         mNotConfiguredNetworks.addAll(wifiList);
@@ -56,6 +65,9 @@ public class WiNetworkManager {
     }
 
     public void addConfiguredNetwork(WiConfiguration config) {
+        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
+        mDatabase = db;
+        mDatabase.insert("ConfiguredNetworks", null, config.toContentValues());
         mConfiguredNetworks.add(config);
     }
 
@@ -83,9 +95,9 @@ public class WiNetworkManager {
     public boolean testConnection(String ssid){
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mContext.registerReceiver(getWifiConnectedReceiver(), intentFilter);
+        mContext.get().registerReceiver(getWifiConnectedReceiver(), intentFilter);
 
-        ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) mContext.get().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo tmp = cm.getActiveNetworkInfo();
 
         if(tmp == null){
@@ -119,6 +131,21 @@ public class WiNetworkManager {
 
     public boolean testConnection(WifiConfiguration config){
         return sWifiManager.enableNetwork(config.networkId, true);
+    }
+
+    private void loadNetworks(){
+        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
+        Cursor cur = db.rawQuery("select * from SynchronizedContacts order by name asc", null);
+
+        if (cur != null && cur.moveToFirst()) {
+            do {
+                WiConfiguration wiConfiguration = new WiConfiguration(
+                        cur.getString(cur.getColumnIndex("SSID")),
+                        cur.getString(cur.getColumnIndex("password")));
+                mConfiguredNetworks.add(wiConfiguration);
+            } while (cur.moveToNext());
+        }
+        cur.close();
     }
 
     public ArrayList<WifiConfiguration> getNotConfiguredNetworks() {

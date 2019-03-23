@@ -1,6 +1,7 @@
 package com.example.eric.wishare.model;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.net.wifi.WifiConfiguration;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -83,4 +84,10 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         return json;
     }
 
+    public ContentValues toContentValues(){
+        ContentValues vals = new ContentValues();
+        vals.put("name", mSSID);
+        vals.put("phone", mPassword);
+        return vals;
+    }
 }
