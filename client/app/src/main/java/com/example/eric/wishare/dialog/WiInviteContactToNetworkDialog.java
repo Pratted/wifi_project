@@ -116,7 +116,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                     mContact.addToInvitedNetworks(config);
                     mNetworks.remove(config);
 
-                    msg.put(new WiInvitation(config.getSSID(), mContact, "never", "", "500"));
+                    msg = new WiDataMessage(new WiInvitation(config.getSSID(), mContact, "never", "", "500"));
                     msg.putRecipient(mContact.getPhone());
 
                     WiDataMessageController.getInstance(context.get()).send(msg);
@@ -128,7 +128,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         mContact.addToInvitedNetworks(config);
                         mNetworks.remove(config);
 
-                        msg.put(new WiInvitation(config.getSSID(), mContact, "never", "", "150"));
+                        msg = new WiDataMessage(new WiInvitation(config.getSSID(), mContact, "never", "", "150"));
                         msg.putRecipient(mContact.getPhone());
 
                         WiDataMessageController.getInstance(context.get()).send(msg);

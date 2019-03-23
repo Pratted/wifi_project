@@ -7,14 +7,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class WiDataMessage extends JSONObject {
 
@@ -30,6 +34,8 @@ public class WiDataMessage extends JSONObject {
     
     private OnResponseListener mOnResponseListener;
     private int messageType;
+
+    List<String> recipients = new ArrayList<>();
 
     // every data message has a 'to' and 'msg_type' field
     private void init(){
@@ -50,22 +56,44 @@ public class WiDataMessage extends JSONObject {
         init();
     }
 
+    public WiDataMessage(WiInvitation inv){
+        messageType = MSG_INVITATION;
+
+        Iterator<String> keys = inv.toJSON().keys();
+        JSONObject json = inv.toJSON();
+
+        try{
+            while(keys.hasNext()){
+                String key = keys.next();
+                put(key, json.getString(key));
+            }
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public WiDataMessage(Map<String, String> data){
+        messageType = Integer.valueOf(data.get("msg_type"));
+
+        try{
+            Log.d(TAG, "Begin copying data");
+            for(String key: data.keySet()){
+                put(key, data.get(key));
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public WiDataMessage(Integer msg_type, List<String> recipients){
         messageType = msg_type;
-
-        init();
-
-        for(String recipient: recipients){
-            putRecipient(recipient);
-        }
+        this.recipients = recipients;
     }
 
     public WiDataMessage(Integer msg_type, String recipient){
         messageType = msg_type;
-
-        init();
-
-        putRecipient(recipient);
+        this.recipients.add(recipient);
     }
 
     public void putRecipient(String phone){
@@ -81,6 +109,18 @@ public class WiDataMessage extends JSONObject {
 
         mUrl = BASE_URL + (messageType != MSG_CONTACT_LIST ? "msg" : "");
         mUrl += "?token=" + WiDataMessageController.TOKEN;
+
+        try{
+            put("msg_type", messageType);
+            put("to", new JSONArray());
+
+            for(String recipient: recipients){
+                getJSONArray("to").put(recipient);
+            }
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, this,
                 new Response.Listener<JSONObject>() {
@@ -115,35 +155,15 @@ public class WiDataMessage extends JSONObject {
         mOnResponseListener = listener;
     }
 
-    public ArrayList<WiInvitation> getWiInvitations() {
-        ArrayList<WiInvitation> invitations = new ArrayList<>();
-        try {
-            JSONArray arr = getJSONArray("networks");
-
-            for(int i = 0; i < arr.length(); i++){
-               invitations.add(new WiInvitation((JSONObject) arr.get(i)));
-            }
-
-            return invitations;
-        } catch (JSONException e){
-            e.printStackTrace();
-            return invitations;
+    public WiInvitation getWiInvitation() {
+        try{
+            return new WiInvitation(getString("network_name"), new WiContact("NA", "NA"), getString("expires"), "fuck time limit", getString("data_limit"));
+        } catch(JSONException e){
+            return null;
         }
     }
 
     public interface OnResponseListener {
         void onResponse(JSONObject response);
-    }
-
-    public void put(WiInvitation invitation) {
-        try {
-            if(!has("networks")) {
-                put("networks", new JSONArray());
-            }
-            getJSONArray("networks").put(invitation.toJSON());
-
-        } catch (JSONException e) {
-
-        }
     }
 }
