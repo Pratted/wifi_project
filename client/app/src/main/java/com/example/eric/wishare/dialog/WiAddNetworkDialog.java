@@ -65,7 +65,7 @@ public class WiAddNetworkDialog extends WiDialog {
         super(context);
         mContext = new WeakReference<>(context);
         mManager = WiNetworkManager.getInstance(context.getApplicationContext());
-        List<WifiConfiguration> wifiList = WiNetworkManager.getConfiguredNetworks(context);
+        List<WifiConfiguration> wifiList = WiNetworkManager.getNotConfiguredNetworks(context);
 
         mNetworks = new ArrayList<>();
 

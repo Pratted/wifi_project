@@ -35,7 +35,6 @@ public class WiNetworkManager {
     private static WifiManager sWifiManager;
     private static ArrayList<WiConfiguration> mConfiguredNetworks;
     private static ArrayList<WifiConfiguration> mNotConfiguredNetworks;
-    private SQLiteDatabase mDatabase;
 
     private static HashMap<String, WifiConfiguration> mConfigured;
     private SharedPreferences.Editor mEditor;
@@ -64,11 +63,15 @@ public class WiNetworkManager {
         return mNotConfiguredNetworks;
     }
 
-    public void addConfiguredNetwork(WiConfiguration config) {
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
-        mDatabase = db;
-        mDatabase.insert("ConfiguredNetworks", null, config.toContentValues());
+    public void addConfiguredNetwork(final WiConfiguration config) {
+        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase db) {
+                db.insert("WifiConfiguration", null, config.toContentValues());
+            }
+        });
         mConfiguredNetworks.add(config);
+
     }
 
     public void addNotConfiguredNetwork(WifiConfiguration config) {
@@ -135,7 +138,7 @@ public class WiNetworkManager {
 
     private void loadNetworks(){
         SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
-        Cursor cur = db.rawQuery("select * from SynchronizedContacts order by name asc", null);
+        Cursor cur = db.rawQuery("select * from WifiConfiguration", null);
 
         if (cur != null && cur.moveToFirst()) {
             do {

@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
         mConfiguredNetworks = new WiNetworkManager(this);
-        for (WiConfiguration configuredNetwork : mConfiguredNetworks.getConfiguredNetworks()){
+        for (WiConfiguration configuredNetwork : mConfiguredNetworks.getConfiguredNetworks(this)){
             mConfiguredNetworkListView.addView(configuredNetwork);
         }
 
