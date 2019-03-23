@@ -11,14 +11,17 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
-
 public class WiDataMessage {
 
     private final String TAG = "WiDataMessage";
-    private JSONObject mJSONObect;
+    private JSONObject mData;
     private String mUrl;
 
+    public final static Integer MSG_ACKNOWLEDGE = 0;
+    public final static Integer MSG_INVITATION = 1;
+    public final static Integer MSG_CREDENTIALS = 2;
+
+    public final static Integer PORT = 3000;
 
     private static String QUERY_STRING = "?token=abc123";
     public static final String BASE_URL = "http://192.3.135.177:3000/";
@@ -26,13 +29,22 @@ public class WiDataMessage {
     private OnResponseListener mOnResponseListener;
 
     public WiDataMessage() {
-        mJSONObect = new JSONObject();
+        mData = new JSONObject();
         mUrl = BASE_URL;
     }
 
     public WiDataMessage(JSONObject json){
-        mJSONObect = json;
+        mData = json;
         mUrl = BASE_URL;
+    }
+
+    public WiDataMessage(Integer msg_type, JSONObject data){
+        try {
+            mData = data;
+            mData.put("msg_type", msg_type);
+        } catch (Exception e){
+
+        }
     }
 
     public static void setToken(String token){
@@ -41,7 +53,7 @@ public class WiDataMessage {
 
     public void put(String key, Object value){
         try {
-            mJSONObect.put(key, value);
+            mData.put(key, value);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -53,7 +65,7 @@ public class WiDataMessage {
 
     public JsonObjectRequest build(){
         Log.d(TAG, "Building WiDataMessage...");
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, mJSONObect,
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, mData,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
