@@ -1,7 +1,6 @@
 package com.example.eric.wishare;
 
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -57,7 +56,7 @@ public class WiDataMessage extends JSONObject {
         init();
 
         for(String recipient: recipients){
-            addRecipient(recipient);
+            putRecipient(recipient);
         }
     }
 
@@ -66,10 +65,10 @@ public class WiDataMessage extends JSONObject {
 
         init();
 
-        addRecipient(recipient);
+        putRecipient(recipient);
     }
 
-    public void addRecipient(String phone){
+    public void putRecipient(String phone){
         try {
             getJSONArray("to").put(phone);
         } catch (Exception e){
@@ -79,7 +78,9 @@ public class WiDataMessage extends JSONObject {
 
     public JsonObjectRequest build(){
         Log.d(TAG, "Building WiDataMessage...");
-        mUrl = BASE_URL + (getMessageType() != MSG_CONTACT_LIST ? "msg" : "");
+
+        mUrl = BASE_URL + (messageType != MSG_CONTACT_LIST ? "msg" : "");
+        mUrl += "?token=" + WiDataMessageController.TOKEN;
 
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, this,
                 new Response.Listener<JSONObject>() {
