@@ -74,7 +74,8 @@ public class WiDataMessage {
                     }
                 });
 
-        req.setRetryPolicy(new DefaultRetryPolicy(10000,
+
+        req.setRetryPolicy(new DefaultRetryPolicy(20000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 

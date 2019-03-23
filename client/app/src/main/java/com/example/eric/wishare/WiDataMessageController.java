@@ -2,6 +2,7 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -56,6 +57,8 @@ public class WiDataMessageController {
     }
 
     public void send(WiDataMessage msg){
+        Log.d("WiDataMessageController", "Adding to request queue!");
         addToRequestQueue(msg.build());
+        Log.d("WiDataMessageController", "Added to request queue!");
     }
 }

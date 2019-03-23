@@ -39,10 +39,7 @@ public class WiContact implements Parcelable{
     }
 
     private void init() {
-//        this.mNetworkManager = WiNetworkManager.getInstance(mContext.get());
         this.mInvitedNetworks = new ArrayList<>();
-
-//        this.mInvitedNetworks.addAll(mNetworkManager.getConfiguredNetworks());
 
         Random r = new Random();
         mDataUsage = r.nextInt(100);
@@ -80,21 +77,6 @@ public class WiContact implements Parcelable{
 
     public List<WiConfiguration> getInvitedNetworks() {
         return this.mInvitedNetworks;
-    }
-
-    public static String formatPhoneNumber(String phone){
-        String revised = "";
-
-        /***********************************************************************************
-         Source - https://stackoverflow.com/a/16702965
-         ************************************************************************************/
-        Pattern regex = Pattern.compile("^\\s*(?:\\+?(\\d{1,3}))?[-. (]*(\\d{3})[-. )]*(\\d{3})[-. ]*(\\d{4})(?: *x(\\d+))?\\s*$");
-        Matcher matcher = regex.matcher(phone);
-
-        if(matcher.matches()){
-            revised = matcher.group(2) + "-" + matcher.group(3) + "-" + matcher.group(4);
-        }
-        return revised;
     }
 
     public String getName() {

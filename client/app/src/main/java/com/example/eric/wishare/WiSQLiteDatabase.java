@@ -39,12 +39,22 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                     "data_limit varchar(255)," +
                     "PRIMARY KEY(network_id, contact_id))";
 
+    private static final String mSQL_CREATE_INVIATION =
+            "CREATE TABLE Invitation (" +
+                    "invitation_id Integer not null primary key autoincrement," +
+                    "sender varchar(255)," +
+                    "expires varchar(255)," +
+                    "data_limit Integer)";
+
     private static final String mSQL_DELETE_SYNCHRONIZEDCONTACTS =
             "DROP TABLE IF EXISTS SynchronizedContacts";
     private static final String mSQL_DELETE_CONFIGUREDNETWORKS =
             "DROP TABLE IF EXISTS WifiConfiguration";
     private static final String mSQL_DELETE_PERMITTEDCONTACTS =
             "DROP TABLE IF EXISTS PermittedContacts";
+
+    private static final String mSQL_DELETE_INVITATION =
+            "DROP TABLE IF EXISTS Invitation";
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
@@ -57,15 +67,12 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         return mDB;
     }
 
-    interface OnContactListReadyListener{
-        void onContactListReady(ArrayList<WiContact> contacts);
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(mSQL_CREATE_SYNCHRONIZEDCONTACTS);
         db.execSQL(mSQL_CREATE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_CREATE_PERMITTEDCONTACTS);
+        db.execSQL(mSQL_CREATE_INVIATION);
     }
 
     @Override
@@ -73,6 +80,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         db.execSQL(mSQL_DELETE_SYNCHRONIZEDCONTACTS);
         db.execSQL(mSQL_DELETE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_DELETE_PERMITTEDCONTACTS);
+        db.execSQL(mSQL_DELETE_INVITATION);
         onCreate(db);
     }
 

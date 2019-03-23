@@ -83,6 +83,11 @@ public class WiContactList {
                 msg.setOnResponseListener(new WiDataMessage.OnResponseListener() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        if(response == null){
+                            Log.e(TAG, "Server did not respond");
+                            return;
+                        }
+
                         Log.d(TAG, "Received Response from server");
                         Log.d(TAG, response.toString());
                         mContactListArray = new ArrayList<>();
