@@ -7,55 +7,34 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.eric.wishare.model.WiInvitation;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class WiDataMessage {
+import static com.example.eric.wishare.WiDataMessageController.BASE_URL;
+
+public class WiDataMessage extends JSONObject {
 
     private final String TAG = "WiDataMessage";
-    private JSONObject mData;
     private String mUrl;
 
     public final static Integer MSG_ACKNOWLEDGE = 0;
     public final static Integer MSG_INVITATION = 1;
     public final static Integer MSG_CREDENTIALS = 2;
 
-    public final static Integer PORT = 3000;
-
-    private static String QUERY_STRING = "?token=abc123";
-    public static final String BASE_URL = "http://192.3.135.177:3000/";
-
     private OnResponseListener mOnResponseListener;
 
     public WiDataMessage() {
-        mData = new JSONObject();
         mUrl = BASE_URL;
     }
 
-    public WiDataMessage(JSONObject json){
-        mData = json;
-        mUrl = BASE_URL;
-    }
-
-    public WiDataMessage(Integer msg_type, JSONObject data){
+    public WiDataMessage(Integer msg_type){
         try {
-            mData = data;
-            mData.put("msg_type", msg_type);
+            put("msg_type", msg_type);
         } catch (Exception e){
 
-        }
-    }
-
-    public static void setToken(String token){
-        QUERY_STRING = "?token="+token;
-    }
-
-    public void put(String key, Object value){
-        try {
-            mData.put(key, value);
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
     }
 
@@ -65,7 +44,7 @@ public class WiDataMessage {
 
     public JsonObjectRequest build(){
         Log.d(TAG, "Building WiDataMessage...");
-        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, mData,
+        JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, this,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -100,5 +79,17 @@ public class WiDataMessage {
 
     public interface OnResponseListener {
         void onResponse(JSONObject response);
+    }
+
+    public void put(WiInvitation invitation) {
+        try {
+            if(!has("networks")) {
+                put("networks", new JSONArray());
+            }
+            getJSONArray("networks").put(invitation.toJSON());
+
+        } catch (JSONException e) {
+
+        }
     }
 }

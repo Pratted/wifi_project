@@ -5,6 +5,9 @@ import android.net.wifi.WifiConfiguration;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 @SuppressLint("ParcelCreator")
 public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
@@ -67,6 +70,17 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mSSID);
         dest.writeString(mPassword);
+    }
+
+    public JSONObject toJSONObject() {
+        JSONObject json = new JSONObject();
+        try {
+            json.put("ssid", mSSID);
+            json.put("pwd", mPassword);
+        } catch (JSONException e) {
+
+        }
+        return json;
     }
 
 }

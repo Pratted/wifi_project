@@ -8,6 +8,7 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
+import com.example.eric.wishare.WiDataMessage;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
@@ -109,6 +110,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                     }
                 }
                 listener.onInviteClick(mContact.getInvitedNetworks());
+                WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);
+//                msg.put("")
             }
         };
     }
