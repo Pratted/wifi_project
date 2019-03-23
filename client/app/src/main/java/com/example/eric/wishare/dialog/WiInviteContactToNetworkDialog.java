@@ -20,6 +20,11 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private List<WiConfiguration> mNetworks;
     private WiNetworkManager mNetworkManager;
     private WiContact mContact;
+    private OnInviteClickListener listener;
+
+    public interface OnInviteClickListener {
+        void onInviteClick(List<WiConfiguration> networks);
+    }
 
     public WiInviteContactToNetworkDialog(Context context, WiContact contact, Button btnAddContactToNetwork) {
         super(context);
@@ -35,6 +40,10 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                 WiInviteContactToNetworkDialog.this.show();
             }
         });
+    }
+
+    public void setOnInviteClickListener(OnInviteClickListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -84,6 +93,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 Integer indices[] = dialog.getSelectedIndices();
+
                 if(indices.length == 1) {
                     System.out.println("SelectedIndex: " + 0);
                     WiConfiguration config = mNetworks.get(indices[0]);
@@ -98,6 +108,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         mNetworks.remove(config);
                     }
                 }
+                listener.onInviteClick(mContact.getInvitedNetworks());
             }
         };
     }

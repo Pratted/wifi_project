@@ -16,19 +16,31 @@ import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiConfiguredNetworkListView extends LinearLayout {
 
+    private List<WiConfiguration> configs;
+
     public WiConfiguredNetworkListView(Context context){
         super(context);
+        init();
     }
 
     public WiConfiguredNetworkListView(Context context, AttributeSet attrs){
         super(context, attrs);
+        init();
+    }
+
+    public void init() {
+        configs = new ArrayList<>();
     }
 
     public void addView(WiConfiguration config) {
+        configs.add(config);
         this.addView(new WiConfiguredNetworkListItem(getContext(), config));
     }
 

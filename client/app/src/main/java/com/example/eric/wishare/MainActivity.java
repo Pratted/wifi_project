@@ -125,7 +125,6 @@ public class MainActivity extends AppCompatActivity {
         mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
         mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
-
         btnShowNotification.setOnClickListener(sendNotification());
     }
 
@@ -181,7 +180,6 @@ public class MainActivity extends AppCompatActivity {
         if(mContactListDialog != null) {
             mContactListDialog.refresh(this);
         }
-
 
         if(getIntent().getStringExtra("inviteNetwork") != null){
             Intent intent = getIntent();

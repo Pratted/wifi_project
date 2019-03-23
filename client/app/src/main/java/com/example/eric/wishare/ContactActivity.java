@@ -17,6 +17,7 @@ import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.view.WiContactSharedNetworkListView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ContactActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
@@ -31,7 +32,7 @@ public class ContactActivity extends AppCompatActivity {
 
     private ArrayList<WifiConfiguration> mNetworks;
 
-    private WiInviteContactToNetworkDialog mAddToNetwork;
+    private WiInviteContactToNetworkDialog mInviteToNetwork;
     private WiRevokeAccessDialog mRevokeAccessDialog;
 
     private WiContactSharedNetworkListView mContactSharedNetworkList;
@@ -86,7 +87,19 @@ public class ContactActivity extends AppCompatActivity {
 
 //        mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAllAccess);
         btnRevokeAllAccess.setOnClickListener(revokeAllAccess());
-        mAddToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
+        mInviteToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
+        mInviteToNetwork.setOnInviteClickListener(onInviteClick());
+    }
+
+    private WiInviteContactToNetworkDialog.OnInviteClickListener onInviteClick() {
+        return new WiInviteContactToNetworkDialog.OnInviteClickListener() {
+            @Override
+            public void onInviteClick(List<WiConfiguration> networks) {
+                for(WiConfiguration config : networks) {
+                    mContactSharedNetworkList.addSharedNetwork(config);
+                }
+            }
+        };
     }
 
     private View.OnClickListener revokeAllAccess() {
