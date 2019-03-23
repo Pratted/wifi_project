@@ -67,6 +67,9 @@ public class WiDataMessage extends JSONObject {
                 String key = keys.next();
                 put(key, json.getString(key));
             }
+
+            put("title", "WiShare Invitation");
+            put("desc", "Invitation to " + getString("network_name"));
         }
         catch(JSONException e){
             e.printStackTrace();

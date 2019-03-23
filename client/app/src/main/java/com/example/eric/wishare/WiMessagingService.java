@@ -39,15 +39,6 @@ public class WiMessagingService extends FirebaseMessagingService {
 
             Log.d(TAG, "There are " + data.keySet().size() + "keys");
 
-            try {
-
-               // WiInvitation inv = new WiInvitation(obj);
-
-               // Log.d(TAG, "Network Name: " + obj.getString("network_name"));
-
-            } catch (Exception e){
-                e.printStackTrace();
-            }
 
             WiDataMessage msg = new WiDataMessage(data);
 
@@ -57,6 +48,11 @@ public class WiMessagingService extends FirebaseMessagingService {
             if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
                 WiInvitation inv = msg.getWiInvitation();
 
+                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this,
+                        "WiShare Invitation",
+                        "Invitation to " + inv.getNetworkName(),
+                        data);
+                notification.show();
             }
             if(msg.getMessageType() == WiDataMessage.MSG_CREDENTIALS){
 
