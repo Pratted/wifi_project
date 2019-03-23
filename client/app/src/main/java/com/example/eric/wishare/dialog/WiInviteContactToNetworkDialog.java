@@ -39,7 +39,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         mContact = contact;
         System.out.println("Contact name: " + mContact.getName());
 
-        mNetworkManager = WiNetworkManager.getInstance(context);
+        mNetworkManager = WiNetworkManager.getInstance(context.getApplicationContext());
 
         buildAvailableNetworkList();
 
@@ -87,16 +87,15 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private void buildAvailableNetworkList() {
         mNetworks = mNetworkManager.getConfiguredNetworks();
 
-        Log.d(TAG, "mNetworks.isEmpty()" + mNetworks.isEmpty());
+        Log.d(TAG, "mNetworks.isEmpty() " + mNetworks.isEmpty());
 
         for(WiConfiguration config : mNetworks) {
             Log.d(TAG, "IN BUILD Config SSID: " + config.getSSID());
         }
 
-
         mNetworks.removeAll(mContact.getInvitedNetworks());
 
-        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty()" + mContact.getInvitedNetworks().isEmpty());
+        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty() " + mContact.getInvitedNetworks().isEmpty());
 
         for(WiConfiguration config : mContact.getInvitedNetworks()) {
             Log.d(TAG, "IN BUILD 2 Config SSID: " + config.getSSID());
@@ -108,25 +107,30 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 Integer indices[] = dialog.getSelectedIndices();
+
                 WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);
+
                 if(indices.length == 1) {
-                    System.out.println("SelectedIndex: " + 0);
                     WiConfiguration config = mNetworks.get(indices[0]);
-                    System.out.println("Config SSID: " + config.getSSID());
+
                     mContact.addToInvitedNetworks(config);
                     mNetworks.remove(config);
+
                     msg.put(new WiInvitation(config.getSSID(), mContact, "never", "", "500"));
                     msg.putRecipient(mContact.getPhone());
+
                     WiDataMessageController.getInstance(context.get()).send(msg);
 
                 } else {
                     for(int i = indices.length - 1; i >= 0; i--) {
                         WiConfiguration config = mNetworks.get(i);
-                        System.out.println("Config SSID: " + config.getSSID());
+
                         mContact.addToInvitedNetworks(config);
                         mNetworks.remove(config);
+
                         msg.put(new WiInvitation(config.getSSID(), mContact, "never", "", "150"));
                         msg.putRecipient(mContact.getPhone());
+
                         WiDataMessageController.getInstance(context.get()).send(msg);
                     }
                 }

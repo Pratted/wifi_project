@@ -63,12 +63,8 @@ public class WiNetworkManager {
         mNotConfiguredNetworks.add(config);
     }
 
-    public void addNetwork(WifiConfiguration config){
-        sWifiManager.addNetwork(config);
-    }
-
     public void removeConfiguredNetwork(WiConfiguration config) {
-        mNotConfiguredNetworks.remove(config);
+        mConfiguredNetworks.remove(config);
     }
 
     public void removeNotConfiguredNetwork(WifiConfiguration config) {
@@ -78,6 +74,10 @@ public class WiNetworkManager {
                 break;
             }
         }
+    }
+
+    public void addNetwork(WifiConfiguration config){
+        sWifiManager.addNetwork(config);
     }
 
     public boolean testConnection(String ssid){
