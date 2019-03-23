@@ -13,6 +13,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.example.eric.wishare.WiDataMessageController.BASE_URL;
 
 public class WiDataMessage extends JSONObject {
@@ -20,9 +23,10 @@ public class WiDataMessage extends JSONObject {
     private final String TAG = "WiDataMessage";
     private String mUrl;
 
-    public final static Integer MSG_ACKNOWLEDGE = 0;
-    public final static Integer MSG_INVITATION = 1;
-    public final static Integer MSG_CREDENTIALS = 2;
+    public static final Integer MSG_ACKNOWLEDGE = 0;
+    public static final Integer MSG_INVITATION = 1;
+    public static final Integer MSG_CREDENTIALS = 2;
+    public static final Integer MSG_CONTACT_LIST = 3;
 
     private OnResponseListener mOnResponseListener;
 
@@ -30,11 +34,54 @@ public class WiDataMessage extends JSONObject {
         mUrl = BASE_URL;
     }
 
+    public int getMessageType(){
+        try {
+            return getInt("msg_type");
+        } catch (Exception e){
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
     public WiDataMessage(Integer msg_type){
         try {
             put("msg_type", msg_type);
+            put("to", new JSONArray());
         } catch (Exception e){
 
+        }
+    }
+
+    public WiDataMessage(Integer msg_type, List<String> recipients){
+        try {
+            put("msg_type", msg_type);
+            put("to", new JSONArray());
+
+            for(String recipient: recipients){
+                addRecipient(recipient);
+            }
+
+        } catch (Exception e){
+
+        }
+    }
+
+    public WiDataMessage(Integer msg_type, String recipient){
+        try {
+            put("msg_type", msg_type);
+            put("to", new JSONArray());
+
+            addRecipient(recipient);
+        } catch (Exception e){
+
+        }
+    }
+
+    public void addRecipient(String phone){
+        try {
+            getJSONArray("to").put(phone);
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
 
@@ -75,6 +122,10 @@ public class WiDataMessage extends JSONObject {
 
     public void setOnResponseListener(OnResponseListener listener){
         mOnResponseListener = listener;
+    }
+
+    public ArrayList<WiInvitation> getWiInvitations() {
+        return null;
     }
 
     public interface OnResponseListener {

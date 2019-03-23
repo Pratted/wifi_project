@@ -17,6 +17,7 @@ import com.example.eric.wishare.model.WiContact;
 import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
@@ -78,7 +79,11 @@ public class WiContactList {
                     }
                 }
 
-                msg.put("phones", jsonPhones);
+                try {
+                    msg.put("phones", jsonPhones);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
 
                 msg.setOnResponseListener(new WiDataMessage.OnResponseListener() {
                     @Override

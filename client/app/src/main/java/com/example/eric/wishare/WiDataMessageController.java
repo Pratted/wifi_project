@@ -24,13 +24,15 @@ public class WiDataMessageController {
     private static String QUERY_STRING = "?token=abc123";
     public static final String BASE_URL = "http://192.3.135.177:3000/";
 
+    public static String TOKEN;
+
     private WiDataMessageController(Context context){
         mContext = new WeakReference<>(context.getApplicationContext());
         mRequestQueue = getRequestQueue();
     }
 
     public static void setToken(String token){
-        QUERY_STRING = "?token="+token;
+        QUERY_STRING = "?token="+TOKEN;
     }
 
     private RequestQueue getRequestQueue() {

@@ -111,6 +111,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                 }
                 listener.onInviteClick(mContact.getInvitedNetworks());
                 WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);
+
 //                msg.put("")
             }
         };

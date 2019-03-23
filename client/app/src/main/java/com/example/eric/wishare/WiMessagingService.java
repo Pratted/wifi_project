@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiInvitation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
@@ -14,6 +15,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,10 +32,27 @@ public class WiMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
+            WiDataMessage msg = new WiDataMessage(0);
+            int x = 0;
+
+            if (msg.getMessageType() == WiDataMessage.MSG_ACKNOWLEDGE) {
+
+            }
+            if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
+                ArrayList<WiInvitation> invitations = msg.getWiInvitations();
+
+
+            }
+            if(msg.getMessageType() == WiDataMessage.MSG_CREDENTIALS){
+
+            }
+
+            /*
             Map<String, String> data = remoteMessage.getData();
 
             WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this, data.get("title"), data.get("desc"), data);
             notification.show();
+            */
 
             // TODO: handle the data message
         }
@@ -56,7 +75,7 @@ public class WiMessagingService extends FirebaseMessagingService {
         editor.apply();
 
         // update the token for future outgoing data messages
-        WiDataMessage.setToken(token);
+        WiDataMessageController.TOKEN = token;
 
         // get the phone number, register the device with remote DB
         String phone = prefs.getString("phone", "");

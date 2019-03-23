@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(this);
         registerDevice();
 
-        WiDataMessage.setToken(WiUtils.getDeviceToken(this));
+        WiDataMessageController.TOKEN = WiUtils.getDeviceToken(this);
         WiContactList.getInstance(this).synchronizeContacts(); // async...
 
         System.out.println("DEVICE TOKEN IS: ");
