@@ -26,7 +26,6 @@ import static com.example.eric.wishare.WiPermissions.LOCATION;
 import static com.example.eric.wishare.WiPermissions.PHONE;
 
 public class WiSplash extends Activity {
-    private static int SPLASH_TIME_OUT = 500;
     private WiPermissions mPermissions;
 
     @Override
@@ -68,7 +67,7 @@ public class WiSplash extends Activity {
                     .show();
         }
         else{
-            phone = WiContact.formatPhoneNumber(phone);
+            phone = WiUtils.formatPhoneNumber(phone);
             editor.putString("phone", phone);
 
             Log.d("Shit", "Saving Phone: " + phone);
