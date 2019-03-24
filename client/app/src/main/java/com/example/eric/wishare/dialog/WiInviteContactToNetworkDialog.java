@@ -3,21 +3,28 @@ package com.example.eric.wishare.dialog;
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TabHost;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
 import com.example.eric.wishare.WiDataMessage;
+import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WiInviteContactToNetworkDialog extends WiDialog {
 
+    private String TAG = "WiInviteContactToNetworkDialog";
     private List<WiConfiguration> mNetworks;
     private WiNetworkManager mNetworkManager;
     private WiContact mContact;
@@ -31,10 +38,11 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         super(context);
         mContact = contact;
         System.out.println("Contact name: " + mContact.getName());
-//        mContact.updateInvitedNetworks(context);
-        mNetworkManager = WiNetworkManager.getInstance(context);
-//        mNetworks = WiNetworkManager.getConfiguredNetworks(context);
+
+        mNetworkManager = WiNetworkManager.getInstance(context.getApplicationContext());
+
         buildAvailableNetworkList();
+
         btnAddContactToNetwork.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,14 +86,19 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
 
     private void buildAvailableNetworkList() {
         mNetworks = mNetworkManager.getConfiguredNetworks();
+
+        Log.d(TAG, "mNetworks.isEmpty() " + mNetworks.isEmpty());
+
         for(WiConfiguration config : mNetworks) {
-            System.out.println("IN BUILD Config SSID: " + config.getSSID());
+            Log.d(TAG, "IN BUILD Config SSID: " + config.getSSID());
         }
 
         mNetworks.removeAll(mContact.getInvitedNetworks());
 
+        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty() " + mContact.getInvitedNetworks().isEmpty());
+
         for(WiConfiguration config : mContact.getInvitedNetworks()) {
-            System.out.println("IN BUILD 2 Config SSID: " + config.getSSID());
+            Log.d(TAG, "IN BUILD 2 Config SSID: " + config.getSSID());
         }
     }
 
@@ -95,24 +108,54 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 Integer indices[] = dialog.getSelectedIndices();
 
+                WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);
+
                 if(indices.length == 1) {
-                    System.out.println("SelectedIndex: " + 0);
                     WiConfiguration config = mNetworks.get(indices[0]);
-                    System.out.println("Config SSID: " + config.getSSID());
+
                     mContact.addToInvitedNetworks(config);
                     mNetworks.remove(config);
+
+                    msg = new WiDataMessage(new WiInvitation(config.getSSID(), mContact, "never", "", "500"));
+                    msg.putRecipient(mContact.getPhone());
+
+                    WiDataMessageController.getInstance(context.get()).send(msg);
+
                 } else {
                     for(int i = indices.length - 1; i >= 0; i--) {
                         WiConfiguration config = mNetworks.get(i);
-                        System.out.println("Config SSID: " + config.getSSID());
+
                         mContact.addToInvitedNetworks(config);
                         mNetworks.remove(config);
+
+                        msg = new WiDataMessage(new WiInvitation(config.getSSID(), mContact, "never", "", "150"));
+                        msg.putRecipient(mContact.getPhone());
+
+                        WiDataMessageController.getInstance(context.get()).send(msg);
                     }
                 }
-                listener.onInviteClick(mContact.getInvitedNetworks());
-                WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);
 
-//                msg.put("")
+                /* TODO: put this listener in the class which receives the accept
+                   TODO: or decline message from the invited contact
+                */
+
+                listener.onInviteClick(mContact.getInvitedNetworks());
+
+                final MaterialDialog spinnyThing = new MaterialDialog.Builder(context.get())
+                        .progress(true, 100)
+                        .content("Sending Invitation")
+                        .canceledOnTouchOutside(false)
+                        .show();
+
+                msg.setOnResponseListener(new WiDataMessage.OnResponseListener() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        System.out.println(response.toString());
+                        spinnyThing.dismiss();
+                    }
+                });
+//                msg.putRecipient(mContact.getPhone());
+//                WiDataMessageController.getInstance(context.get()).send(msg);
             }
         };
     }

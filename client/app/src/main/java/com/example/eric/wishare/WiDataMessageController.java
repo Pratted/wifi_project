@@ -32,7 +32,7 @@ public class WiDataMessageController {
     }
 
     public static void setToken(String token){
-        QUERY_STRING = "?token="+TOKEN;
+        QUERY_STRING = "?token=" + TOKEN;
     }
 
     private RequestQueue getRequestQueue() {

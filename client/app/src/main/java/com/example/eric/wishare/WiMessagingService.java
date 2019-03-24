@@ -15,6 +15,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,16 +35,24 @@ public class WiMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            WiDataMessage msg = new WiDataMessage(0);
-            int x = 0;
+            Map<String, String> data = remoteMessage.getData();
+
+            Log.d(TAG, "There are " + data.keySet().size() + "keys");
+
+
+            WiDataMessage msg = new WiDataMessage(data);
 
             if (msg.getMessageType() == WiDataMessage.MSG_ACKNOWLEDGE) {
 
             }
             if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
-                ArrayList<WiInvitation> invitations = msg.getWiInvitations();
+                WiInvitation inv = msg.getWiInvitation();
 
-
+                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this,
+                        "WiShare Invitation",
+                        "Invitation to " + inv.getNetworkName(),
+                        data);
+                notification.show();
             }
             if(msg.getMessageType() == WiDataMessage.MSG_CREDENTIALS){
 

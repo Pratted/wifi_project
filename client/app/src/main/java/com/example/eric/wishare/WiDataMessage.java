@@ -7,16 +7,18 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
-import static com.example.eric.wishare.WiDataMessageController.BASE_URL;
+import java.util.Map;
 
 public class WiDataMessage extends JSONObject {
 
@@ -28,56 +30,76 @@ public class WiDataMessage extends JSONObject {
     public static final Integer MSG_CREDENTIALS = 2;
     public static final Integer MSG_CONTACT_LIST = 3;
 
+    public static final String BASE_URL = "http://192.3.135.177:3000/";
+    
     private OnResponseListener mOnResponseListener;
+    private int messageType;
 
-    public WiDataMessage() {
-        mUrl = BASE_URL;
-    }
+    List<String> recipients = new ArrayList<>();
 
-    public int getMessageType(){
+    // every data message has a 'to' and 'msg_type' field
+    private void init(){
         try {
-            return getInt("msg_type");
+            put("msg_type", messageType);
+            put("to", new JSONArray());
         } catch (Exception e){
             e.printStackTrace();
-            return -1;
         }
     }
 
-    public WiDataMessage(Integer msg_type){
-        try {
-            put("msg_type", msg_type);
-            put("to", new JSONArray());
-        } catch (Exception e){
+    public int getMessageType(){
+        return messageType;
+    }
 
+    public WiDataMessage(Integer msg_type){
+        messageType = msg_type;
+        init();
+    }
+
+    public WiDataMessage(WiInvitation inv){
+        messageType = MSG_INVITATION;
+
+        Iterator<String> keys = inv.toJSON().keys();
+        JSONObject json = inv.toJSON();
+
+        try{
+            while(keys.hasNext()){
+                String key = keys.next();
+                put(key, json.getString(key));
+            }
+
+            put("title", "WiShare Invitation");
+            put("desc", "Invitation to " + getString("network_name"));
+        }
+        catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    public WiDataMessage(Map<String, String> data){
+        messageType = Integer.valueOf(data.get("msg_type"));
+
+        try{
+            Log.d(TAG, "Begin copying data");
+            for(String key: data.keySet()){
+                put(key, data.get(key));
+            }
+        } catch(Exception e){
+            e.printStackTrace();
         }
     }
 
     public WiDataMessage(Integer msg_type, List<String> recipients){
-        try {
-            put("msg_type", msg_type);
-            put("to", new JSONArray());
-
-            for(String recipient: recipients){
-                addRecipient(recipient);
-            }
-
-        } catch (Exception e){
-
-        }
+        messageType = msg_type;
+        this.recipients = recipients;
     }
 
     public WiDataMessage(Integer msg_type, String recipient){
-        try {
-            put("msg_type", msg_type);
-            put("to", new JSONArray());
-
-            addRecipient(recipient);
-        } catch (Exception e){
-
-        }
+        messageType = msg_type;
+        this.recipients.add(recipient);
     }
 
-    public void addRecipient(String phone){
+    public void putRecipient(String phone){
         try {
             getJSONArray("to").put(phone);
         } catch (Exception e){
@@ -85,12 +107,24 @@ public class WiDataMessage extends JSONObject {
         }
     }
 
-    public void setUrl(String url){
-        mUrl = url;
-    }
-
     public JsonObjectRequest build(){
         Log.d(TAG, "Building WiDataMessage...");
+
+        mUrl = BASE_URL + (messageType != MSG_CONTACT_LIST ? "msg" : "");
+        mUrl += "?token=" + WiDataMessageController.TOKEN;
+
+        try{
+            put("msg_type", messageType);
+            put("to", new JSONArray());
+
+            for(String recipient: recipients){
+                getJSONArray("to").put(recipient);
+            }
+
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, mUrl, this,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -124,23 +158,15 @@ public class WiDataMessage extends JSONObject {
         mOnResponseListener = listener;
     }
 
-    public ArrayList<WiInvitation> getWiInvitations() {
-        return null;
+    public WiInvitation getWiInvitation() {
+        try{
+            return new WiInvitation(getString("network_name"), new WiContact("NA", "NA"), getString("expires"), "fuck time limit", getString("data_limit"));
+        } catch(JSONException e){
+            return null;
+        }
     }
 
     public interface OnResponseListener {
         void onResponse(JSONObject response);
-    }
-
-    public void put(WiInvitation invitation) {
-        try {
-            if(!has("networks")) {
-                put("networks", new JSONArray());
-            }
-            getJSONArray("networks").put(invitation.toJSON());
-
-        } catch (JSONException e) {
-
-        }
     }
 }

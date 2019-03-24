@@ -26,7 +26,7 @@ public class WiInvitation {
     public WiInvitation(JSONObject json) {
         try {
             this.networkName = json.getString("network_name");
-            String phone = json.getString("owner");
+            //String phone = json.getString("owner");
             // Look up owner by phone number
             this.expires = json.getString("expires");
             this.dataLimit = json.getString("data_limit");
