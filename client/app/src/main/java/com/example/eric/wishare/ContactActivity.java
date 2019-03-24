@@ -70,7 +70,7 @@ public class ContactActivity extends AppCompatActivity {
         btnHideCheckBoxes = findViewById(R.id.btn_hide_checkboxes);
         mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
 
-        mNetworks = WiNetworkManager.getNotConfiguredNetworks(this);
+        mNetworks = WiNetworkManager.getUnConfiguredNetworks(this);
 
         ArrayList<WiConfiguration> networkList = new ArrayList<>();
 

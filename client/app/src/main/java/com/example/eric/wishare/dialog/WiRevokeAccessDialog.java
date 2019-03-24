@@ -62,7 +62,7 @@ public class WiRevokeAccessDialog extends WiDialog{
     public WiRevokeAccessDialog(Context context, Button btnRevokeAccess) {
         super(context);
 
-        mNetworks = WiNetworkManager.getNotConfiguredNetworks(context);
+        mNetworks = WiNetworkManager.getUnConfiguredNetworks(context);
 
         btnRevokeAccess.setOnClickListener(new View.OnClickListener() {
             @Override

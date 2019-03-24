@@ -1,15 +1,11 @@
 package com.example.eric.wishare.dialog;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.wifi.WifiConfiguration;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -54,7 +50,7 @@ public class WiAddNetworkDialog extends WiDialog {
     private void updateNetworks() {
         ArrayList<String> temp = new ArrayList<>();
 
-        for(WifiConfiguration config : mManager.getNotConfiguredNetworks()) {
+        for(WifiConfiguration config : mManager.getUnConfiguredNetworks()) {
             temp.add(config.SSID.replace("\"", ""));
         }
 
@@ -63,9 +59,9 @@ public class WiAddNetworkDialog extends WiDialog {
 
     public WiAddNetworkDialog(Context context, Button btnAddNetwork){
         super(context);
-        mContext = new WeakReference<>(context);
+        mContext = new WeakReference<>(context.getApplicationContext());
         mManager = WiNetworkManager.getInstance(context.getApplicationContext());
-        List<WifiConfiguration> wifiList = WiNetworkManager.getNotConfiguredNetworks(context);
+        List<WifiConfiguration> wifiList = WiNetworkManager.getUnConfiguredNetworks(context);
 
         mNetworks = new ArrayList<>();
 
@@ -95,18 +91,20 @@ public class WiAddNetworkDialog extends WiDialog {
                             public void onInput(@NonNull MaterialDialog dialog, final CharSequence password) {
                                 WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
                                 mListener.OnPasswordEntered(config);
-                                WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
+                                WiSQLiteDatabase.getInstance(mContext.get().getApplicationContext()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
                                     @Override
                                     public void onDBReady(SQLiteDatabase db) {
+                                        Log.d("WiNetworkList", "Begin adding contacts to database!");
                                         mDatabase = db;
-                                        mDatabase.rawQuery("INSERT INTO WifiConfiguration(SSID, password)" +
-                                                "VALUES (?, ?);", new String[]{wifiName.toString(), password.toString()});
+                                        WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
+                                        mDatabase.insert("WifiConfiguration", null, config.toContentValues());
+                                        mManager.addConfiguredNetwork(config);
+                                        mManager.removeNotConfiguredNetwork(config);
+                                        Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
                                     }
                                 });
 
-                                mManager.addConfiguredNetwork(config);
-                                mManager.removeNotConfiguredNetwork(config);
-                                Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
+
                             }})
                         .neutralText("Test Connection")
                         .onNeutral(new MaterialDialog.SingleButtonCallback() {

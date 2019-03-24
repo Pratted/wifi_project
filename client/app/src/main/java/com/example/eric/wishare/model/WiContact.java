@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 public class WiContact implements Parcelable{
     private String name;
     private String phone;
+    private String contact_id;
     private Integer mDataUsage;
     private Integer mExpiresIn;
     private List<WiConfiguration> mInvitedNetworks;
@@ -26,6 +27,12 @@ public class WiContact implements Parcelable{
     public WiContact(String name, String phone){
         this.name = name;
         this.phone = phone;
+        init();
+    }
+    public WiContact(String name, String phone, String contact_id){
+        this.name = name;
+        this.phone = phone;
+        this.contact_id = contact_id;
         init();
     }
 
@@ -90,6 +97,7 @@ public class WiContact implements Parcelable{
     public String getPhone() {
         return WiUtils.formatPhoneNumber(phone);
     }
+    public String getContact_id(){return contact_id;}
 
     public void setPhone(String phone) {
         this.phone = phone;

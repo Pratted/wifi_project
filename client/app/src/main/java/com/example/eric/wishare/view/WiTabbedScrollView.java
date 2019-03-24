@@ -1,6 +1,8 @@
 package com.example.eric.wishare.view;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -14,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 
@@ -37,7 +40,7 @@ public class WiTabbedScrollView extends LinearLayout {
 
     public WiTabbedScrollView(Context context){
         super(context.getApplicationContext());
-
+        mContext = new WeakReference<Context>(context.getApplicationContext());
         init();
     }
 
@@ -66,6 +69,8 @@ public class WiTabbedScrollView extends LinearLayout {
         mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, new WiConfiguration("belkin", "hunter2"));
         mInvitableContactsView = new WiInvitableContactsView(getContext());
 
+
+        //ArrayList<WiContact> permittedContacts = getPermittedContacts();
         for(WiContact contact: mContactList.getWiContacts()){
             if(contact.getName().length() % 2 == 0){
                 mPermittedContactsView.addPermittedContact(contact);
@@ -174,6 +179,7 @@ public class WiTabbedScrollView extends LinearLayout {
             return pages.size();
         }
 
+
         //-----------------------------------------------------------------------------
         // Used by ViewPager.
         @Override
@@ -217,5 +223,6 @@ public class WiTabbedScrollView extends LinearLayout {
             return position;
         }
     }
+
 }
 

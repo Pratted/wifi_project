@@ -1,6 +1,8 @@
 package com.example.eric.wishare;
 
 import android.annotation.SuppressLint;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -86,6 +88,22 @@ public class NetworkActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private ArrayList<WiContact> getPermittedContacts(){
+        SQLiteDatabase db = WiSQLiteDatabase.getInstance(this).getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts WHERE network_id=?", new String[]{mConfig.getNetworkID()});
+
+        if (cur != null && cur.moveToFirst()) {
+            do {
+                WiConfiguration wiConfiguration = new WiConfiguration(
+                        cur.getString(cur.getColumnIndex("SSID")),
+                        cur.getString(cur.getColumnIndex("password")));
+               // mConfiguredNetworks.add(wiConfiguration);
+            } while (cur.moveToNext());
+        }
+        cur.close();
+        return new ArrayList<WiContact>();
     }
 
     public TextWatcher search() {

@@ -24,6 +24,7 @@ import com.example.eric.wishare.model.WiConfiguration;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -56,21 +57,34 @@ public class WiNetworkManager {
         return mConfiguredNetworks;
     }
 
-    public static ArrayList<WifiConfiguration> getNotConfiguredNetworks(Context context) {
+    public static ArrayList<WifiConfiguration> getUnConfiguredNetworks(Context context) {
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(WIFI_SERVICE);
         List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
         mNotConfiguredNetworks.addAll(wifiList);
+        HashMap<String, WiConfiguration> configMap = new HashMap<>();
+        for (WiConfiguration wConfig : mConfiguredNetworks){
+            configMap.put(wConfig.getSSID(), wConfig);
+        }
+        for (Iterator<WifiConfiguration> it = mNotConfiguredNetworks.iterator(); it.hasNext();){
+        //for(WifiConfiguration configuration : mNotConfiguredNetworks) {
+            if(configMap.containsKey(it.next().SSID.replace("\"", ""))) {
+                it.remove();
+            }
+        }
         return mNotConfiguredNetworks;
     }
 
     public void addConfiguredNetwork(final WiConfiguration config) {
-        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase db) {
-                db.insert("WifiConfiguration", null, config.toContentValues());
-            }
-        });
-        mConfiguredNetworks.add(config);
+        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM WifiConfiguration WHERE network_id=(SELECT MAX(network_id) FROM WifiConfiguration)", null);
+        cur.moveToFirst();
+            WiConfiguration config2 = new WiConfiguration(
+                    cur.getString(cur.getColumnIndex("SSID")),
+                    cur.getString(cur.getColumnIndex("password")),
+                    cur.getString(cur.getColumnIndex("network_id")));
+        cur.close();
+
+        mConfiguredNetworks.add(config2);
 
     }
 
@@ -144,14 +158,15 @@ public class WiNetworkManager {
             do {
                 WiConfiguration wiConfiguration = new WiConfiguration(
                         cur.getString(cur.getColumnIndex("SSID")),
-                        cur.getString(cur.getColumnIndex("password")));
+                        cur.getString(cur.getColumnIndex("password")),
+                        cur.getString(cur.getColumnIndex("network_id")));
                 mConfiguredNetworks.add(wiConfiguration);
             } while (cur.moveToNext());
         }
         cur.close();
     }
 
-    public ArrayList<WifiConfiguration> getNotConfiguredNetworks() {
+    public ArrayList<WifiConfiguration> getUnConfiguredNetworks() {
         return mNotConfiguredNetworks;
     }
 
