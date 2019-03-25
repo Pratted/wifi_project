@@ -61,6 +61,7 @@ public class NetworkActivity extends AppCompatActivity {
         }
 
         mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
+        mTabbedScrollView.setWiConfiguration(mConfig);
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){

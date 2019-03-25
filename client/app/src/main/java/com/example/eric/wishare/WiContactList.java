@@ -137,6 +137,16 @@ public class WiContactList {
                                                 cur.getString(cur.getColumnIndex("phone")),
                                                 cur.getString(cur.getColumnIndex("contact_id")));
 
+                                        //testing purposes
+                                        if (contact.getName().contains("Eric")) {
+                                            ContentValues contentValues = new ContentValues();
+                                            contentValues.put("network_id", "1");
+                                            contentValues.put("contact_id", contact.getContactID());
+                                            contentValues.put("SSID", "KHQ");
+                                            theDB.insert("PermittedContacts", null, contentValues);
+                                        }
+
+
                                         mContactListArray.add(contact);
                                     } while (cur.moveToNext());
                                 }

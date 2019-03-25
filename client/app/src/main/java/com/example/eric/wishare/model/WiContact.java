@@ -97,7 +97,7 @@ public class WiContact implements Parcelable{
     public String getPhone() {
         return WiUtils.formatPhoneNumber(phone);
     }
-    public String getContact_id(){return contact_id;}
+    public String getContactID(){return contact_id;}
 
     public void setPhone(String phone) {
         this.phone = phone;
