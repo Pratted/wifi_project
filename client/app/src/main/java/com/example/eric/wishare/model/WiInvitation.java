@@ -5,7 +5,7 @@ import org.json.JSONObject;
 
 public class WiInvitation {
     public String networkName;
-    public WiContact owner;
+    public String sender;
     public String expires;
     public String timeLimit;
     public String dataLimit;
@@ -15,9 +15,9 @@ public class WiInvitation {
         return mConfiguration;
     }
 
-    public WiInvitation(String networkName, WiContact owner, String expires, String timeLimit, String dataLimit) {
+    public WiInvitation(String networkName, String sender, String expires, String timeLimit, String dataLimit) {
         this.networkName = networkName;
-        this.owner = owner;
+        this.sender = sender;
         this.expires = expires;
         this.timeLimit = timeLimit;
         this.dataLimit = dataLimit;
@@ -35,8 +35,8 @@ public class WiInvitation {
         }
     }
 
-    public WiContact getOwner(){
-        return owner;
+    public String getOwner(){
+        return sender;
     }
     public String getNetworkName(){
         return networkName;
@@ -49,14 +49,14 @@ public class WiInvitation {
 
         WiInvitation rhs = (WiInvitation) obj;
 
-        return networkName.equals(rhs.networkName) && owner.equals(rhs.owner) && expires.equals(rhs.expires);
+        return networkName.equals(rhs.networkName) && sender.equals(rhs.sender) && expires.equals(rhs.expires);
     }
 
     public JSONObject toJSON() {
         JSONObject json = new JSONObject();
         try {
             json.put("network_name", networkName);
-            json.put("sender", owner.getPhone());
+            json.put("sender", sender);
             json.put("expires", expires);
             json.put("data_limit", dataLimit);
 

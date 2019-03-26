@@ -34,18 +34,8 @@ public class WiDataMessage extends JSONObject {
     
     private OnResponseListener mOnResponseListener;
     private int messageType;
+    private List<WiContact> mRecipients = new ArrayList<>();
 
-    List<String> recipients = new ArrayList<>();
-
-    // every data message has a 'to' and 'msg_type' field
-    private void init(){
-        try {
-            put("msg_type", messageType);
-            put("to", new JSONArray());
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
     public int getMessageType(){
         return messageType;
@@ -53,14 +43,29 @@ public class WiDataMessage extends JSONObject {
 
     public WiDataMessage(Integer msg_type){
         messageType = msg_type;
-        init();
+    }
+
+    public WiDataMessage(Integer msg_type, WiContact recipient){
+        messageType = msg_type;
+        addRecipient(recipient);
     }
 
     public WiDataMessage(WiInvitation inv){
         messageType = MSG_INVITATION;
 
-        Iterator<String> keys = inv.toJSON().keys();
-        JSONObject json = inv.toJSON();
+        deepCopy(inv.toJSON());
+    }
+
+    public WiDataMessage(WiInvitation inv, WiContact recipient){
+        messageType = MSG_INVITATION;
+        addRecipient(recipient);
+
+        deepCopy(inv.toJSON());
+    }
+
+    // replace super() with json
+    private void deepCopy(JSONObject json){
+        Iterator<String> keys = json.keys();
 
         try{
             while(keys.hasNext()){
@@ -87,36 +92,22 @@ public class WiDataMessage extends JSONObject {
         }
     }
 
-    public WiDataMessage(Integer msg_type, List<String> recipients){
-        messageType = msg_type;
-        this.recipients = recipients;
-    }
-
-    public WiDataMessage(Integer msg_type, String recipient){
-        messageType = msg_type;
-        this.recipients.add(recipient);
-    }
-
-    public void putRecipient(String phone){
-        try {
-            getJSONArray("to").put(phone);
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+    public void addRecipient(WiContact contact){
+        mRecipients.add(contact);
     }
 
     public JsonObjectRequest build(){
         Log.d(TAG, "Building WiDataMessage...");
 
         mUrl = BASE_URL + (messageType != MSG_CONTACT_LIST ? "msg" : "");
-        mUrl += "?token=" + WiDataMessageController.TOKEN;
+        mUrl += "?token=" + WiUtils.getDeviceToken();
 
         try{
             put("msg_type", messageType);
             put("to", new JSONArray());
 
-            for(String recipient: recipients){
-                getJSONArray("to").put(recipient);
+            for(WiContact recipient: mRecipients){
+                getJSONArray("to").put(recipient.getPhone());
             }
 
         } catch (JSONException e){
@@ -158,7 +149,7 @@ public class WiDataMessage extends JSONObject {
 
     public WiInvitation getWiInvitation() {
         try{
-            return new WiInvitation(getString("network_name"), new WiContact("NA", "NA"), getString("expires"), "fuck time limit", getString("data_limit"));
+            return new WiInvitation(getString("network_name"), "610-737-0292", getString("expires"), "fuck time limit", getString("data_limit"));
         } catch(JSONException e){
             return null;
         }

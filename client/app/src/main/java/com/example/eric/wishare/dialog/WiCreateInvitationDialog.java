@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 
@@ -15,7 +16,7 @@ public class WiCreateInvitationDialog extends WiDialog {
     private LinearLayout mCustomView;
 
     public interface OnInvitationCreatedListener{
-        void onInviationCreated(WiInvitation invitation);
+        void onInvitationCreated(WiInvitation invitation);
     }
 
     OnInvitationCreatedListener mOnInvitationCreatedListener;
@@ -42,9 +43,8 @@ public class WiCreateInvitationDialog extends WiDialog {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(mOnInvitationCreatedListener != null) {
-                            WiContact contact = new WiContact("Eric", "453453");
 
-                            mOnInvitationCreatedListener.onInviationCreated(new WiInvitation("Test Network", contact, "45", "0", "haha"));
+                            mOnInvitationCreatedListener.onInvitationCreated(new WiInvitation("Test Network", "610-737-0292", "45", "0", "haha"));
                         }
                     }
                 })

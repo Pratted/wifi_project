@@ -1,32 +1,26 @@
 package com.example.eric.wishare;
 
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WiUtils {
 
-    public static String getDevicePhone(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString("phone", "");
+    public static String getDevicePhone(){
+        return WiSharedPreferences.getString("phone", "");
     }
 
-    public static String getDeviceToken(Context context) {
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getString("token", "");
+    public static String getDeviceToken() {
+        return WiSharedPreferences.getString("token", "");
     }
 
-    public static boolean isDeviceRegistered(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean("registered", false);
+    public static boolean isDeviceRegistered(){
+        return WiSharedPreferences.getBoolean("registered", false);
     }
 
     public static boolean isFreshInstall(Context context){
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        return prefs.getBoolean("fresh_install", true);
+        return WiSharedPreferences.getBoolean("fresh_install", false);
     }
 
 

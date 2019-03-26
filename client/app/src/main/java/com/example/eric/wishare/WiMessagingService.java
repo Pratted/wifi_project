@@ -81,27 +81,20 @@ public class WiMessagingService extends FirebaseMessagingService {
     public void onNewToken(String token){
         Log.d(TAG, "The new token is: " + token);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = prefs.edit();
-
-        // immediately save the new token into shared prefs for future use.
-        editor.putString("token", token);
-        editor.apply();
-
-        // update the token for future outgoing data messages
-        WiDataMessageController.TOKEN = token;
+        WiSharedPreferences.putString("token", token);
 
         // get the phone number, register the device with remote DB
-        String phone = prefs.getString("phone", "");
+        String phone = WiSharedPreferences.getString("phone", "");
 
         if(!phone.isEmpty()){
             registerDevice(token, phone);
-            editor.putBoolean("registered", true);
-            editor.commit();
+            WiSharedPreferences.putBoolean("registered", true);
         }
         else{
             Log.d(TAG, "Cannot register device. Phone is empty -> " + phone);
         }
+
+        WiSharedPreferences.save();
     }
 
     public static void registerDevice(String token, String phone){

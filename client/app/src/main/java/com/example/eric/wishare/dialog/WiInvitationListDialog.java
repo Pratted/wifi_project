@@ -122,7 +122,7 @@ public class WiInvitationListDialog extends WiDialog{
             mExpandableLayout = mLayout.findViewById(R.id.expandable_layout_invitation);
 
             tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
-            tvInvitationOwner.setText(mInvitation.owner.getName());
+            tvInvitationOwner.setText(mInvitation.sender);
         }
 
         private WiInvitationAcceptDeclineDialog.OnAcceptedListener onAccepted(){

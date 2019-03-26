@@ -44,15 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressLint("ApplySharedPref")
     private void registerDevice(){
-        if(!WiUtils.isDeviceRegistered(this)){
+        if(!WiUtils.isDeviceRegistered()){
             WiMessagingService.registerDevice(
-                    WiUtils.getDeviceToken(this),
-                    WiUtils.getDevicePhone(this)
+                    WiUtils.getDeviceToken(),
+                    WiUtils.getDevicePhone()
             );
 
-            PreferenceManager.getDefaultSharedPreferences(this).edit()
-                    .putBoolean("registered", true)
-                    .commit();
+            WiSharedPreferences.putBoolean("registered", true);
+            WiSharedPreferences.save();
         }
     }
 
@@ -62,13 +61,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         FirebaseApp.initializeApp(this);
+        WiSharedPreferences.initialize(this);
+
         registerDevice();
 
-        WiDataMessageController.TOKEN = WiUtils.getDeviceToken(this);
         WiContactList.getInstance(this).synchronizeContacts(); // async...
 
         System.out.println("DEVICE TOKEN IS: ");
-        System.out.println(WiUtils.getDeviceToken(this));
+        System.out.println(WiUtils.getDeviceToken());
 
         // Create an Intent for the activity you want to start
         Intent resultIntent = new Intent(this, MainActivity.class);
@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
+
+        /*
         WiContact contact1 = new WiContact("Eric Pratt", "1");
         WiContact contact2 = new WiContact("Eric Pratt", "2");
         WiContact contact3 = new WiContact("Eric Pratt", "3");
@@ -98,6 +100,7 @@ public class MainActivity extends AppCompatActivity {
         mInvitationListDialog.add(new WiInvitation("belkin-048", contact2, "2/28/2019", "36 hours", "5GB"));
         mInvitationListDialog.add(new WiInvitation("home-255", contact3, "3/15/2019", "Never", "None"));
         mInvitationListDialog.add(new WiInvitation("home-200", contact4, "3/15/2019", "24 hours", "3GB"));
+        */
 
         mContactListDialog = new WiManageContactsDialog(this, btnManageContacts);
 
@@ -204,16 +207,8 @@ public class MainActivity extends AppCompatActivity {
 
             intent.removeExtra("inviteNetwork");
 
-            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, other, dataLimit);
-
             /*
-            WiInvitation invitation = null;
-
-            for (WiInvitation invite: mInvitationListDialog.getInvitations()){
-                if (invite.getNetworkName().equals(networkName))
-                    invitation = invite;
-            }
-            */
+            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, other, dataLimit);
 
 
             if (inv != null){
@@ -223,6 +218,7 @@ public class MainActivity extends AppCompatActivity {
             else{
                 Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
             }
+            */
         }
     }
 }

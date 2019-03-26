@@ -282,11 +282,10 @@ public class WiInvitableContactsView extends LinearLayout {
                     WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext());
                     dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                         @Override
-                        public void onInviationCreated(WiInvitation invitation) {
+                        public void onInvitationCreated(WiInvitation invitation) {
                             mName.startAnimation(mSwipeLeftAnimation);
 
-                            WiDataMessage msg = new WiDataMessage(invitation);
-                            msg.putRecipient(mContact.getPhone());
+                            WiDataMessage msg = new WiDataMessage(invitation, mContact);
                             System.out.println("The phone is: " + mContact.getPhone());
                             WiDataMessageController.getInstance(getContext()).send(msg);
                         }

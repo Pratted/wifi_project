@@ -57,9 +57,8 @@ public class WiSplash extends Activity {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                             String phone = input.toString();
-                            phone = WiUtils.formatPhoneNumber(phone);
-                            editor.putString("phone", phone);
-                            editor.commit();
+                            WiSharedPreferences.putString("phone", WiUtils.formatPhoneNumber(phone));
+                            WiSharedPreferences.save();
 
                             startWiShare();
                         }
@@ -68,10 +67,10 @@ public class WiSplash extends Activity {
         }
         else{
             phone = WiUtils.formatPhoneNumber(phone);
-            editor.putString("phone", phone);
+            WiSharedPreferences.putString("phone", phone);
 
             Log.d("Shit", "Saving Phone: " + phone);
-            editor.commit();
+            WiSharedPreferences.save();
 
             startWiShare();
         }
@@ -82,7 +81,10 @@ public class WiSplash extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.splash);
 
+        WiSharedPreferences.initialize(this);
+
         mPermissions = WiPermissions.getInstance(this);
+
 
         if(!mPermissions.hasAllPermissions()){
             final ArrayList<String> request = new ArrayList<>();

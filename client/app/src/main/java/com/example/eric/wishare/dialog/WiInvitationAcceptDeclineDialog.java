@@ -39,7 +39,7 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
         ((TextView) mCustomView.findViewById(R.id.tv_time_limit)).setText(invitation.timeLimit);
         ((TextView) mCustomView.findViewById(R.id.tv_data_limit)).setText(invitation.dataLimit);
         ((TextView) mCustomView.findViewById(R.id.tv_invitation_expiration)).setText(invitation.expires);
-        ((TextView) mCustomView.findViewById(R.id.tv_invitation_owner)).setText(invitation.owner.getName());
+        ((TextView) mCustomView.findViewById(R.id.tv_invitation_owner)).setText(invitation.sender);
     }
 
     @Override
