@@ -1,6 +1,8 @@
 package com.example.eric.wishare.view;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.PagerAdapter;
@@ -14,11 +16,13 @@ import android.widget.TextView;
 
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WiTabbedScrollView extends LinearLayout {
 
@@ -37,7 +41,7 @@ public class WiTabbedScrollView extends LinearLayout {
 
     public WiTabbedScrollView(Context context){
         super(context.getApplicationContext());
-
+        mContext = new WeakReference<Context>(context.getApplicationContext());
         init();
     }
 
@@ -62,17 +66,29 @@ public class WiTabbedScrollView extends LinearLayout {
         //mContactList.load();
 
         mViewPager = findViewById(R.id.view_pager);
+    }
 
-        mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, new WiConfiguration("belkin", "hunter2"));
+    public void setWiConfiguration(WiConfiguration wiConfiguration){
+        mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, wiConfiguration);
         mInvitableContactsView = new WiInvitableContactsView(getContext());
 
+        HashMap<String, Boolean> permContacts = new HashMap<>();
+        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts WHERE SSID=?", new String[]{wiConfiguration.getSSID()});
+
+        if (cur != null && cur.moveToFirst()) {
+            do {
+                permContacts.put(cur.getString(cur.getColumnIndex("contact_id")), true);
+            } while (cur.moveToNext());
+        }
+        cur.close();
         for(WiContact contact: mContactList.getWiContacts()){
-//            if(contact.getName().length() % 2 == 0){
-//                mPermittedContactsView.addPermittedContact(contact);
-//            }
-//            else{
+            if(permContacts.containsKey(contact.getContactID())){
+                mPermittedContactsView.addPermittedContact(contact);
+            }
+            else {
                 mInvitableContactsView.add(contact);
-//            }
+            }
         }
 
         mPagerAdapter = new WiPagerAdapter();
@@ -174,6 +190,7 @@ public class WiTabbedScrollView extends LinearLayout {
             return pages.size();
         }
 
+
         //-----------------------------------------------------------------------------
         // Used by ViewPager.
         @Override
@@ -217,5 +234,6 @@ public class WiTabbedScrollView extends LinearLayout {
             return position;
         }
     }
+
 }
 

@@ -1,6 +1,7 @@
 package com.example.eric.wishare.model;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.net.wifi.WifiConfiguration;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,6 +14,15 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
     private String mSSID;
     private String mPassword;
+    private String mNetworkID;
+
+    public WiConfiguration(String mSSID, String mPassword, String network_id) {
+        super();
+        this.mSSID = mSSID;
+        this.mPassword = mPassword;
+        this.mNetworkID = network_id;
+        SSID = mSSID;
+    }
 
     public WiConfiguration(String mSSID, String mPassword) {
         super();
@@ -61,6 +71,8 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         mSSID = ssid;
     }
 
+    public String getNetworkID(){return mNetworkID;}
+
     @Override
     public int describeContents() {
         return super.describeContents();
@@ -83,4 +95,10 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         return json;
     }
 
+    public ContentValues toContentValues(){
+        ContentValues vals = new ContentValues();
+        vals.put("SSID", mSSID);
+        vals.put("password", mPassword);
+        return vals;
+    }
 }

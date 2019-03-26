@@ -3,6 +3,7 @@ package com.example.eric.wishare;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -118,9 +119,6 @@ public class WiContactList {
                                 Log.d(TAG, "It is not the DB. Lets add it lol");
                                 mBuffer.add(mDeviceContacts.get(phone));
                             }
-                            else{
-                                mContactListArray.add(mDbContacts.get(phone));
-                            }
                         }
 
                         WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
@@ -128,14 +126,34 @@ public class WiContactList {
                             public void onDBReady(SQLiteDatabase theDB) {
                                 Log.d(TAG, "Begin adding contacts to database!");
                                 for(WiContact contact: mBuffer){
-                                    theDB.insert("SynchronizedContacts", null, contact.toContentValues());
                                     Log.d(TAG, "Adding record to database! " + contact.toString());
-                                    mContactListArray.add(contact);
+                                    theDB.insert("SynchronizedContacts", null, contact.toContentValues());
                                 }
+                                Cursor cur = theDB.rawQuery("SELECT * FROM SynchronizedContacts", null);
+                                if (cur != null && cur.moveToFirst()) {
+                                    do {
+                                        WiContact contact = new WiContact(
+                                                cur.getString(cur.getColumnIndex("name")),
+                                                cur.getString(cur.getColumnIndex("phone")),
+                                                cur.getString(cur.getColumnIndex("contact_id")));
 
+                                        //testing purposes
+                                        if (contact.getName().contains("Eric")) {
+                                            ContentValues contentValues = new ContentValues();
+                                            contentValues.put("network_id", "1");
+                                            contentValues.put("contact_id", contact.getContactID());
+                                            contentValues.put("SSID", "KHQ");
+                                            theDB.insert("PermittedContacts", null, contentValues);
+                                        }
+
+
+                                        mContactListArray.add(contact);
+                                    } while (cur.moveToNext());
+                                }
                                 mBuffer.clear();
                                 synchronizing = false;
                                 mContactListReadyListener.onContactListReady(mContactListArray);
+                                theDB.close();
                             }
                         });
                     }
@@ -192,7 +210,8 @@ public class WiContactList {
             do {
                 WiContact contact = new WiContact(
                         cur.getString(cur.getColumnIndex("name")),
-                        cur.getString(cur.getColumnIndex("phone")));
+                        cur.getString(cur.getColumnIndex("phone")),
+                        cur.getString(cur.getColumnIndex("contact_id")));
 
                 contacts.put(contact.getPhone(), contact);
             } while (cur.moveToNext());
@@ -218,6 +237,7 @@ public class WiContactList {
                     }
                 }
                 c.close();
+                db.close();
             }
         });
         return permittedContacts;

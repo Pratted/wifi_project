@@ -36,6 +36,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             "CREATE TABLE PermittedContacts (" +
                     "network_id INTEGER NOT NULL," +
                     "contact_id INTEGER NOT NULL," +
+                    "SSID varchar(255)," +
                     "data_limit varchar(255)," +
                     "PRIMARY KEY(network_id, contact_id))";
 
