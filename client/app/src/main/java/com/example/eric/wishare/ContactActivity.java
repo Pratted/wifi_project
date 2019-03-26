@@ -69,6 +69,7 @@ public class ContactActivity extends AppCompatActivity {
         btnRevokeSelectiveAccess = findViewById(R.id.btn_revoke_selective_access);
         btnHideCheckBoxes = findViewById(R.id.btn_hide_checkboxes);
         mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
+        mContactSharedNetworkList.populateNetworks(this, mContact);
 
         mNetworks = WiNetworkManager.getUnConfiguredNetworks(this);
 

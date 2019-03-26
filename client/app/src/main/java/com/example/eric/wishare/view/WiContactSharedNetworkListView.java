@@ -1,6 +1,8 @@
 package com.example.eric.wishare.view;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -15,6 +17,8 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiSQLiteDatabase;
+import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.*;
@@ -83,6 +87,23 @@ public class WiContactSharedNetworkListView extends LinearLayout {
                 }
             }
         };
+    }
+
+    public void populateNetworks(Context context, WiContact contact){
+        SQLiteDatabase db = WiSQLiteDatabase.getInstance(context.getApplicationContext()).getReadableDatabase();
+        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts NATURAL JOIN SynchronizedContacts WHERE(phone=?)", new String[]{contact.getPhone()});
+
+        if (cur != null && cur.moveToFirst()) {
+            do {
+                WiConfiguration config = new WiConfiguration(
+                        cur.getString(cur.getColumnIndex("SSID")),
+                        "",
+                        cur.getString(cur.getColumnIndex("network_id")));
+
+                addSharedNetwork(config);
+            } while (cur.moveToNext());
+        }
+        cur.close();
     }
 
     public void addSharedNetwork(WiConfiguration config) {
