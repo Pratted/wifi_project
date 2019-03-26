@@ -46,13 +46,16 @@ public class WiMessagingService extends FirebaseMessagingService {
 
             }
             if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
+                Log.d(TAG, "About to show notification");
                 WiInvitation inv = msg.getWiInvitation();
 
                 WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this,
                         "WiShare Invitation",
                         "Invitation to " + inv.getNetworkName(),
                         data);
+
                 notification.show();
+                Log.d(TAG, "Showing notification");
             }
             if(msg.getMessageType() == WiDataMessage.MSG_CREDENTIALS){
 
