@@ -43,7 +43,8 @@ public class WiCreateInvitationDialog extends WiDialog {
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                         if(mOnInvitationCreatedListener != null) {
                             WiContact contact = new WiContact("Eric", "453453");
-                            mOnInvitationCreatedListener.onInviationCreated(new WiInvitation("Network", contact, "45", "0", "haha"));
+
+                            mOnInvitationCreatedListener.onInviationCreated(new WiInvitation("Test Network", contact, "45", "0", "haha"));
                         }
                     }
                 })

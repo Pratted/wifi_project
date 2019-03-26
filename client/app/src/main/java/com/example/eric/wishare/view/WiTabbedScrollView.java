@@ -86,7 +86,7 @@ public class WiTabbedScrollView extends LinearLayout {
             if(permContacts.containsKey(contact.getContactID())){
                 mPermittedContactsView.addPermittedContact(contact);
             }
-            else{
+            else {
                 mInvitableContactsView.add(contact);
             }
         }

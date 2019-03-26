@@ -67,9 +67,6 @@ public class WiDataMessage extends JSONObject {
                 String key = keys.next();
                 put(key, json.getString(key));
             }
-
-            put("title", "WiShare Invitation");
-            put("desc", "Invitation to " + getString("network_name"));
         }
         catch(JSONException e){
             e.printStackTrace();
@@ -84,6 +81,7 @@ public class WiDataMessage extends JSONObject {
             for(String key: data.keySet()){
                 put(key, data.get(key));
             }
+            Log.d(TAG, "Finished Copying data");
         } catch(Exception e){
             e.printStackTrace();
         }
