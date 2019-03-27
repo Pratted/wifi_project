@@ -1,6 +1,7 @@
 package com.example.eric.wishare.dialog;
 
 import android.content.Context;
+import android.net.wifi.WifiConfiguration;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -14,6 +15,7 @@ import com.example.eric.wishare.model.WiInvitation;
 
 public class WiCreateInvitationDialog extends WiDialog {
     private LinearLayout mCustomView;
+    private String mSSID;
 
     public interface OnInvitationCreatedListener{
         void onInvitationCreated(WiInvitation invitation);
@@ -21,11 +23,13 @@ public class WiCreateInvitationDialog extends WiDialog {
 
     OnInvitationCreatedListener mOnInvitationCreatedListener;
 
-    public WiCreateInvitationDialog(Context context) {
+    public WiCreateInvitationDialog(Context context, String ssid) {
         super(context);
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mCustomView = (LinearLayout) inflater.inflate(R.layout.layout_contact_search, null);
+
+        mSSID = ssid;
     }
 
     public void setOnInvitationCreatedListener(OnInvitationCreatedListener listener){
@@ -42,9 +46,14 @@ public class WiCreateInvitationDialog extends WiDialog {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                        if(mOnInvitationCreatedListener != null) {
 
-                            mOnInvitationCreatedListener.onInvitationCreated(new WiInvitation("Test Network", "610-737-0292", "45", "0", "haha"));
+                        String expires = "Never";
+                        String dataLimit = "None";
+
+                        WiInvitation inv = new WiInvitation(mSSID, WiUtils.getDevicePhone(), expires, dataLimit);
+
+                        if(mOnInvitationCreatedListener != null) {
+                            mOnInvitationCreatedListener.onInvitationCreated(inv);
                         }
                     }
                 })

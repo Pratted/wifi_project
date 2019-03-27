@@ -2,6 +2,7 @@ package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -43,6 +44,8 @@ public class WiInvitableContactsView extends LinearLayout {
     private boolean mAscendingName;
     private boolean mMultiSelectEnabled;
 
+    private WifiConfiguration mWifiConfiguration;
+
     public interface OnCheckBoxVisibilitiesChangedListener {
         void onCheckBoxVisibilitiesChanged(int visibilty);
     }
@@ -50,8 +53,9 @@ public class WiInvitableContactsView extends LinearLayout {
     private OnCheckBoxVisibilitiesChangedListener mCheckBoxVisibilitiesChangedListener;
 
 
-    public WiInvitableContactsView(Context context) {
+    public WiInvitableContactsView(Context context, WifiConfiguration config) {
         super(context);
+        mWifiConfiguration = config;
 
         init();
     }
@@ -279,7 +283,7 @@ public class WiInvitableContactsView extends LinearLayout {
                         mExpandableLayout.collapse();
                     }
 
-                    WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext());
+                    WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext(), mWifiConfiguration.SSID);
                     dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                         @Override
                         public void onInvitationCreated(WiInvitation invitation) {

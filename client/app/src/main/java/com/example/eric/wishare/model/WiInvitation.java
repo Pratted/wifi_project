@@ -23,6 +23,14 @@ public class WiInvitation {
         this.dataLimit = dataLimit;
     }
 
+    public WiInvitation(String networkName, String sender, String expires, String dataLimit) {
+        this.networkName = networkName;
+        this.sender = sender;
+        this.expires = expires;
+        this.timeLimit = "";
+        this.dataLimit = dataLimit;
+    }
+
     public WiInvitation(JSONObject json) {
         try {
             this.networkName = json.getString("network_name");
@@ -35,7 +43,7 @@ public class WiInvitation {
         }
     }
 
-    public String getOwner(){
+    public String getSender(){
         return sender;
     }
     public String getNetworkName(){

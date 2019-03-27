@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 public class WiInviteContactsDialog extends WiDialog {
 
     private ArrayList<WiContact> mContacts = new ArrayList<>();
+    private WiConfiguration mConfig;
 
     @Override
     public MaterialDialog build() {
@@ -44,13 +46,15 @@ public class WiInviteContactsDialog extends WiDialog {
                     System.out.println("You invited " + mContacts.get(i).getName());
                 }
 
-                new WiCreateInvitationDialog(context.get()).show();
+                new WiCreateInvitationDialog(context.get(), mConfig.SSID).show();
             }
         };
     }
 
-    public WiInviteContactsDialog(Context context){
+    public WiInviteContactsDialog(Context context, WiConfiguration config){
         super(context);
+
+        mConfig = config;
     }
 
     public void addContact(WiContact contact){

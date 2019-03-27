@@ -70,7 +70,7 @@ public class WiTabbedScrollView extends LinearLayout {
 
     public void setWiConfiguration(WiConfiguration wiConfiguration){
         mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, wiConfiguration);
-        mInvitableContactsView = new WiInvitableContactsView(getContext());
+        mInvitableContactsView = new WiInvitableContactsView(getContext(), wiConfiguration);
 
         HashMap<String, Boolean> permContacts = new HashMap<>();
         SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();

@@ -38,7 +38,7 @@ public class NetworkActivity extends AppCompatActivity {
 
         mConfig = getIntent().getParcelableExtra("NetworkInfo");
 
-        mInviteContactsDialog = new WiInviteContactsDialog(this);
+        mInviteContactsDialog = new WiInviteContactsDialog(this, mConfig);
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
 
         searchBar = findViewById(R.id.edit_text_search_bar);

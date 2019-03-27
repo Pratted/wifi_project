@@ -12,35 +12,34 @@ import org.json.JSONObject;
 @SuppressLint("ParcelCreator")
 public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
-    private String mSSID;
     private String mPassword;
     private String mNetworkID;
 
-    public WiConfiguration(String mSSID, String mPassword, String network_id) {
-        super();
-        this.mSSID = mSSID;
-        this.mPassword = mPassword;
-        this.mNetworkID = network_id;
-        SSID = mSSID;
+    public WiConfiguration(String ssid, String password, String network_id) {
+        SSID = ssid;
+        mPassword = password;
+        mNetworkID = network_id;
     }
 
-    public WiConfiguration(String mSSID, String mPassword) {
-        super();
-        this.mSSID = mSSID;
-        this.mPassword = mPassword;
-        SSID = mSSID;
+    public WiConfiguration(String ssid, String password) {
+        SSID = ssid;
+        mPassword = password;
     }
 
-    public WiConfiguration(WifiConfiguration config, String pwd) {
-        this.mSSID = config.SSID;
-        this.mPassword = pwd;
+    public WiConfiguration(WifiConfiguration config, String password) {
+        SSID = config.SSID;
+        mPassword = password;
     }
 
+    public WiConfiguration(WifiConfiguration config, String password, String network_id) {
+        SSID = config.SSID;
+        mPassword = password;
+        mNetworkID = network_id;
+    }
 
     public WiConfiguration(Parcel source) {
-//        System.out.println("SOURCE.READSTRING(SSID = ): " + source.readString());
-        this.mSSID = source.readString();
-        this.mPassword = source.readString();
+        SSID = source.readString();
+        mPassword = source.readString();
     }
 
     public static final Creator<WiConfiguration> CREATOR = new Creator<WiConfiguration>() {
@@ -56,7 +55,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
     };
 
     public String getSSID() {
-        return mSSID.replace("\"", "");
+        return SSID.replace("\"", "");
     }
 
     public String getPassword() {
@@ -68,7 +67,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
     }
 
     public void setSSID(String ssid) {
-        mSSID = ssid;
+        SSID = ssid;
     }
 
     public String getNetworkID(){return mNetworkID;}
@@ -80,14 +79,14 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mSSID);
+        dest.writeString(SSID);
         dest.writeString(mPassword);
     }
 
     public JSONObject toJSONObject() {
         JSONObject json = new JSONObject();
         try {
-            json.put("ssid", mSSID);
+            json.put("ssid", SSID);
             json.put("pwd", mPassword);
         } catch (JSONException e) {
 
@@ -97,7 +96,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
 
     public ContentValues toContentValues(){
         ContentValues vals = new ContentValues();
-        vals.put("SSID", mSSID);
+        vals.put("SSID", SSID);
         vals.put("password", mPassword);
         return vals;
     }
