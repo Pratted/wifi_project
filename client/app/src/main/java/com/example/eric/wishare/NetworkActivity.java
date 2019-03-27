@@ -1,12 +1,14 @@
 package com.example.eric.wishare;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -14,13 +16,15 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import com.example.eric.wishare.dialog.WiEditNetworkDialog;
+import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.dialog.WiInviteContactsDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiTabbedScrollView;
 
 public class NetworkActivity extends AppCompatActivity {
-
+    private final String TAG = "NetworkActivity";
     private WiConfiguration mConfig;
 
     private WiInviteContactsDialog mInviteContactsDialog;
@@ -61,7 +65,9 @@ public class NetworkActivity extends AppCompatActivity {
         }
 
         mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
-        mTabbedScrollView.setWiConfiguration(mConfig);
+
+        if(mConfig != null)
+            mTabbedScrollView.setWiConfiguration(mConfig);
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){
@@ -77,6 +83,7 @@ public class NetworkActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
     }
 
 

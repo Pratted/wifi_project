@@ -1,7 +1,5 @@
 package com.example.eric.wishare;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -9,16 +7,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.model.WiInvitation;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,10 +42,7 @@ public class WiMessagingService extends FirebaseMessagingService {
                 Log.d(TAG, "About to show notification");
                 WiInvitation inv = msg.getWiInvitation();
 
-                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this,
-                        "WiShare Invitation",
-                        "Invitation to " + inv.getNetworkName(),
-                        data);
+                WiInvitationNotification notification = new WiInvitationNotification(this, inv);
 
                 notification.show();
                 Log.d(TAG, "Showing notification");

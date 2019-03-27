@@ -5,7 +5,11 @@ import android.content.Context;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.eric.wishare.WiUtils.CurrentActivity.ACTIVITY_MAIN;
+
 public class WiUtils {
+
+    public enum CurrentActivity {ACTIVITY_MAIN, ACTIVITY_NETWORK, ACTIVITY_CONTACT}
 
     public static String getDevicePhone(){
         return WiSharedPreferences.getString("phone", "");
@@ -13,6 +17,10 @@ public class WiUtils {
 
     public static String getDeviceToken() {
         return WiSharedPreferences.getString("token", "");
+    }
+
+    public static CurrentActivity getCurrentActivity() {
+        return CurrentActivity.valueOf(WiSharedPreferences.getString("current_activity", ACTIVITY_MAIN.toString()));
     }
 
     public static boolean isDeviceRegistered(){
@@ -23,6 +31,9 @@ public class WiUtils {
         return WiSharedPreferences.getBoolean("fresh_install", false);
     }
 
+    public static void setCurrentActivity(CurrentActivity activity){
+        WiSharedPreferences.putString("current_activity", activity.toString());
+    }
 
     public static String formatPhoneNumber(String phone){
         String revised = "";
@@ -38,4 +49,6 @@ public class WiUtils {
         }
         return revised;
     }
+
+
 }

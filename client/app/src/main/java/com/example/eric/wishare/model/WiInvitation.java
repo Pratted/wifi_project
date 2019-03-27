@@ -1,9 +1,12 @@
 package com.example.eric.wishare.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class WiInvitation {
+public class WiInvitation implements Parcelable {
     public String networkName;
     public String sender;
     public String expires;
@@ -74,4 +77,40 @@ public class WiInvitation {
 
         return json;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(networkName);
+        dest.writeString(sender);
+        dest.writeString(expires);
+        dest.writeString(timeLimit);
+        dest.writeString(dataLimit);
+        dest.writeParcelable(mConfiguration, flags);
+    }
+
+    protected WiInvitation(Parcel in) {
+        networkName = in.readString();
+        sender = in.readString();
+        expires = in.readString();
+        timeLimit = in.readString();
+        dataLimit = in.readString();
+        mConfiguration = in.readParcelable(WiConfiguration.class.getClassLoader());
+    }
+
+    public static final Creator<WiInvitation> CREATOR = new Creator<WiInvitation>() {
+        @Override
+        public WiInvitation createFromParcel(Parcel in) {
+            return new WiInvitation(in);
+        }
+
+        @Override
+        public WiInvitation[] newArray(int size) {
+            return new WiInvitation[size];
+        }
+    };
 }

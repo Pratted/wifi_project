@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -69,14 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
         System.out.println("DEVICE TOKEN IS: ");
         System.out.println(WiUtils.getDeviceToken());
-
-        // Create an Intent for the activity you want to start
-        Intent resultIntent = new Intent(this, MainActivity.class);
-        // Create the TaskStackBuilder and add the intent, which inflates the back stack
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-        stackBuilder.addNextIntentWithParentStack(resultIntent);
-        // Get the PendingIntent containing the entire back stack
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
         btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
@@ -166,6 +159,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        Intent intent = getIntent();
+
+        if(intent != null){
+            if(intent.hasExtra("invitation")){
+                Log.d(TAG, "PREPARNG INVITATION");
+
+                WiInvitation invitation = intent.getParcelableExtra("invitation");
+                mInvitationListDialog.add(invitation);
+
+                new WiInvitationAcceptDeclineDialog(this, invitation);
+                intent.removeExtra("invitation");
+            }
+        }
+
+
 //        mAddNetworkDialog.refresh(this);
         mInvitationListDialog.refresh(this);
 
@@ -173,8 +181,8 @@ public class MainActivity extends AppCompatActivity {
             mContactListDialog.refresh(this);
         }
 
-        if(getIntent().getStringExtra("inviteNetwork") != null){
-            Intent intent = getIntent();
+        if(intent != null && intent.getStringExtra("inviteNetwork") != null){
+            //intent = getIntent();
 
             String networkName = intent.getStringExtra("network_name");
 
@@ -207,18 +215,6 @@ public class MainActivity extends AppCompatActivity {
 
             intent.removeExtra("inviteNetwork");
 
-            /*
-            WiInvitation inv = new WiInvitation(networkName, new WiContact(name, phone), expires, other, dataLimit);
-
-
-            if (inv != null){
-                WiInvitationAcceptDeclineDialog mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(this, inv);
-                mAcceptDeclineDialog.show();
-            }
-            else{
-                Toast.makeText(this, "Error: Invitation expired or does not exist", Toast.LENGTH_LONG).show();
-            }
-            */
         }
     }
 }

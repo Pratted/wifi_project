@@ -39,10 +39,15 @@ public class ContactActivity extends AppCompatActivity {
 
     private WiNetworkManager mNetworkManager;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+
+
+
 
         mContact = getIntent().getExtras().getParcelable("contact");
 
@@ -173,6 +178,8 @@ public class ContactActivity extends AppCompatActivity {
         }
     }
 
+
+
 /*    private WiContactListDialog.OnContactSelectedListener onContactSelected(){
         return new WiContactListDialog.OnContactSelectedListener() {
             @Override
@@ -183,4 +190,10 @@ public class ContactActivity extends AppCompatActivity {
             }
         };
     }*/
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
 }

@@ -13,6 +13,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.example.eric.wishare.WiDataMessage;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
+import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
@@ -116,7 +117,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                     mContact.addToInvitedNetworks(config);
                     mNetworks.remove(config);
 
-                    msg = new WiDataMessage(new WiInvitation(config.getSSID(), "610-737-0292", "never", "", "500"), mContact);
+                    msg = new WiDataMessage(new WiInvitation(config.getSSID(), WiUtils.getDeviceToken(), "never", "", "500"), mContact);
 
                     WiDataMessageController.getInstance(context.get()).send(msg);
 
@@ -127,7 +128,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         mContact.addToInvitedNetworks(config);
                         mNetworks.remove(config);
 
-                        msg = new WiDataMessage(new WiInvitation(config.getSSID(), "610-737-0292", "never", "", "150"));
+                        msg = new WiDataMessage(new WiInvitation(config.getSSID(), WiUtils.getDeviceToken(), "never", "", "150"));
                         msg.addRecipient(mContact);
 
                         WiDataMessageController.getInstance(context.get()).send(msg);
