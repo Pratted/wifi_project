@@ -3,8 +3,9 @@ package com.example.eric.wishare;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.WiInvitationNotification;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.FieldValue;

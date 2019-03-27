@@ -71,6 +71,14 @@ public class MainActivity extends AppCompatActivity {
         System.out.println("DEVICE TOKEN IS: ");
         System.out.println(WiUtils.getDeviceToken());
 
+        // Create an Intent for the activity you want to start
+        Intent resultIntent = new Intent(this, MainActivity.class);
+        // Create the TaskStackBuilder and add the intent, which inflates the back stack
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addNextIntentWithParentStack(resultIntent);
+        // Get the PendingIntent containing the entire back stack
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
         btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);

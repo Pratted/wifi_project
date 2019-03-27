@@ -1,21 +1,17 @@
 package com.example.eric.wishare;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.eric.wishare.dialog.WiAddNetworkDialog;
 import com.example.eric.wishare.model.WiContact;
-import com.google.gson.JsonObject;
+import com.example.eric.wishare.model.WiDataMessage;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +59,7 @@ public class WiContactList {
             @Override
             protected Void doInBackground(Void... voids) {
                 Log.d(TAG, "Begin Synchronize Contacts!");
-                    mDeviceContacts = loadDeviceContacts();
+                mDeviceContacts = loadDeviceContacts();
                 mDbContacts = loadDbContacts();
 
                 msg = new WiDataMessage(WiDataMessage.MSG_CONTACT_LIST);
@@ -147,8 +143,8 @@ public class WiContactList {
                                             theDB.insert("PermittedContacts", null, contentValues);
                                         }*/
 
-
                                         mContactListArray.add(contact);
+                                        mContactListMap.put(contact.getPhone(), contact);
                                     } while (cur.moveToNext());
                                 }
                                 mBuffer.clear();
@@ -257,5 +253,9 @@ public class WiContactList {
         }
 
         return mCL;
+    }
+
+    public WiContact getContactByPhone(String phone){
+        return mContactListMap.get(phone);
     }
 }

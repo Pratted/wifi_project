@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
-import com.example.eric.wishare.WiDataMessage;
+import com.example.eric.wishare.model.WiDataMessage;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
 import com.example.eric.wishare.model.WiContact;

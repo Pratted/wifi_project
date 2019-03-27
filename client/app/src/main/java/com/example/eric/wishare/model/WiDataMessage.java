@@ -1,4 +1,4 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.model;
 
 import android.util.Log;
 
@@ -7,9 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.example.eric.wishare.model.WiContact;
-import com.example.eric.wishare.model.WiInvitation;
-import com.google.gson.JsonObject;
+import com.example.eric.wishare.WiUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,7 +61,7 @@ public class WiDataMessage extends JSONObject {
         deepCopy(inv.toJSON());
     }
 
-    // replace super() with json
+    // replace 'this' with json
     private void deepCopy(JSONObject json){
         Iterator<String> keys = json.keys();
 

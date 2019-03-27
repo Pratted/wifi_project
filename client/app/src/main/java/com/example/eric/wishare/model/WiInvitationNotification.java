@@ -1,16 +1,18 @@
-package com.example.eric.wishare;
+package com.example.eric.wishare.model;
 
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
+import com.example.eric.wishare.MainActivity;
+import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.WiNotification;
 
 import java.util.Map;
 
-public class WiInvitationNotification extends WiNotification{
+public class WiInvitationNotification extends WiNotification {
     private Map<String,String> mData;
     private String TAG = "WiInvitationNotification";
 
@@ -30,8 +32,7 @@ public class WiInvitationNotification extends WiNotification{
     @Override
     public void onNotificationClick() {
         Intent intent = new Intent(mContext, MainActivity.class);
-
-
+        
         Log.d(TAG, "Current Activity " + WiUtils.getCurrentActivity());
         intent.putExtra("invitation", mInvitation);
 

@@ -6,11 +6,10 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TabHost;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
-import com.example.eric.wishare.WiDataMessage;
+import com.example.eric.wishare.model.WiDataMessage;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.WiUtils;
