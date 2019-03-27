@@ -1,5 +1,7 @@
 package com.example.eric.wishare.model;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -32,6 +34,28 @@ public class WiInvitation implements Parcelable {
         this.expires = expires;
         this.timeLimit = "";
         this.dataLimit = dataLimit;
+    }
+
+    public ContentValues toContentValues(){
+        ContentValues vals = new ContentValues();
+        vals.put("ssid", networkName);
+        vals.put("sender", sender);
+        vals.put("expires", expires);
+        vals.put("data_limit", 10);
+        return vals;
+    }
+
+    private WiInvitation(){}
+
+    public static WiInvitation fromCursor(Cursor cur){
+        WiInvitation invitation = new WiInvitation();
+
+        invitation.networkName = cur.getString(cur.getColumnIndex("ssid"));
+        invitation.sender = cur.getString(cur.getColumnIndex("sender"));
+        invitation.expires = cur.getString(cur.getColumnIndex("expires"));
+        invitation.dataLimit = String.valueOf(cur.getInt(cur.getColumnIndex("data_limit")));
+
+        return invitation;
     }
 
     public WiInvitation(JSONObject json) {

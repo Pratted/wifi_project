@@ -1,11 +1,15 @@
 package com.example.eric.wishare;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
 
 import java.util.ArrayList;
 
@@ -18,6 +22,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     private static final int mDATABASE_VERSION = 1;
     private static final String mDATABASE_NAME = "wishare.db";
     private static WiSQLiteDatabase mDB;
+    private static final String TAG = "WiSQLiteDatabase";
 
 
     //Table with variables
@@ -43,6 +48,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     private static final String mSQL_CREATE_INVIATION =
             "CREATE TABLE Invitation (" +
                     "invitation_id Integer not null primary key autoincrement," +
+                    "ssid varchar(255)," +
                     "sender varchar(255)," +
                     "expires varchar(255)," +
                     "data_limit Integer)";
@@ -59,6 +65,42 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
+    }
+
+
+    public synchronized void insert(final WiInvitation invitation){
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                Log.d(TAG, "Adding invitation to database");
+                ContentValues vals = invitation.toContentValues();
+
+                theDB.insert("Invitation", null, vals);
+                theDB.close();
+                Log.d(TAG, "Inserted invitation to database");
+            }
+        });
+    }
+
+    public ArrayList<WiInvitation> loadAllInvitations(){
+        ArrayList<WiInvitation> invitations = new ArrayList<>();
+        Cursor cur = mDB.getReadableDatabase().rawQuery("select count(*) from Invitation;", null);
+
+        if(cur != null && cur.moveToFirst()){
+            do {
+                Log.d(TAG, "Records found " + cur.getInt(0));
+            } while(cur.moveToNext());
+        }
+
+        cur = mDB.getReadableDatabase().rawQuery("select * from Invitation;", null);
+
+        if(cur != null && cur.moveToFirst()){
+            do {
+                Log.d(TAG, "Loading invitation");
+                invitations.add(WiInvitation.fromCursor(cur));
+            } while(cur.moveToNext());
+        }
+        return invitations;
     }
 
     public static synchronized WiSQLiteDatabase getInstance(Context context) {

@@ -1,5 +1,8 @@
 package com.example.eric.wishare;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -41,9 +44,10 @@ public class WiMessagingService extends FirebaseMessagingService {
             }
             if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
                 Log.d(TAG, "About to show notification");
-                WiInvitation inv = msg.getWiInvitation();
+                WiInvitation invitation = msg.getWiInvitation();
+                WiSQLiteDatabase.getInstance(this).insert(invitation);
 
-                WiInvitationNotification notification = new WiInvitationNotification(this, inv);
+                WiInvitationNotification notification = new WiInvitationNotification(this, invitation);
 
                 notification.show();
                 Log.d(TAG, "Showing notification");

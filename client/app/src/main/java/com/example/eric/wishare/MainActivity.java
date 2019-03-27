@@ -26,6 +26,8 @@ import com.google.firebase.FirebaseApp;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
 
     private final String TAG = "MainActivity";
@@ -91,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
+
+        ArrayList<WiInvitation> invitations = WiSQLiteDatabase.getInstance(this).loadAllInvitations();
+        for(WiInvitation inv: invitations){
+            mInvitationListDialog.add(inv);
+        }
+
 
         /*
         WiContact contact1 = new WiContact("Eric Pratt", "1");
