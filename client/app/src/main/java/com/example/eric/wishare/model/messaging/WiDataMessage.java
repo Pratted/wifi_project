@@ -19,15 +19,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class WiDataMessage extends JSONObject {
+public abstract class WiDataMessage extends JSONObject {
 
     private final String TAG = "WiDataMessage";
     private String mUrl;
 
-    public static final Integer MSG_ACKNOWLEDGE = 0;
-    public static final Integer MSG_INVITATION = 1;
-    public static final Integer MSG_CREDENTIALS = 2;
-    public static final Integer MSG_CONTACT_LIST = 3;
+    public static final int MSG_ACKNOWLEDGE = 0;
+    public static final int MSG_INVITATION = 1;
+    public static final int MSG_CREDENTIALS = 2;
+    public static final int MSG_CONTACT_LIST = 3;
+    public static final int MSG_INVITATION_ACCEPTED = 4;
+    public static final int MSG_INVITATION_DECLINED = 5;
 
     public static String BASE_URL = "http://192.3.135.177:3000/";
 
@@ -43,26 +45,24 @@ public class WiDataMessage extends JSONObject {
         addRecipient(recipient);
     }
 
-    public WiDataMessage(Map<String, String> data){
-        messageType = Integer.valueOf(data.get("msg_type"));
-
-        try{
-            Log.d(TAG, "Begin copying data");
-            for(String key: data.keySet()){
-                put(key, data.get(key));
-            }
-            Log.d(TAG, "Finished Copying data");
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
     public Integer getMessageType(){
         return messageType;
     }
 
+    public String getSender(){
+        String sender = "UNKNOWN";
+
+        try{
+            sender = getString("sender");
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return sender;
+    }
+
     // replace 'this' with json
-    private void deepCopy(JSONObject json){
+    protected void deepCopy(JSONObject json){
         Iterator<String> keys = json.keys();
 
         try{
@@ -89,6 +89,7 @@ public class WiDataMessage extends JSONObject {
         try{
             put("msg_type", messageType);
             put("to", new JSONArray());
+            put("sender", WiUtils.getDevicePhone());
 
             for(WiContact recipient: mRecipients){
                 getJSONArray("to").put(recipient.getPhone());
@@ -123,7 +124,5 @@ public class WiDataMessage extends JSONObject {
         return req;
     }
 
-    public void onResponse(JSONObject response){
-
-    }
+    public abstract void onResponse(JSONObject response);
 }

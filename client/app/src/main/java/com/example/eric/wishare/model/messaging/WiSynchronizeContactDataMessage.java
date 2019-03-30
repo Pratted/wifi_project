@@ -46,8 +46,5 @@ public abstract class WiSynchronizeContactDataMessage extends WiDataMessage {
         return phones;
     }
 
-    @Override
-    public void onResponse(JSONObject response) {
-
-    }
+    public abstract void onResponse(JSONObject response);
 }

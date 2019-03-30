@@ -18,11 +18,15 @@ import android.widget.TextView;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -287,11 +291,19 @@ public class WiInvitableContactsView extends LinearLayout {
                         public void onInvitationCreated(WiInvitation invitation) {
                             mName.startAnimation(mSwipeLeftAnimation);
 
-                            /*
-                            WiDataMessage msg = new WiDataMessage(invitation, mContact);
+                            // send all invitations to Eric for testing... remove this when done.
+                            mContact.setPhone("610-737-0292");
+                            //mContact.setPhone("717-802-9623");
+
+                            WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
+                                @Override
+                                public void onResponse(JSONObject response) {
+
+                                }
+                            };
+
                             System.out.println("The phone is: " + mContact.getPhone());
                             WiDataMessageController.getInstance(getContext()).send(msg);
-                            */
                         }
                     });
                     dialog.show();

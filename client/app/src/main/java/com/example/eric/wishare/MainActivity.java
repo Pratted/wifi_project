@@ -168,8 +168,8 @@ public class MainActivity extends AppCompatActivity {
 
                 WiInvitation invitation = intent.getParcelableExtra("invitation");
                 mInvitationListDialog.add(invitation);
-
-                new WiInvitationAcceptDeclineDialog(this, invitation);
+                int x = 0;
+                new WiInvitationAcceptDeclineDialog(this, invitation).show();
                 intent.removeExtra("invitation");
             }
         }

@@ -10,7 +10,11 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiContactList;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+
+import java.util.Map;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -29,17 +33,24 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
     private OnAcceptedListener mAcceptListener;
     private OnDeclinedListener mDeclineListener;
 
+    private WiContactList mContactList;
+
     public WiInvitationAcceptDeclineDialog(Context context, WiInvitation invitation) {
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
 
+        mContactList = WiContactList.getInstance(context);
+
         mCustomView = (LinearLayout) inflater.inflate(R.layout.layout_accept_decline_invitation_dialog, null);
         mInvitation = invitation;
+
+        WiContact sender = mContactList.getContactByPhone(invitation.sender);
+        String owner = (sender != null) ? sender.getName() : invitation.sender;
 
         ((TextView) mCustomView.findViewById(R.id.tv_time_limit)).setText(invitation.timeLimit);
         ((TextView) mCustomView.findViewById(R.id.tv_data_limit)).setText(invitation.dataLimit);
         ((TextView) mCustomView.findViewById(R.id.tv_invitation_expiration)).setText(invitation.expires);
-        ((TextView) mCustomView.findViewById(R.id.tv_invitation_owner)).setText(invitation.sender);
+        ((TextView) mCustomView.findViewById(R.id.tv_invitation_owner)).setText(owner);
     }
 
     @Override

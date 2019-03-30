@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.WiIncomingDataMessage;
 import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 import com.example.eric.wishare.model.WiInvitationNotification;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -34,42 +35,65 @@ public class WiMessagingService extends FirebaseMessagingService {
 
             Log.d(TAG, "There are " + data.keySet().size() + "keys");
 
+            WiDataMessage msg = new WiIncomingDataMessage(data);
 
-            WiDataMessage msg = new WiDataMessage(data);
+            switch (msg.getMessageType()){
+                case WiDataMessage.MSG_ACKNOWLEDGE:
+                    break;
 
-            if (msg.getMessageType() == WiDataMessage.MSG_ACKNOWLEDGE) {
+                case WiDataMessage.MSG_INVITATION:
+                    onWiInvitationReceived(WiInvitationDataMessage.createInvitation(msg));
+                    break;
 
+                case WiDataMessage.MSG_INVITATION_ACCEPTED:
+                    onWiInvitationAccepted(WiInvitationDataMessage.createInvitation(msg));
+                    break;
+
+                case WiDataMessage.MSG_INVITATION_DECLINED:
+                    onWiInvitationDeclined(WiInvitationDataMessage.createInvitation(msg));
+                    break;
+
+                case WiDataMessage.MSG_CREDENTIALS:
+                    onCredentialsReceived();
+                    break;
+
+                default:
+                    Log.d(TAG, "Unknown message type received -> " + msg.getMessageType());
+                    break;
             }
-            if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
-                WiInvitation invitation = WiInvitationDataMessage.createInvitation(msg);
-
-                Log.d(TAG, "About to show notification");
-                WiSQLiteDatabase.getInstance(this).insert(invitation);
-
-                WiInvitationNotification notification = new WiInvitationNotification(this, invitation);
-
-                notification.show();
-                Log.d(TAG, "Showing notification");
-            }
-            if(msg.getMessageType() == WiDataMessage.MSG_CREDENTIALS){
-
-            }
-
-
-            /*
-            Map<String, String> data = remoteMessage.getData();
-
-            WiNotificationInviteReceived notification = new WiNotificationInviteReceived(this, data.get("title"), data.get("desc"), data);
-            notification.show();
-            */
-
-            // TODO: handle the data message
         }
 
         // Check if message contains a notification payload.
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
+    }
+
+
+    public void onAcknowledgeReceived(){
+
+    }
+
+    public void onWiInvitationReceived(WiInvitation invitation){
+        Log.d(TAG, "About to show notification");
+        WiSQLiteDatabase.getInstance(this).insert(invitation);
+
+        WiInvitationNotification notification = new WiInvitationNotification(this, invitation);
+
+        notification.show();
+        Log.d(TAG, "Showing notification");
+    }
+
+    public void onWiInvitationAccepted(WiInvitation invitation){
+
+    }
+
+    public void onWiInvitationDeclined(WiInvitation invitation){
+
+    }
+
+    public void onCredentialsReceived(){
+
     }
 
     @Override
