@@ -18,8 +18,6 @@ import android.widget.TextView;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
-import com.example.eric.wishare.model.WiDataMessage;
-import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
@@ -289,9 +287,11 @@ public class WiInvitableContactsView extends LinearLayout {
                         public void onInvitationCreated(WiInvitation invitation) {
                             mName.startAnimation(mSwipeLeftAnimation);
 
+                            /*
                             WiDataMessage msg = new WiDataMessage(invitation, mContact);
                             System.out.println("The phone is: " + mContact.getPhone());
                             WiDataMessageController.getInstance(getContext()).send(msg);
+                            */
                         }
                     });
                     dialog.show();

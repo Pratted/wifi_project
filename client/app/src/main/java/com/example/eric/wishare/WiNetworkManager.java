@@ -67,11 +67,19 @@ public class WiNetworkManager {
         synchronizeNetworks();
     }
 
-    public void addConfiguredNetwork(final WiConfiguration config) {
+    // called by a client when a host sends them network credentials
+    public void addConfiguredNetwork(WiConfiguration config) {
+        try{
+            sWifiManager.addNetwork(config); // <- actually saves the network into android wifi
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    // invoked by the host when they enter a network password
+    public void configureNetwork(WiConfiguration config){
         mConfiguredNetworks.put(config.SSID, config);
         mUnConfiguredNetworks.remove(config.SSID);
-
-        sWifiManager.addNetwork(config);
     }
 
     public void removeConfiguredNetwork(WiConfiguration config) {

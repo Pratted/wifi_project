@@ -9,15 +9,9 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
-import com.example.eric.wishare.model.WiDataMessage;
-import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
-import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
-import com.example.eric.wishare.model.WiInvitation;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,6 +102,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 Integer indices[] = dialog.getSelectedIndices();
 
+                /*
                 WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);
 
                 if(indices.length == 1) {
@@ -133,6 +128,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         WiDataMessageController.getInstance(context.get()).send(msg);
                     }
                 }
+                */
 
                 /* TODO: put this listener in the class which receives the accept
                    TODO: or decline message from the invited contact
@@ -146,6 +142,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         .canceledOnTouchOutside(false)
                         .show();
 
+                /*
                 msg.setOnResponseListener(new WiDataMessage.OnResponseListener() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -153,6 +150,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         spinnyThing.dismiss();
                     }
                 });
+                */
+
 //                msg.putRecipient(mContact.getPhone());
 //                WiDataMessageController.getInstance(context.get()).send(msg);
             }

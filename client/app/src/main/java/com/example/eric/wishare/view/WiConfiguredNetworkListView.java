@@ -25,9 +25,12 @@ import java.util.Map;
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiConfiguredNetworkListView extends LinearLayout {
-    private WiNetworkManager mNetworkManager;
-    private Map<String, WiConfiguredNetworkListItem> mConfiguredNetworks;
     private String TAG = "WiConfiguredNetworkListView";
+
+    private WiNetworkManager mNetworkManager;
+    private WiSQLiteDatabase mDatabase;
+
+    private Map<String, WiConfiguredNetworkListItem> mConfiguredNetworks;
 
     public WiConfiguredNetworkListView(Context context){
         super(context);
@@ -42,6 +45,8 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     public void init() {
         mConfiguredNetworks = new HashMap<>();
         mNetworkManager = WiNetworkManager.getInstance(getContext());
+        mDatabase = WiSQLiteDatabase.getInstance(getContext());
+
         List<WiConfiguration> configuredNetworks  = mNetworkManager.getConfiguredNetworks();
 
         Log.d(TAG, "Found  " + configuredNetworks.size() + " configured networks");
@@ -102,7 +107,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                     WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
                                     System.out.println("mConfig.getSSID(): " + mConfig.getSSID()) ;
                                     mNetworkManager.removeConfiguredNetwork(mConfig);
-                                    WiSQLiteDatabase.getInstance(getContext()).delete(mConfig);
+                                    mDatabase.delete(mConfig);
                                 }
                             }).show();
                 }

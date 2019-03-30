@@ -4,20 +4,19 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiContact;
-import com.example.eric.wishare.model.WiDataMessage;
+import com.example.eric.wishare.model.messaging.WiDataMessage;
+import com.example.eric.wishare.model.messaging.WiSynchronizeContactDataMessage;
 
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 public class WiContactList {
@@ -26,7 +25,7 @@ public class WiContactList {
     private static HashMap<String, WiContact> mContacts;
     private WeakReference<Context> mContext;
     private static WiContactList sInstance;
-    private SQLiteDatabase mDatabase;
+    private WiSQLiteDatabase mDatabase;
 
     private OnContactListReadyListener mContactListReadyListener;
     private AsyncTask<Void,Void,Void> mSynchronizeContactsTask;
@@ -43,6 +42,8 @@ public class WiContactList {
 
         mContext = new WeakReference<>(context.getApplicationContext());
         mDataMessageController = WiDataMessageController.getInstance(context);
+        mDatabase = WiSQLiteDatabase.getInstance(context.getApplicationContext());
+
         mSynchronizeContactsTask = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
@@ -51,13 +52,19 @@ public class WiContactList {
                 Log.d(TAG, "Loaded " + deviceContacts.size() + " contacts from phone");
 
                 // mContacts is initialized with contacts from DB
-                mContacts = WiSQLiteDatabase.getInstance(mContext.get()).loadContacts();
+                mContacts = mDatabase.loadContacts();
+
+                Log.d(TAG, "There are " + mContacts.size() + " contacts in the database");
+
+                for(WiContact contact: mContacts.values()){
+                    Log.d(TAG, contact.getPhone() + " ->" + contact.getName());
+                }
+
+                Log.d(TAG, "End display contacts in DB");
 
                 // this data message contains the device's contact list as an array of phone numbers
                 // the server responds with a subset of them (the contacts with wishare installed)
-                msg = new WiDataMessage(WiDataMessage.MSG_CONTACT_LIST, deviceContacts.values());
-
-                msg.setOnResponseListener(new WiDataMessage.OnResponseListener() {
+                msg = new WiSynchronizeContactDataMessage(new ArrayList<>(deviceContacts.values())){
                     @Override
                     public void onResponse(JSONObject response) {
                         if(response == null){
@@ -68,52 +75,25 @@ public class WiContactList {
                         Log.d(TAG, "Received Response from server");
                         Log.d(TAG, response.toString());
 
-                        final HashSet<String> contactsWithWiShare = new HashSet<>();
+                        for(String phone: this.getIncomingPhoneNumbers(response)){
+                            if(!mContacts.containsKey(phone)){
+                                // async write to DB
+                                mDatabase.insert(deviceContacts.get(phone));
 
-                        try{
-                            for(int i = 0; i < response.getJSONArray("phones").length(); i++){
-                                contactsWithWiShare.add(response.getJSONArray("phones").get(i).toString());
+                                // don't wait on DB to add record to map. just do it now
+                                mContacts.put(phone, deviceContacts.get(phone));
                             }
-                        } catch (Exception e){
-                            e.printStackTrace();
+                            else{ // they've already been loaded from DB, so do nothing
+                            }
                         }
 
-                        Log.d(TAG, "There are " + mContacts.size() + " contacts in the database");
-
-                        for(WiContact contact: mContacts.values()){
-                            Log.d(TAG, contact.getPhone() + " ->" + contact.getName());
+                        if(mContactListReadyListener != null){
+                            mContactListReadyListener.onContactListReady(mContacts);
                         }
-
-                        Log.d(TAG, "End display contacts in DB");
-
-                        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-                            @Override
-                            public void onDBReady(SQLiteDatabase theDB) {
-                                Log.d(TAG, "Begin adding contacts to database!");
-
-                                for(String phone: contactsWithWiShare){
-                                    WiContact contact = mContacts.get(phone);
-
-                                    Log.d(TAG, "Checking if " + phone + " is in the DB...");
-                                    if(contact == null){
-                                        Log.d(TAG, "It is not the DB. Lets add it lol");
-                                        theDB.insert(WiSQLiteDatabase.TABLE_CONTACTS.TABLE_NAME, null, deviceContacts.get(phone).toContentValues());
-                                    }
-                                }
-
-                                if(mContactListReadyListener != null){
-                                    mContactListReadyListener.onContactListReady(mContacts);
-                                }
-
-                                theDB.close();
-                            }
-                        });
-
                     }
-                });
+                };
 
                 mDataMessageController.send(msg);
-
                 Log.d(TAG, "End Synchronize Contacts!");
                 return null;
             }
@@ -157,67 +137,6 @@ public class WiContactList {
         }
 
         return contacts;
-    }
-
-    private HashMap<String, WiContact> loadDbContacts() {
-        HashMap<String, WiContact> contacts  = WiSQLiteDatabase.getInstance(mContext.get()).loadContacts();
-        //HashMap<String, WiContact> contacts = new HashMap<>();
-
-        /*
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
-        Cursor cur = db.rawQuery("select * from SynchronizedContacts order by name asc", null);
-
-        if (cur != null && cur.moveToFirst()) {
-            do {
-                WiContact contact = new WiContact(
-                        cur.getString(cur.getColumnIndex("name")),
-                        cur.getString(cur.getColumnIndex("phone")),
-                        cur.getString(cur.getColumnIndex("contact_id")));
-
-                contacts.put(contact.getPhone(), contact);
-            } while (cur.moveToNext());
-        }
-
-        cur = db.rawQuery("select phone, ssid from SynchronizedContacts sc join PermittedNetworks pn on sc.ssid = pn.ssid", null);
-
-        if (cur != null && cur.moveToFirst()) {
-            do {
-                WiContact contact = new WiContact(
-                        cur.getString(cur.getColumnIndex("name")),
-                        cur.getString(cur.getColumnIndex("phone")),
-                        cur.getString(cur.getColumnIndex("contact_id")));
-
-                contacts.put(contact.getPhone(), contact);
-            } while (cur.moveToNext());
-        }
-
-
-        cur.close();
-        */
-
-        return contacts;
-    }
-
-    private synchronized ArrayList<WiContact> getPermittedContacts(final String networkSSID){
-        final ArrayList<WiContact> permittedContacts = new ArrayList<>();
-        WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase db) {
-                mDatabase = db;
-                Cursor c = mDatabase.query("PermittedContacts", null, "SSID=?", new String[]{networkSSID}, null, null,"name asc");
-                if (c.moveToFirst()) {
-                    WiContact contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
-                    permittedContacts.add(contact);
-                    while(c.moveToNext()) {
-                        contact = new WiContact(c.getString(c.getColumnIndex("name")), c.getString(c.getColumnIndex("phone")));
-                        permittedContacts.add(contact);
-                    }
-                }
-                c.close();
-                db.close();
-            }
-        });
-        return permittedContacts;
     }
 
     public synchronized void synchronizeContacts(){

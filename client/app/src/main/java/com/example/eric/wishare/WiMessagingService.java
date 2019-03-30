@@ -1,13 +1,11 @@
 package com.example.eric.wishare;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.eric.wishare.model.WiDataMessage;
+import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 import com.example.eric.wishare.model.WiInvitationNotification;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -43,8 +41,9 @@ public class WiMessagingService extends FirebaseMessagingService {
 
             }
             if(msg.getMessageType() == WiDataMessage.MSG_INVITATION){
+                WiInvitation invitation = WiInvitationDataMessage.createInvitation(msg);
+
                 Log.d(TAG, "About to show notification");
-                WiInvitation invitation = msg.getWiInvitation();
                 WiSQLiteDatabase.getInstance(this).insert(invitation);
 
                 WiInvitationNotification notification = new WiInvitationNotification(this, invitation);
@@ -55,6 +54,7 @@ public class WiMessagingService extends FirebaseMessagingService {
             if(msg.getMessageType() == WiDataMessage.MSG_CREDENTIALS){
 
             }
+
 
             /*
             Map<String, String> data = remoteMessage.getData();

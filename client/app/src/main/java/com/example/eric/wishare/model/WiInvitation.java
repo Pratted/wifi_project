@@ -16,6 +16,8 @@ public class WiInvitation implements Parcelable {
     public String dataLimit;
     private WiConfiguration mConfiguration;
 
+    private boolean mAccepted = false;
+
     public WiConfiguration getWiConfiguration() {
         return mConfiguration;
     }
@@ -46,6 +48,10 @@ public class WiInvitation implements Parcelable {
     }
 
     private WiInvitation(){}
+
+    public void accept(){
+        mAccepted = true;
+    }
 
     public static WiInvitation fromCursor(Cursor cur){
         WiInvitation invitation = new WiInvitation();

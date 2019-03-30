@@ -92,7 +92,7 @@ public class WiAddNetworkDialog extends WiDialog {
                                 mListener.OnPasswordEntered(config);
 
                                 WiSQLiteDatabase.getInstance(mContext.get()).insert(config);
-                                mManager.addConfiguredNetwork(config);
+                                mManager.configureNetwork(config);
                                 Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
                             }})
                         .neutralText("Test Connection")
