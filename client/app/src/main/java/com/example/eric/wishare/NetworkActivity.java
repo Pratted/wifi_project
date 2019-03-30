@@ -15,6 +15,8 @@ import android.widget.EditText;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.example.eric.wishare.dialog.WiEditNetworkDialog;
 import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.dialog.WiInviteContactsDialog;
@@ -73,7 +75,7 @@ public class NetworkActivity extends AppCompatActivity {
     private WiContactList.OnContactListReadyListener onContactListReady(){
         return new WiContactList.OnContactListReadyListener(){
             @Override
-            public void onContactListReady(ArrayList<WiContact> contacts) {
+            public void onContactListReady(HashMap<String, WiContact> contacts) {
                 //Build Tabbed List
 
             }

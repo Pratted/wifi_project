@@ -5,108 +5,78 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
-import android.text.TextUtils;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.eric.wishare.model.WiConfiguration;
+import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-
-import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+import java.util.Map;
 
 import static android.content.Context.WIFI_SERVICE;
 
 public class WiNetworkManager {
     private static WiNetworkManager sInstance;
     private static WifiManager sWifiManager;
-    private static ArrayList<WiConfiguration> mConfiguredNetworks;
-    private static ArrayList<WifiConfiguration> mNotConfiguredNetworks;
 
-    private static HashMap<String, WifiConfiguration> mConfigured;
     private SharedPreferences.Editor mEditor;
-
     private WeakReference<Context> mContext;
+    private String TAG = "WiNetworkManager";
 
-    public WiNetworkManager(Context context) {
+    private Map<String, WiConfiguration> mConfiguredNetworks;
+    private Map<String, WifiConfiguration> mUnConfiguredNetworks;
+
+    private WiNetworkManager(Context context) {
         mContext = new WeakReference<>(context.getApplicationContext());
         sWifiManager = (WifiManager) mContext.get().getApplicationContext().getSystemService(WIFI_SERVICE);
+
         mEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
-        mConfiguredNetworks = new ArrayList<>();
-        mNotConfiguredNetworks = new ArrayList<>();
-        mConfigured = new HashMap<>();
-        loadNetworks();
+        synchronizeNetworks();
     }
 
-    public static ArrayList<WiConfiguration> getConfiguredNetworks(Context context) {
-        return mConfiguredNetworks;
-    }
+    private void synchronizeNetworks(){
+        List<WiConfiguration> dbNetworks = WiSQLiteDatabase.getInstance(mContext.get()).loadNetworks();
+        List<WifiConfiguration> deviceNetworks = sWifiManager.getConfiguredNetworks();
 
-    public static ArrayList<WifiConfiguration> getUnConfiguredNetworks(Context context) {
-        WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(WIFI_SERVICE);
-        List<WifiConfiguration> wifiList = wifiManager.getConfiguredNetworks();
-        mNotConfiguredNetworks.addAll(wifiList);
-        HashMap<String, WiConfiguration> configMap = new HashMap<>();
-        for (WiConfiguration wConfig : mConfiguredNetworks){
-            configMap.put(wConfig.getSSID(), wConfig);
+        mConfiguredNetworks = new HashMap<>();
+        mUnConfiguredNetworks = new HashMap<>();
+
+        for(WiConfiguration config: dbNetworks){
+            mConfiguredNetworks.put(config.SSID, config);
         }
-        for (Iterator<WifiConfiguration> it = mNotConfiguredNetworks.iterator(); it.hasNext();){
-        //for(WifiConfiguration configuration : mNotConfiguredNetworks) {
-            if(configMap.containsKey(it.next().SSID.replace("\"", ""))) {
-                it.remove();
+
+        for(WifiConfiguration config: deviceNetworks){
+            // if not already in configured, add to unConfiguredNetworks...
+            if(!mConfiguredNetworks.containsKey(config.SSID)){
+                mUnConfiguredNetworks.put(config.SSID, config);
             }
         }
-        return mNotConfiguredNetworks;
+    }
+
+    public void refresh(){
+        synchronizeNetworks();
     }
 
     public void addConfiguredNetwork(final WiConfiguration config) {
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT * FROM WifiConfiguration WHERE network_id=(SELECT MAX(network_id) FROM WifiConfiguration)", null);
-        cur.moveToFirst();
-            WiConfiguration config2 = new WiConfiguration(
-                    cur.getString(cur.getColumnIndex("SSID")),
-                    cur.getString(cur.getColumnIndex("password")),
-                    cur.getString(cur.getColumnIndex("network_id")));
-        cur.close();
+        mConfiguredNetworks.put(config.SSID, config);
+        mUnConfiguredNetworks.remove(config.SSID);
 
-        mConfiguredNetworks.add(config2);
-
-    }
-
-    public void addNotConfiguredNetwork(WifiConfiguration config) {
-        mNotConfiguredNetworks.add(config);
+        sWifiManager.addNetwork(config);
     }
 
     public void removeConfiguredNetwork(WiConfiguration config) {
         mConfiguredNetworks.remove(config);
-    }
-
-    public void removeNotConfiguredNetwork(WifiConfiguration config) {
-        for(WifiConfiguration configuration : mNotConfiguredNetworks) {
-            if(config.SSID.equals(configuration.SSID.replace("\"", ""))) {
-                mNotConfiguredNetworks.remove(configuration);
-                break;
-            }
-        }
-    }
-
-    public void addNetwork(WifiConfiguration config){
-        sWifiManager.addNetwork(config);
+        mUnConfiguredNetworks.put(config.SSID, config);
     }
 
     public boolean testConnection(String ssid){
@@ -150,28 +120,22 @@ public class WiNetworkManager {
         return sWifiManager.enableNetwork(config.networkId, true);
     }
 
-    private void loadNetworks(){
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
-        Cursor cur = db.rawQuery("select * from WifiConfiguration", null);
+    // returning ArrayList here so .values() gets changed from collection to list
+    public List<WifiConfiguration> getUnConfiguredNetworks() {
+        return new ArrayList<>(mUnConfiguredNetworks.values());
+    }
 
-        if (cur != null && cur.moveToFirst()) {
-            do {
-                WiConfiguration wiConfiguration = new WiConfiguration(
-                        cur.getString(cur.getColumnIndex("SSID")),
-                        cur.getString(cur.getColumnIndex("password")),
-                        cur.getString(cur.getColumnIndex("network_id")));
-                mConfiguredNetworks.add(wiConfiguration);
-            } while (cur.moveToNext());
+    public List<WiConfiguration> getConfiguredNetworks() {
+        for(WiConfiguration configuration: mConfiguredNetworks.values()){
+            if(configuration != null){
+                Log.d(TAG, "Configured Network {" + configuration.SSID + "}");
+            }
+            else{
+                Log.d(TAG, "Null configuration found!");
+            }
         }
-        cur.close();
-    }
 
-    public ArrayList<WifiConfiguration> getUnConfiguredNetworks() {
-        return mNotConfiguredNetworks;
-    }
-
-    public ArrayList<WiConfiguration> getConfiguredNetworks() {
-        return mConfiguredNetworks;
+        return new ArrayList<>(mConfiguredNetworks.values());
     }
 
     public synchronized static WiNetworkManager getInstance(Context context) {

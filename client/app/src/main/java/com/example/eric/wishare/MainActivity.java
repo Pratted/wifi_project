@@ -87,10 +87,7 @@ public class MainActivity extends AppCompatActivity {
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
         mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
-        mConfiguredNetworks = new WiNetworkManager(this);
-        for (WiConfiguration configuredNetwork : mConfiguredNetworks.getConfiguredNetworks(this)){
-            mConfiguredNetworkListView.addView(configuredNetwork);
-        }
+
 
         mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
 
@@ -161,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override
             public void OnPasswordEntered(WiConfiguration config) {
-                mConfiguredNetworkListView.addView(config);
+                mConfiguredNetworkListView.addConfiguredNetwork(config);
             }
         };
     }

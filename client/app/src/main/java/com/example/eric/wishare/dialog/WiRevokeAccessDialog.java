@@ -9,19 +9,20 @@ import android.widget.Button;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.WiNetworkManager;
+import com.example.eric.wishare.model.WiConfiguration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WiRevokeAccessDialog extends WiDialog{
-
-    private ArrayList<WifiConfiguration> mNetworks;
+    private List<WiConfiguration> mConfiguredNetworks;
 
     @Override
     public MaterialDialog build() {
 
         ArrayList<String> networkList = new ArrayList<>();
 
-        for (WifiConfiguration configuration : mNetworks) {
+        for (WifiConfiguration configuration : mConfiguredNetworks) {
             networkList.add(configuration.SSID);
         }
 
@@ -53,7 +54,7 @@ public class WiRevokeAccessDialog extends WiDialog{
                 Integer indices[] = dialog.getSelectedIndices();
 
                 for(Integer i: indices){
-                    System.out.println("You Revoked Joe Schmoe from " + mNetworks.get(i).SSID);
+                    System.out.println("You Revoked Joe Schmoe from " + mConfiguredNetworks.get(i).SSID);
                 }
             }
         };
@@ -62,7 +63,7 @@ public class WiRevokeAccessDialog extends WiDialog{
     public WiRevokeAccessDialog(Context context, Button btnRevokeAccess) {
         super(context);
 
-        mNetworks = WiNetworkManager.getUnConfiguredNetworks(context);
+        mConfiguredNetworks = WiNetworkManager.getInstance(context).getConfiguredNetworks();
 
         btnRevokeAccess.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,16 +15,19 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.NetworkActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiNetworkManager;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiConfiguration;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiConfiguredNetworkListView extends LinearLayout {
-
-    private List<WiConfiguration> configs;
+    private WiNetworkManager mNetworkManager;
+    private Map<String, WiConfiguredNetworkListItem> mConfiguredNetworks;
+    private String TAG = "WiConfiguredNetworkListView";
 
     public WiConfiguredNetworkListView(Context context){
         super(context);
@@ -36,17 +40,25 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     }
 
     public void init() {
-        configs = new ArrayList<>();
+        mConfiguredNetworks = new HashMap<>();
+        mNetworkManager = WiNetworkManager.getInstance(getContext());
+        List<WiConfiguration> configuredNetworks  = mNetworkManager.getConfiguredNetworks();
+
+        Log.d(TAG, "Found  " + configuredNetworks.size() + " configured networks");
+
+        for (WiConfiguration config : mNetworkManager.getConfiguredNetworks()){
+            addConfiguredNetwork(config);
+        }
     }
 
-    public void addView(WiConfiguration config) {
-        configs.add(config);
-        this.addView(new WiConfiguredNetworkListItem(getContext(), config));
+    public void addConfiguredNetwork(WiConfiguration config) {
+        WiConfiguredNetworkListItem item = new WiConfiguredNetworkListItem(getContext(), config);
+        mConfiguredNetworks.put(config.SSID, item);
+        addView(item);
     }
 
     private class WiConfiguredNetworkListItem extends SwipeLayout {
         private WiConfiguration mConfig;
-        private WiNetworkManager mNetworkManager;
 
         public WiConfiguredNetworkListItem(Context context, WiConfiguration config){
             super(context);
@@ -56,8 +68,6 @@ public class WiConfiguredNetworkListView extends LinearLayout {
         }
 
         public void init() {
-            mNetworkManager = WiNetworkManager.getInstance(getContext().getApplicationContext());
-
             inflate(getContext(), R.layout.layout_configured_network_list_item, this);
 
             int users = mConfig.hashCode() % 5;
@@ -92,7 +102,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                     WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
                                     System.out.println("mConfig.getSSID(): " + mConfig.getSSID()) ;
                                     mNetworkManager.removeConfiguredNetwork(mConfig);
-                                    mNetworkManager.addNotConfiguredNetwork(mConfig);
+                                    WiSQLiteDatabase.getInstance(getContext()).delete(mConfig);
                                 }
                             }).show();
                 }

@@ -47,8 +47,6 @@ public class ContactActivity extends AppCompatActivity {
         setContentView(R.layout.activity_contact);
 
 
-
-
         mContact = getIntent().getExtras().getParcelable("contact");
 
         try {
@@ -76,6 +74,7 @@ public class ContactActivity extends AppCompatActivity {
         mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
         mContactSharedNetworkList.populateNetworks(this, mContact);
 
+        /*
         mNetworks = WiNetworkManager.getUnConfiguredNetworks(this);
 
         ArrayList<WiConfiguration> networkList = new ArrayList<>();
@@ -83,15 +82,12 @@ public class ContactActivity extends AppCompatActivity {
         for (WifiConfiguration configuration : mNetworks) {
             networkList.add(new WiConfiguration(configuration, ""));
         }
+        */
 
-//        for(WiConfiguration config : networkList) {
-//            mContactSharedNetworkList.addSharedNetwork(config);
-//        }
 
         btnRevokeAllAccess = findViewById(R.id.btn_revoke_all_access);
         btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
 
-//        mRevokeAccessDialog = new WiRevokeAccessDialog(this, btnRevokeAllAccess);
         btnRevokeAllAccess.setOnClickListener(revokeAllAccess());
         mInviteToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
         mInviteToNetwork.setOnInviteClickListener(onInviteClick());

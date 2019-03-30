@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class WiDataMessage extends JSONObject {
     public static final Integer MSG_CREDENTIALS = 2;
     public static final Integer MSG_CONTACT_LIST = 3;
 
-    public static final String BASE_URL = "http://192.3.135.177:3000/";
+    public static String BASE_URL = "http://192.3.135.177:3000/";
     
     private OnResponseListener mOnResponseListener;
     private int messageType;
@@ -46,6 +47,24 @@ public class WiDataMessage extends JSONObject {
     public WiDataMessage(Integer msg_type, WiContact recipient){
         messageType = msg_type;
         addRecipient(recipient);
+    }
+
+    public WiDataMessage(Integer msg_type, Collection<WiContact> contacts){
+        messageType = msg_type;
+
+        try {
+            JSONArray arr = new JSONArray();
+            for(WiContact contact: contacts){
+                if(!contact.getPhone().isEmpty()){
+                    arr.put(contact.getPhone());
+                    Log.d(TAG, "Adding " + contact.getPhone() + " to list...");
+                }
+            }
+
+            put("phones", arr);
+        } catch(JSONException e){
+            e.printStackTrace();
+        }
     }
 
     public WiDataMessage(WiInvitation inv){

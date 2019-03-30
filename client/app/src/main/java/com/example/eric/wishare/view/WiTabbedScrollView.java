@@ -82,7 +82,7 @@ public class WiTabbedScrollView extends LinearLayout {
             } while (cur.moveToNext());
         }
         cur.close();
-        for(WiContact contact: mContactList.getWiContacts()){
+        for(WiContact contact: mContactList.getWiContacts().values()){
             if(permContacts.containsKey(contact.getContactID())){
                 mPermittedContactsView.addPermittedContact(contact);
             }

@@ -14,6 +14,8 @@ import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 public class WiManageContactsDialog extends WiDialog{
     private WiContactList mContactList;
@@ -40,7 +42,7 @@ public class WiManageContactsDialog extends WiDialog{
     private WiContactList.OnContactListReadyListener onContactListReady(){
         return new WiContactList.OnContactListReadyListener() {
             @Override
-            public void onContactListReady(ArrayList<WiContact> contacts) {
+            public void onContactListReady(HashMap<String, WiContact> contacts) {
                 build();
             }
         };
@@ -61,7 +63,7 @@ public class WiManageContactsDialog extends WiDialog{
 
     public MaterialDialog build(){
         ArrayList<String> strings = new ArrayList<>();
-        ArrayList<WiContact> contacts = mContactList.getWiContacts();
+        Collection<WiContact> contacts = mContactList.getWiContacts().values();
 
         for (WiContact contact : contacts) {
             strings.add(contact.getName() + " " + contact.getPhone());

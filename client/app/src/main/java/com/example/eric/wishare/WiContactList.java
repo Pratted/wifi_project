@@ -9,34 +9,26 @@ import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.example.eric.wishare.dialog.WiAddNetworkDialog;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiDataMessage;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class WiContactList {
     private static final String TAG = "WiContactList";
 
-    private static ArrayList<WiContact> mContactListArray;
-    private static HashMap<String, WiContact> mContactListMap;
+    private static HashMap<String, WiContact> mContacts;
     private WeakReference<Context> mContext;
-    private static WiContactList mCL;
+    private static WiContactList sInstance;
     private SQLiteDatabase mDatabase;
 
-    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEnteredListener;
     private OnContactListReadyListener mContactListReadyListener;
-
-    private HashMap<String, WiContact> mDeviceContacts;
-    private HashMap<String, WiContact> mDbContacts;
-
     private AsyncTask<Void,Void,Void> mSynchronizeContactsTask;
 
     // boolean flag to keep make sure synchronizeContacts only runs once
@@ -44,57 +36,39 @@ public class WiContactList {
 
     private WiDataMessage msg;
     private WiDataMessageController mDataMessageController;
-    private ArrayList<WiContact> mBuffer;
 
     @SuppressLint("StaticFieldLeak")
     private WiContactList(Context context) {
-        mContactListArray = new ArrayList<>();
-        mContactListMap = new HashMap<>();
-        mContext = new WeakReference<>(context.getApplicationContext());
-        mDeviceContacts = new HashMap<>();
-        mDbContacts = new HashMap<>();
-        mDataMessageController = WiDataMessageController.getInstance(context);
+        mContacts = new HashMap<>();
 
+        mContext = new WeakReference<>(context.getApplicationContext());
+        mDataMessageController = WiDataMessageController.getInstance(context);
         mSynchronizeContactsTask = new AsyncTask<Void, Void, Void>(){
             @Override
             protected Void doInBackground(Void... voids) {
                 Log.d(TAG, "Begin Synchronize Contacts!");
-                mDeviceContacts = loadDeviceContacts();
-                mDbContacts = loadDbContacts();
+                final HashMap<String, WiContact> deviceContacts = loadDeviceContacts();
+                Log.d(TAG, "Loaded " + deviceContacts.size() + " contacts from phone");
 
-                msg = new WiDataMessage(WiDataMessage.MSG_CONTACT_LIST);
-                Log.d(TAG, "Loaded " + mDeviceContacts.size() + " contacts from phone");
+                // mContacts is initialized with contacts from DB
+                mContacts = WiSQLiteDatabase.getInstance(mContext.get()).loadContacts();
 
-                JSONArray jsonPhones = new JSONArray();
-                for(WiContact contact: mDeviceContacts.values()){
-                    if(contact.getPhone() != null){
-                        String phone = contact.getPhone();
-
-                        if(!phone.isEmpty()){
-                            jsonPhones.put(phone);
-                        }
-                    }
-                }
-
-                try {
-                    msg.put("phones", jsonPhones);
-                } catch (JSONException e){
-                    e.printStackTrace();
-                }
+                // this data message contains the device's contact list as an array of phone numbers
+                // the server responds with a subset of them (the contacts with wishare installed)
+                msg = new WiDataMessage(WiDataMessage.MSG_CONTACT_LIST, deviceContacts.values());
 
                 msg.setOnResponseListener(new WiDataMessage.OnResponseListener() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if(response == null){
-                            Log.e(TAG, "Server did not respond");
+                            Log.e(TAG, "Shit. Server did not respond");
                             return;
                         }
 
                         Log.d(TAG, "Received Response from server");
                         Log.d(TAG, response.toString());
-                        mContactListArray = new ArrayList<>();
 
-                        HashSet<String> contactsWithWiShare = new HashSet<>();
+                        final HashSet<String> contactsWithWiShare = new HashSet<>();
 
                         try{
                             for(int i = 0; i < response.getJSONArray("phones").length(); i++){
@@ -104,55 +78,37 @@ public class WiContactList {
                             e.printStackTrace();
                         }
 
+                        Log.d(TAG, "There are " + mContacts.size() + " contacts in the database");
 
-                        mBuffer = new ArrayList<>();
-
-                        Log.d(TAG, "There are " + mDbContacts.size() + " contacts in the database");
-
-                        for(String phone: contactsWithWiShare){
-                            Log.d(TAG, "Checking if " + phone + " is in the DB...");
-                            if(!mDbContacts.keySet().contains(phone)){
-                                Log.d(TAG, "It is not the DB. Lets add it lol");
-                                mBuffer.add(mDeviceContacts.get(phone));
-                            }
+                        for(WiContact contact: mContacts.values()){
+                            Log.d(TAG, contact.getPhone() + " ->" + contact.getName());
                         }
+
+                        Log.d(TAG, "End display contacts in DB");
 
                         WiSQLiteDatabase.getInstance(mContext.get()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
                             @Override
                             public void onDBReady(SQLiteDatabase theDB) {
                                 Log.d(TAG, "Begin adding contacts to database!");
-                                for(WiContact contact: mBuffer){
-                                    Log.d(TAG, "Adding record to database! " + contact.toString());
-                                    contact.setPhone(WiUtils.formatPhoneNumber(contact.getPhone()));
-                                    theDB.insert("SynchronizedContacts", null, contact.toContentValues());
-                                }
-                                Cursor cur = theDB.rawQuery("SELECT * FROM SynchronizedContacts", null);
-                                if (cur != null && cur.moveToFirst()) {
-                                    do {
-                                        WiContact contact = new WiContact(
-                                                cur.getString(cur.getColumnIndex("name")),
-                                                cur.getString(cur.getColumnIndex("phone")),
-                                                cur.getString(cur.getColumnIndex("contact_id")));
 
-/*                                        //testing purposes
-                                        if (contact.getName().contains("Eric")) {
-                                            ContentValues contentValues = new ContentValues();
-                                            contentValues.put("network_id", "1");
-                                            contentValues.put("contact_id", contact.getContactID());
-                                            contentValues.put("SSID", "KHQ");
-                                            theDB.insert("PermittedContacts", null, contentValues);
-                                        }*/
+                                for(String phone: contactsWithWiShare){
+                                    WiContact contact = mContacts.get(phone);
 
-                                        mContactListArray.add(contact);
-                                        mContactListMap.put(contact.getPhone(), contact);
-                                    } while (cur.moveToNext());
+                                    Log.d(TAG, "Checking if " + phone + " is in the DB...");
+                                    if(contact == null){
+                                        Log.d(TAG, "It is not the DB. Lets add it lol");
+                                        theDB.insert(WiSQLiteDatabase.TABLE_CONTACTS.TABLE_NAME, null, deviceContacts.get(phone).toContentValues());
+                                    }
                                 }
-                                mBuffer.clear();
-                                synchronizing = false;
-                                mContactListReadyListener.onContactListReady(mContactListArray);
+
+                                if(mContactListReadyListener != null){
+                                    mContactListReadyListener.onContactListReady(mContacts);
+                                }
+
                                 theDB.close();
                             }
                         });
+
                     }
                 });
 
@@ -169,12 +125,12 @@ public class WiContactList {
         };
     }
 
-    public ArrayList<WiContact> getWiContacts(){
-        return mContactListArray;
+    public Map<String, WiContact> getWiContacts(){
+        return mContacts;
     }
 
     public interface OnContactListReadyListener{
-        void onContactListReady(ArrayList<WiContact> contacts);
+        void onContactListReady(HashMap<String, WiContact> contacts);
     }
 
     public void setOnContactListReadyListener(OnContactListReadyListener listener){
@@ -188,18 +144,26 @@ public class WiContactList {
         Cursor cursor = resolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null, null, null);
 
         while(cursor != null && cursor.moveToNext()) {
-            WiContact contact = new WiContact(
-                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
-                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+            String name = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+            String phone = cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+            phone = WiUtils.formatPhoneNumber(phone);
 
-            contacts.put(contact.getPhone(), contact);
+            if(!phone.isEmpty()){
+                Log.d(TAG, "Loaded {" + name + "} {" + phone + "}");
+
+                WiContact contact = new WiContact(name, phone);
+                contacts.put(contact.getPhone(), contact);
+            }
         }
 
         return contacts;
     }
 
     private HashMap<String, WiContact> loadDbContacts() {
-        HashMap<String, WiContact> contacts = new HashMap<>();
+        HashMap<String, WiContact> contacts  = WiSQLiteDatabase.getInstance(mContext.get()).loadContacts();
+        //HashMap<String, WiContact> contacts = new HashMap<>();
+
+        /*
         SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
         Cursor cur = db.rawQuery("select * from SynchronizedContacts order by name asc", null);
 
@@ -213,7 +177,23 @@ public class WiContactList {
                 contacts.put(contact.getPhone(), contact);
             } while (cur.moveToNext());
         }
+
+        cur = db.rawQuery("select phone, ssid from SynchronizedContacts sc join PermittedNetworks pn on sc.ssid = pn.ssid", null);
+
+        if (cur != null && cur.moveToFirst()) {
+            do {
+                WiContact contact = new WiContact(
+                        cur.getString(cur.getColumnIndex("name")),
+                        cur.getString(cur.getColumnIndex("phone")),
+                        cur.getString(cur.getColumnIndex("contact_id")));
+
+                contacts.put(contact.getPhone(), contact);
+            } while (cur.moveToNext());
+        }
+
+
         cur.close();
+        */
 
         return contacts;
     }
@@ -248,14 +228,14 @@ public class WiContactList {
     }
 
     public static synchronized WiContactList getInstance(Context context){
-        if (mCL == null){
-            mCL = new WiContactList(context.getApplicationContext());
+        if (sInstance == null){
+            sInstance = new WiContactList(context.getApplicationContext());
         }
 
-        return mCL;
+        return sInstance;
     }
 
     public WiContact getContactByPhone(String phone){
-        return mContactListMap.get(phone);
+        return mContacts.get(phone);
     }
 }

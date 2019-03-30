@@ -25,7 +25,6 @@ public class WiAddNetworkDialog extends WiDialog {
     private ArrayList<String> mNetworks;
     private OnPasswordEnteredListener mListener;
     private WeakReference<Context> mContext;
-    private SQLiteDatabase mDatabase;
 
     public interface OnPasswordEnteredListener {
         void OnPasswordEntered(WiConfiguration config);
@@ -61,7 +60,7 @@ public class WiAddNetworkDialog extends WiDialog {
         super(context);
         mContext = new WeakReference<>(context.getApplicationContext());
         mManager = WiNetworkManager.getInstance(context.getApplicationContext());
-        List<WifiConfiguration> wifiList = WiNetworkManager.getUnConfiguredNetworks(context);
+        List<WifiConfiguration> wifiList = mManager.getUnConfiguredNetworks();
 
         mNetworks = new ArrayList<>();
 
@@ -91,20 +90,10 @@ public class WiAddNetworkDialog extends WiDialog {
                             public void onInput(@NonNull MaterialDialog dialog, final CharSequence password) {
                                 WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
                                 mListener.OnPasswordEntered(config);
-                                WiSQLiteDatabase.getInstance(mContext.get().getApplicationContext()).getWritableDatabase(new WiSQLiteDatabase.OnDBReadyListener() {
-                                    @Override
-                                    public void onDBReady(SQLiteDatabase db) {
-                                        Log.d("WiNetworkList", "Begin adding contacts to database!");
-                                        mDatabase = db;
-                                        WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
-                                        mDatabase.insert("WifiConfiguration", null, config.toContentValues());
-                                        mManager.addConfiguredNetwork(config);
-                                        mManager.removeNotConfiguredNetwork(config);
-                                        Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
-                                    }
-                                });
 
-
+                                WiSQLiteDatabase.getInstance(mContext.get()).insert(config);
+                                mManager.addConfiguredNetwork(config);
+                                Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
                             }})
                         .neutralText("Test Connection")
                         .onNeutral(new MaterialDialog.SingleButtonCallback() {
