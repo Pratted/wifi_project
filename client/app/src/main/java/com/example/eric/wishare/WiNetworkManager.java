@@ -133,6 +133,10 @@ public class WiNetworkManager {
         return new ArrayList<>(mUnConfiguredNetworks.values());
     }
 
+    public WiConfiguration getConfiguredNetwork(String ssid){
+        return mConfiguredNetworks.get(ssid);
+    }
+
     public List<WiConfiguration> getConfiguredNetworks() {
         for(WiConfiguration configuration: mConfiguredNetworks.values()){
             if(configuration != null){

@@ -22,6 +22,13 @@ public abstract class WiInvitationDataMessage extends WiDataMessage {
         deepCopy(invitation.toJSON());
     }
 
+    public WiInvitationDataMessage(WiInvitation invitation, String recipient, boolean accepted){
+        super(accepted ? MSG_INVITATION_ACCEPTED : MSG_INVITATION_DECLINED, recipient);
+        mInvitation = invitation;
+
+        deepCopy(invitation.toJSON());
+    }
+
     public void setSender(String sender){
         mInvitation.sender = sender;
     }

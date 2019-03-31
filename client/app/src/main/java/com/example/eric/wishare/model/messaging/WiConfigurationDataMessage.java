@@ -6,14 +6,15 @@ import com.example.eric.wishare.model.WiContact;
 import org.json.JSONObject;
 
 public abstract class WiConfigurationDataMessage extends WiDataMessage {
-    public WiConfigurationDataMessage(WiConfiguration config){
-        super(MSG_ACKNOWLEDGE);
-    }
-
-    public WiConfigurationDataMessage(WiConfiguration config, WiContact recipient) {
-        super(MSG_ACKNOWLEDGE);
+    public WiConfigurationDataMessage(WiConfiguration config, String recipient) {
+        super(MSG_CREDENTIALS);
+        deepCopy(config.toJSONObject());
 
         addRecipient(recipient);
+    }
+
+    public static WiConfiguration createWiConfiguration(WiDataMessage msg){
+        return new WiConfiguration(msg);
     }
 
     public abstract void onResponse(JSONObject response);

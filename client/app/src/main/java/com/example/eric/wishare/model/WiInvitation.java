@@ -16,6 +16,8 @@ public class WiInvitation implements Parcelable {
     public String dataLimit;
     private WiConfiguration mConfiguration;
 
+    private boolean mAccepted = false;
+
     public WiConfiguration getWiConfiguration() {
         return mConfiguration;
     }
@@ -58,6 +60,10 @@ public class WiInvitation implements Parcelable {
         return invitation;
     }
 
+    public void accept(){
+        mAccepted = true;
+    }
+
     public WiInvitation(JSONObject json) {
         try {
             this.networkName = json.getString("network_name");
@@ -66,6 +72,7 @@ public class WiInvitation implements Parcelable {
             // Look up owner by phone number
             this.expires = json.getString("expires");
             this.dataLimit = json.getString("data_limit");
+            this.mAccepted = json.getBoolean("accepted");
         } catch (JSONException e) {
             System.err.println(e.getMessage());
         }
@@ -95,6 +102,7 @@ public class WiInvitation implements Parcelable {
             json.put("sender", sender);
             json.put("expires", expires);
             json.put("data_limit", dataLimit);
+            json.put("accepted", mAccepted);
 
         } catch (JSONException e) {
             System.err.println(e.getMessage());

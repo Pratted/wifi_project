@@ -11,8 +11,13 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
+import com.example.eric.wishare.WiDataMessageController;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
+
+import org.json.JSONObject;
 
 import java.util.Map;
 
@@ -65,6 +70,20 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
                         if(mAcceptListener != null){
                             mAcceptListener.onAccepted(mInvitation);
                         }
+
+                        WiInvitationDataMessage msg = new WiInvitationDataMessage(
+                                mInvitation,
+                                mInvitation.sender,
+                                true // <- tells the host that we have accepted invite.
+                        ) {
+                            @Override
+                            public void onResponse(JSONObject response) {
+
+                            }
+                        };
+
+                        WiDataMessageController.getInstance(context.get()).send(msg);
+                        WiSQLiteDatabase.getInstance(context.get()).delete(mInvitation);
 
                         Toast.makeText(context.get(), mInvitation.networkName + " has been accepted", Toast.LENGTH_LONG).show();
                         //WiNetworkManager.getInstance().add(mInvitation.getWiConfiguration());

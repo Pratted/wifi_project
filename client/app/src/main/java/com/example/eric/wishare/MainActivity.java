@@ -3,9 +3,13 @@ package com.example.eric.wishare;
 import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -58,10 +62,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("key");
+            //tvStatus.setText(message);
+             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter("intentKey"));
 
         FirebaseApp.initializeApp(this);
         WiSharedPreferences.initialize(this);
@@ -168,7 +185,6 @@ public class MainActivity extends AppCompatActivity {
 
                 WiInvitation invitation = intent.getParcelableExtra("invitation");
                 mInvitationListDialog.add(invitation);
-                int x = 0;
                 new WiInvitationAcceptDeclineDialog(this, invitation).show();
                 intent.removeExtra("invitation");
             }
@@ -180,42 +196,6 @@ public class MainActivity extends AppCompatActivity {
 
         if(mContactListDialog != null) {
             mContactListDialog.refresh(this);
-        }
-
-        if(intent != null && intent.getStringExtra("inviteNetwork") != null){
-            //intent = getIntent();
-
-            String networkName = intent.getStringExtra("network_name");
-
-            String dataLimit = intent.getStringExtra("data_limit");
-            String expires = intent.getStringExtra("expires");
-
-            String temp = intent.getStringExtra("owner");
-            String name = "";
-            String phone = "";
-            String other = "";
-
-            if(temp != null){
-                try {
-                    JSONObject t2 = new JSONObject(temp);
-                    name = t2.getString("name");
-                    phone = t2.getString("phone");
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            else{
-                networkName = "Sample Network";
-                name = "Joe Schmoe";
-                phone = "12345";
-                expires = "Never";
-                other = "";
-                dataLimit = "5 Gb";
-            }
-
-            intent.removeExtra("inviteNetwork");
-
         }
     }
 }

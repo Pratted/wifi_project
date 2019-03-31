@@ -19,6 +19,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
 
 
+
     public interface OnDBReadyListener {
         void onDBReady(SQLiteDatabase theDB);
     }
@@ -204,6 +205,20 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                         new String[]{config.SSID});
 
                 Log.d(TAG, "removed network from database");
+            }
+        });
+    }
+
+    public void delete(final WiInvitation mInvitation) {
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                Log.d(TAG, "removing invitation from database");
+                theDB.delete(TABLE_INVITATIONS.TABLE_NAME,
+                        TABLE_INVITATIONS.COL_SSID + "=?",
+                        new String[]{mInvitation.networkName});
+
+                Log.d(TAG, "removed invitation from database");
             }
         });
     }

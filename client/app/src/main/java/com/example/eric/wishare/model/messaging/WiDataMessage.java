@@ -45,6 +45,13 @@ public abstract class WiDataMessage extends JSONObject {
         addRecipient(recipient);
     }
 
+    public WiDataMessage(Integer msg_type, String recipient){
+        messageType = msg_type;
+
+        WiContact temp = new WiContact("", recipient);
+        addRecipient(temp);
+    }
+
     public Integer getMessageType(){
         return messageType;
     }
@@ -78,6 +85,10 @@ public abstract class WiDataMessage extends JSONObject {
 
     public void addRecipient(WiContact contact){
         mRecipients.add(contact);
+    }
+
+    public void addRecipient(String phone){
+        mRecipients.add(new WiContact("", phone));
     }
 
     public JsonObjectRequest build(){

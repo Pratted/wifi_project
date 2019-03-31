@@ -1,8 +1,12 @@
 package com.example.eric.wishare;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.messaging.WiConfigurationDataMessage;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiIncomingDataMessage;
@@ -15,7 +19,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WiMessagingService extends FirebaseMessagingService {
@@ -42,19 +49,19 @@ public class WiMessagingService extends FirebaseMessagingService {
                     break;
 
                 case WiDataMessage.MSG_INVITATION:
-                    onWiInvitationReceived(WiInvitationDataMessage.createInvitation(msg));
+                    onWiInvitationReceived(new WiInvitation(msg)); // constructor accepts JSONObject
                     break;
 
                 case WiDataMessage.MSG_INVITATION_ACCEPTED:
-                    onWiInvitationAccepted(WiInvitationDataMessage.createInvitation(msg));
+                    onWiInvitationAccepted(new WiInvitation(msg));
                     break;
 
                 case WiDataMessage.MSG_INVITATION_DECLINED:
-                    onWiInvitationDeclined(WiInvitationDataMessage.createInvitation(msg));
+                    onWiInvitationDeclined(new WiInvitation(msg));
                     break;
 
                 case WiDataMessage.MSG_CREDENTIALS:
-                    onCredentialsReceived();
+                    onCredentialsReceived(new WiConfiguration(msg));
                     break;
 
                 default:
@@ -85,15 +92,32 @@ public class WiMessagingService extends FirebaseMessagingService {
     }
 
     public void onWiInvitationAccepted(WiInvitation invitation){
+        Log.d(TAG, invitation.sender + " has accepted the invitation");
+        WiConfiguration config = WiNetworkManager.getInstance(this).getConfiguredNetwork(invitation.networkName);
 
+        WiConfigurationDataMessage msg = new WiConfigurationDataMessage(config, invitation.sender) {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        };
+
+        WiDataMessageController.getInstance(this).send(msg);
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){
 
     }
 
-    public void onCredentialsReceived(){
+    public void onCredentialsReceived(WiConfiguration config){
+        Log.d(TAG, "Credentials Received!");
 
+        Log.d(TAG, "SSID = " + config.SSID);
+        Log.d(TAG, "PASSWORD = " + config.getPassword());
+
+        sendMessageToActivity("Successfully configured " + config.SSID);
+
+        //WiNetworkManager.getInstance(this).addConfiguredNetwork(config);
     }
 
     @Override
@@ -141,5 +165,12 @@ public class WiMessagingService extends FirebaseMessagingService {
                     }
                 });
 
+    }
+
+    private void sendMessageToActivity(String msg) {
+        Intent intent = new Intent("intentKey");
+// You can also include some extra data.
+        intent.putExtra("key", msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 }

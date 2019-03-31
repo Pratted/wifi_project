@@ -94,6 +94,15 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         return json;
     }
 
+    public WiConfiguration(JSONObject json){
+        try{
+            SSID = json.getString("ssid");
+            mPassword = json.getString("pwd");
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
     public ContentValues toContentValues(){
         ContentValues vals = new ContentValues();
         vals.put("SSID", SSID);
