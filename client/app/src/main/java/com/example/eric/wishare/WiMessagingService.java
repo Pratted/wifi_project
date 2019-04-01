@@ -117,7 +117,7 @@ public class WiMessagingService extends FirebaseMessagingService {
 
         sendMessageToActivity("Successfully configured " + config.SSID);
 
-        //WiNetworkManager.getInstance(this).addConfiguredNetwork(config);
+        WiNetworkManager.getInstance(this).addConfiguredNetwork(config);
     }
 
     @Override
