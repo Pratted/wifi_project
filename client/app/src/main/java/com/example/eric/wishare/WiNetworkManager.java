@@ -70,7 +70,8 @@ public class WiNetworkManager {
     // called by a client when a host sends them network credentials
     public void addConfiguredNetwork(WiConfiguration config) {
         try{
-            sWifiManager.addNetwork(config); // <- actually saves the network into android wifi
+            int x = sWifiManager.addNetwork(config.configure()); // <- actually saves the network into android wifi
+            System.out.println("STRING LITERALLLLLLL" + x);
         } catch (Exception e){
             e.printStackTrace();
         }

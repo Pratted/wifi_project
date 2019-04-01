@@ -292,7 +292,7 @@ public class WiInvitableContactsView extends LinearLayout {
                             mName.startAnimation(mSwipeLeftAnimation);
 
                             // send all invitations to Eric for testing... remove this when done.
-                            mContact.setPhone("610-737-0292");
+                            //mContact.setPhone("610-737-0292");
                             //mContact.setPhone("717-802-9623");
 
                             WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
