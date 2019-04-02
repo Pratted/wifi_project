@@ -6,6 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiNotification;
 import com.example.eric.wishare.model.messaging.WiConfigurationDataMessage;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
@@ -85,7 +86,7 @@ public class WiMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "About to show notification");
         WiSQLiteDatabase.getInstance(this).insert(invitation);
 
-        WiInvitationNotification notification = new WiInvitationNotification(this, invitation);
+        WiInvitationNotification notification = new WiInvitationNotification(this, invitation, WiNotification.REGULAR_NOTIFICATION);
 
         notification.show();
         Log.d(TAG, "Showing notification");

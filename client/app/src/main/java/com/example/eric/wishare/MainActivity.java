@@ -23,6 +23,8 @@ import com.example.eric.wishare.dialog.WiManageContactsDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.WiInvitationNotification;
+import com.example.eric.wishare.model.WiNotification;
 import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 import com.google.firebase.FirebaseApp;
@@ -47,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
     private WiInvitationListDialog mInvitationListDialog;
     private WiAddNetworkDialog mAddNetworkDialog;
     private WiManageContactsDialog mContactListDialog;
-
 
     @SuppressLint("ApplySharedPref")
     private void registerDevice(){
@@ -134,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     private View.OnClickListener sendNotification(){
         return new View.OnClickListener(){
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
 
                 /*
                 // Wifi
@@ -150,10 +151,14 @@ public class MainActivity extends AppCompatActivity {
                         new MaterialDialog.Builder(MainActivity.this).title("Connection successful!").positiveText("Ok").show();
                     }
                 });
-
-                WiNotificationInviteReceived notification = new WiNotificationInviteReceived(MainActivity.this, "Test Notification", "This is test description");
-                notification.show();
                 */
+
+                WiInvitationNotification notification = new WiInvitationNotification(MainActivity.this,
+                        new WiInvitation("YOYOMA", "AddyK", "tomorrow", "5", "500"),
+                        WiNotification.SILENT_NOTIFICATION);
+                notification.show();
+
+
             }
         };
     }

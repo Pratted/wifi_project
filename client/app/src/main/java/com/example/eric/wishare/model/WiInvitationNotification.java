@@ -18,14 +18,14 @@ public class WiInvitationNotification extends WiNotification {
 
     private WiInvitation mInvitation;
 
-    public WiInvitationNotification(Context context, String title, String text, Map<String, String> json) {
-        super(context, title, text);
+    public WiInvitationNotification(Context context, String title, String text, Map<String, String> json, int type) {
+        super(context, title, text, type);
 
         mData = json;
     }
 
-    public WiInvitationNotification(Context context, WiInvitation invitation){
-        super(context, "WiShare Invitation", "Invitation to " + invitation.getNetworkName());
+    public WiInvitationNotification(Context context, WiInvitation invitation, int type){
+        super(context, "WiShare Invitation", "Invitation to " + invitation.getNetworkName(), type);
         mInvitation = invitation;
     }
 
