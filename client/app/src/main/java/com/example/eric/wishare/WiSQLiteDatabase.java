@@ -47,6 +47,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         public static final String COL_NETWORK_ID = "network_id";
         public static final String COL_CONTACT_ID = "contact_id";
         public static final String COL_SSID = "ssid";
+        public static final String COL_PHONE = "phone";
         public static final String COL_DATA_LIMIT = "data_limit";
         public static final String TABLE_NAME = "PermittedContacts";
     }
@@ -78,6 +79,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                     TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID + " INTEGER NOT NULL," +
                     TABLE_PERMITTED_CONTACTS.COL_SSID + " varchar(255)," +
                     TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT + " varchar(255)," +
+                    TABLE_PERMITTED_CONTACTS.COL_PHONE + " varchar(255)," +
                     "PRIMARY KEY(" + TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID + "," + TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID + "))";
 
     private static final String mSQL_CREATE_INVITATION =

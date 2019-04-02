@@ -21,6 +21,7 @@ public class WiManageContactsDialog extends WiDialog{
     private WiContactList mContactList;
     private OnContactSelectedListener mOnContactSelectedListener;
     private SQLiteDatabase mDatabase;
+    private ArrayList<WiContact> mContacts;
 
     public interface OnContactSelectedListener{
         void onContactSelected(WiContact contact);
@@ -52,7 +53,7 @@ public class WiManageContactsDialog extends WiDialog{
         return new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog dialog, View itemView, int position, CharSequence text) {
-                mOnContactSelectedListener.onContactSelected(mContactList.getWiContacts().get(position));
+                mOnContactSelectedListener.onContactSelected(mContacts.get(position));
             }
         };
     }
@@ -63,9 +64,9 @@ public class WiManageContactsDialog extends WiDialog{
 
     public MaterialDialog build(){
         ArrayList<String> strings = new ArrayList<>();
-        Collection<WiContact> contacts = mContactList.getWiContacts().values();
+        mContacts = new ArrayList(mContactList.getWiContacts().values());
 
-        for (WiContact contact : contacts) {
+        for (WiContact contact : mContacts) {
             strings.add(contact.getName() + " " + contact.getPhone());
         }
 
