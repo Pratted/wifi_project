@@ -17,13 +17,20 @@ import com.example.eric.wishare.model.WiConfiguration;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static android.content.Context.WIFI_SERVICE;
 
+/****
+ Some terminology...
+
+ A 'configured' network is a network with a known password. All instances of WiConfiguration are
+ configured networks because you need a password to instantiate a WiConfiguration.
+
+ An 'unconfigured' network is any network that doesn't have a known password.
+***/
 public class WiNetworkManager {
     private static WiNetworkManager sInstance;
     private static WifiManager sWifiManager;
@@ -52,13 +59,21 @@ public class WiNetworkManager {
         mUnConfiguredNetworks = new HashMap<>();
 
         for(WiConfiguration config: dbNetworks){
+            Log.d(TAG, "Adding " + config.SSID + " to configured networks...");
             mConfiguredNetworks.put(config.SSID, config);
         }
 
         for(WifiConfiguration config: deviceNetworks){
+            // android wifi manager surrounds wifi SSID with quotes, remove them for comparision
+            String ssid = config.SSID.replace("\"", "");
+
             // if not already in configured, add to unConfiguredNetworks...
-            if(!mConfiguredNetworks.containsKey(config.SSID)){
-                mUnConfiguredNetworks.put(config.SSID, config);
+            if(!mConfiguredNetworks.containsKey(ssid)){
+                mUnConfiguredNetworks.put(ssid, config);
+                Log.d(TAG, ssid + " is an UNconfigured network...");
+            }
+            else{
+                Log.d(TAG, ssid + " is a configured network...");
             }
         }
     }
@@ -70,14 +85,16 @@ public class WiNetworkManager {
     // called by a client when a host sends them network credentials
     public void addConfiguredNetwork(WiConfiguration config) {
         try{
-            int x = sWifiManager.addNetwork(config.configure()); // <- actually saves the network into android wifi
-            System.out.println("STRING LITERALLLLLLL" + x);
+            // the call to configure() here ensures all the parameters are formatted correctly
+            // (i.e. double quotes)
+            int retVal = sWifiManager.addNetwork(config.configure()); // <- actually saves the network into android wifi
+            System.out.println("STRING LITERALLLLLLL" + retVal); // retVal might be an error code
         } catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    // invoked by the host when they enter a network password
+    // invoked by the host when they enter a network password.
     public void configureNetwork(WiConfiguration config){
         mConfiguredNetworks.put(config.SSID, config);
         mUnConfiguredNetworks.remove(config.SSID);
