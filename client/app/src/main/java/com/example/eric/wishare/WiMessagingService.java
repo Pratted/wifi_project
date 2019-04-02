@@ -6,6 +6,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiNotification;
 import com.example.eric.wishare.model.messaging.WiConfigurationDataMessage;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
@@ -104,6 +105,10 @@ public class WiMessagingService extends FirebaseMessagingService {
         };
 
         WiDataMessageController.getInstance(this).send(msg);
+
+        WiContact bitch = WiContactList.getInstance(this).getContactByPhone(invitation.sender);
+        bitch.grantAccess(config);
+        WiSQLiteDatabase.getInstance(this).insert(bitch, config);
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){

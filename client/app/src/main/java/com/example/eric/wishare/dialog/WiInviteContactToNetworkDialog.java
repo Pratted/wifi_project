@@ -9,9 +9,14 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
+import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private WiNetworkManager mNetworkManager;
     private WiContact mContact;
     private OnInviteClickListener listener;
+
+    private WiCreateInvitationDialog mCreateInvitationDialog;
 
     public interface OnInviteClickListener {
         void onInviteClick(List<WiConfiguration> networks);
@@ -96,11 +103,42 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         }
     }
 
+    private List<WiConfiguration> getSelectedNetworks(Integer[] indices){
+        ArrayList<WiConfiguration> selected = new ArrayList<>();
+        if(indices != null){
+            for(Integer i: indices){
+                selected.add(mNetworks.get(i));
+            }
+        }
+        return selected;
+    }
+
     private MaterialDialog.SingleButtonCallback onInviteClick(){
         return new MaterialDialog.SingleButtonCallback() {
             @Override
-            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                Integer indices[] = dialog.getSelectedIndices();
+            public void onClick(@NonNull final MaterialDialog dialog, @NonNull DialogAction which) {
+                final Integer indices[] = dialog.getSelectedIndices();
+
+                mCreateInvitationDialog = new WiCreateInvitationDialog(context.get(), "dummy");
+                mCreateInvitationDialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
+                    @Override
+                    public void onInvitationCreated(WiInvitation invitation) {
+
+                        for(WiConfiguration config: getSelectedNetworks(dialog.getSelectedIndices())){
+                            invitation.networkName = config.getSSID();
+                            mNetworks.remove(config);
+
+                            WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
+                                @Override
+                                public void onResponse(JSONObject response) {
+
+                                }
+                            };
+
+                            WiDataMessageController.getInstance(context.get()).send(msg);
+                        }
+                    }
+                });
 
                 /*
                 WiDataMessage msg = new WiDataMessage(WiDataMessage.MSG_INVITATION);

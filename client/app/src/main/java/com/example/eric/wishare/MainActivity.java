@@ -137,22 +137,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                /*
-                // Wifi
-                WiNetworkManager mNetworkManager = WiNetworkManager.getInstance(MainActivity.this);
-                mNetworkManager.testConnection("305");
-
-                final MaterialDialog dialog = new MaterialDialog.Builder(MainActivity.this).progress(true, 100).content("Testing connection...").show();
-
-                mNetworkManager.setOnTestConnectionCompleteListener(new WiNetworkManager.OnTestConnectionCompleteListener() {
-                    @Override
-                    public void onTestConnectionComplete(boolean success) {
-                        dialog.dismiss();
-                        new MaterialDialog.Builder(MainActivity.this).title("Connection successful!").positiveText("Ok").show();
-                    }
-                });
-                */
-
                 WiInvitationNotification notification = new WiInvitationNotification(MainActivity.this,
                         new WiInvitation("YOYOMA", "AddyK", "tomorrow", "5", "500"),
                         WiNotification.SILENT_NOTIFICATION);
@@ -194,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.removeExtra("invitation");
             }
         }
-
 
 //        mAddNetworkDialog.refresh(this);
         mInvitationListDialog.refresh(this);
