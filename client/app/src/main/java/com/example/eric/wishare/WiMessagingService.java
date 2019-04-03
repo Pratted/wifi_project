@@ -121,7 +121,7 @@ public class WiMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "SSID = " + config.SSID);
         Log.d(TAG, "PASSWORD = " + config.getPassword());
 
-        sendMessageToActivity("Successfully configured " + config.SSID);
+        sendMessageToActivity(WiUtils.ACTIVITY_MAIN, "Successfully configured " + config.SSID);
 
         WiNetworkManager.getInstance(this).addConfiguredNetwork(config);
     }
@@ -174,7 +174,14 @@ public class WiMessagingService extends FirebaseMessagingService {
     }
 
     private void sendMessageToActivity(String msg) {
-        Intent intent = new Intent("intentKey");
+        Intent intent = new Intent(WiUtils.ACTIVITY_MAIN);
+// You can also include some extra data.
+        intent.putExtra("key", msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendMessageToActivity(String activity, String msg){
+        Intent intent = new Intent(activity);
 // You can also include some extra data.
         intent.putExtra("key", msg);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);

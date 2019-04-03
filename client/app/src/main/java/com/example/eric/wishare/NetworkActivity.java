@@ -1,10 +1,14 @@
 package com.example.eric.wishare;
 
 import android.annotation.SuppressLint;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 
 import java.util.ArrayList;
@@ -29,9 +34,7 @@ public class NetworkActivity extends AppCompatActivity {
     private final String TAG = "NetworkActivity";
     private WiConfiguration mConfig;
 
-    private WiInviteContactsDialog mInviteContactsDialog;
     private WiEditNetworkDialog mEditNetworkDialog;
-
     private WiTabbedScrollView mTabbedScrollView;
 
     private EditText searchBar;
@@ -42,9 +45,11 @@ public class NetworkActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mMessageReceiver, new IntentFilter(WiUtils.ACTIVITY_NETWORK));
+
         mConfig = getIntent().getParcelableExtra("NetworkInfo");
 
-        mInviteContactsDialog = new WiInviteContactsDialog(this, mConfig);
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
 
         searchBar = findViewById(R.id.edit_text_search_bar);
@@ -88,7 +93,6 @@ public class NetworkActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -130,4 +134,16 @@ public class NetworkActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         };
     }
+
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("key");
+            Log.d(TAG, "Received message: " + message);
+
+            //tvStatus.setText(message);
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        }
+    };
 }

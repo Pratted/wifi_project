@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
-                mMessageReceiver, new IntentFilter("intentKey"));
+                mMessageReceiver, new IntentFilter(WiUtils.ACTIVITY_MAIN));
 
         FirebaseApp.initializeApp(this);
         WiSharedPreferences.initialize(this);

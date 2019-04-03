@@ -11,6 +11,10 @@ public class WiUtils {
 
     public enum CurrentActivity {ACTIVITY_MAIN, ACTIVITY_NETWORK, ACTIVITY_CONTACT}
 
+    public static String ACTIVITY_MAIN = "ACTIVITY_MAIN";
+    public static String ACTIVITY_NETWORK = "ACTIVITY_NETWORK";
+    public static String ACTIVITY_CONTACT = "ACTIVITY_CONTACT";
+
     public static String getDevicePhone(){
         return WiSharedPreferences.getString("phone", "");
     }
@@ -20,7 +24,7 @@ public class WiUtils {
     }
 
     public static CurrentActivity getCurrentActivity() {
-        return CurrentActivity.valueOf(WiSharedPreferences.getString("current_activity", ACTIVITY_MAIN.toString()));
+        return CurrentActivity.valueOf(WiSharedPreferences.getString("current_activity", ACTIVITY_MAIN));
     }
 
     public static boolean isDeviceRegistered(){
