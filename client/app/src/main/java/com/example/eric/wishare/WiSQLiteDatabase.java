@@ -17,9 +17,6 @@ import java.util.HashMap;
 
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
-
-
-
     public interface OnDBReadyListener {
         void onDBReady(SQLiteDatabase theDB);
     }
@@ -193,6 +190,21 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 Log.d(TAG, "inserting network into database");
                 theDB.insert(TABLE_CONFIGURED_NETWORKS.TABLE_NAME, null, config.toContentValues());
                 Log.d(TAG, "inserted network into database");
+            }
+        });
+    }
+
+    public synchronized void insert(final WiContact bitch, final WiConfiguration config) {
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                ContentValues vals = new ContentValues();
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID, bitch.getContactID());
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID, config.networkId);
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT, "None");
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, "wtf?");
+
+                theDB.insert(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, vals);
             }
         });
     }

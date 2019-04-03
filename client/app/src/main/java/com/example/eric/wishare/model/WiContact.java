@@ -13,6 +13,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +24,8 @@ public class WiContact implements Parcelable{
     private Integer mDataUsage;
     private Integer mExpiresIn;
     private List<WiConfiguration> mInvitedNetworks;
+
+    private Set<WiConfiguration> mPermittedNetworks;
 
     public WiContact(String name, String phone){
         this.name = name;
@@ -142,5 +145,13 @@ public class WiContact implements Parcelable{
         vals.put("name", name);
         vals.put("phone", phone);
         return vals;
+    }
+
+    public void grantAccess(WiConfiguration config) {
+        mPermittedNetworks.add(config);
+    }
+
+    public Set<WiConfiguration> getPermittedNetworks(){
+        return mPermittedNetworks;
     }
 }

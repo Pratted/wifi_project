@@ -1,12 +1,14 @@
 package com.example.eric.wishare.dialog;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.WiInvitation;
@@ -21,7 +23,8 @@ import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 public class WiInvitationListDialog extends WiDialog{
     private LinearLayout mParent;
     private LayoutInflater mInflater;
-    private ArrayList<WiInvitationListItem> mInvitations = new ArrayList<>();
+    private ArrayList<WiInvitationListItem> mInvitationListItems = new ArrayList<>();
+    private ArrayList<WiInvitation> mInvitations = new ArrayList<>();
     private WiMyInvitationsButton mMyInvitationsButton;
     private ScrollView mParentParent;
 
@@ -49,17 +52,19 @@ public class WiInvitationListDialog extends WiDialog{
 
 
     public void add(WiInvitation invitation){
+        mMyInvitationsButton.setInvitationCount(mInvitationListItems.size());
+
+        //mInvitations.add(invitation);
         add(new WiInvitationListItem(invitation));
     }
 
     private void add(WiInvitationListItem invitation){
-        mInvitations.add(invitation);
-        mMyInvitationsButton.setInvitationCount(mInvitations.size());
+        mInvitationListItems.add(invitation);
     }
 
     public ArrayList<WiInvitation> getInvitations() {
         ArrayList<WiInvitation> result = new ArrayList<>();
-        for (WiInvitationListItem invite : mInvitations){
+        for (WiInvitationListItem invite : mInvitationListItems){
             result.add(invite.mInvitation);
         }
         return result;
@@ -67,22 +72,42 @@ public class WiInvitationListDialog extends WiDialog{
 
     @Override
     public MaterialDialog build() {
+        ArrayList<String> invs = new ArrayList<>();
+        for(WiInvitationListItem item: mInvitationListItems){
+            invs.add("Invitation to " + item.mInvitation.networkName);
+        }
+
         return new MaterialDialog.Builder(context.get())
                 .title("My Invitations")
                 .customView(mParentParent, false)
+                //.items(invs)
+                .negativeText("Clear All")
+                .onNegative(onNegative())
                 .positiveText("Close")
                 .build();
     }
 
+    public MaterialDialog.SingleButtonCallback onNegative(){
+        return new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                for(WiInvitationListItem item: mInvitationListItems){
+                    mParent.removeView(item.mLayout);
+                }
+            }
+        };
+    }
+
+
     public void remove(WiInvitation invitation){
-        for(int i = 0; i < mInvitations.size(); i++){
-            WiInvitation lhs = mInvitations.get(i).mInvitation;
+        for(int i = 0; i < mInvitationListItems.size(); i++){
+            WiInvitation lhs = mInvitationListItems.get(i).mInvitation;
 
             if (lhs.equals(invitation)) {
-                mParent.removeView(mInvitations.get(i).mLayout);
-                mInvitations.remove(i);
+                mParent.removeView(mInvitationListItems.get(i).mLayout);
+                mInvitationListItems.remove(i);
 
-                mMyInvitationsButton.setInvitationCount(mInvitations.size());
+                mMyInvitationsButton.setInvitationCount(mInvitationListItems.size());
                 return;
             }
         }
