@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         app:el_duration="500"
-        app:el_expanded="false"
+        app:el_expanded="true"
         app:el_parallax="0.5">
 
         <LinearLayout

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,16 +23,21 @@ public class WiInvitationListDialog extends WiDialog{
     private LayoutInflater mInflater;
     private ArrayList<WiInvitationListItem> mInvitations = new ArrayList<>();
     private WiMyInvitationsButton mMyInvitationsButton;
+    private ScrollView mParentParent;
 
     public WiInvitationListDialog(Context context, WiMyInvitationsButton btnMyInvitations){
         super(context);
 
         mMyInvitationsButton = btnMyInvitations;
 
+
+        mParentParent = new ScrollView(context);
         // create an empty layout to place into the dialog...
         mParent = new LinearLayout(context);
         mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         mParent.setOrientation(LinearLayout.VERTICAL);
+
+        mParentParent.addView(mParent);
 
         mMyInvitationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +46,7 @@ public class WiInvitationListDialog extends WiDialog{
             }
         });
     }
+
 
     public void add(WiInvitation invitation){
         add(new WiInvitationListItem(invitation));
@@ -62,7 +69,7 @@ public class WiInvitationListDialog extends WiDialog{
     public MaterialDialog build() {
         return new MaterialDialog.Builder(context.get())
                 .title("My Invitations")
-                .customView(mParent, false)
+                .customView(mParentParent, false)
                 .positiveText("Close")
                 .build();
     }
@@ -96,6 +103,7 @@ public class WiInvitationListDialog extends WiDialog{
 
             mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item, null);
             mParent.addView(mLayout);
+
 
             refresh();
 
