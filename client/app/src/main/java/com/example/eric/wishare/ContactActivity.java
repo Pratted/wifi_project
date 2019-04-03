@@ -96,10 +96,8 @@ public class ContactActivity extends AppCompatActivity {
     private WiInviteContactToNetworkDialog.OnInviteClickListener onInviteClick() {
         return new WiInviteContactToNetworkDialog.OnInviteClickListener() {
             @Override
-            public void onInviteClick(List<WiConfiguration> networks) {
-                for(WiConfiguration config : networks) {
-                    mContactSharedNetworkList.addSharedNetwork(config);
-                }
+            public void onInviteClick(WiConfiguration network) {
+                mContactSharedNetworkList.addSharedNetwork(network);
             }
         };
     }
