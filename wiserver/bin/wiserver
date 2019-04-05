@@ -1,0 +1,60 @@
+#!/bin/bash
+
+script="$WISHARE_HOME/index.js"
+logfile="$WISHARE_HOME/wishare.log"
+
+command="$1"
+extra="$2"
+
+function start_server(){
+
+    if [[ ${extra}  != "" ]]; then
+        if [[ get_background_process == "" ]]; then
+            echo "wiserver is already running."
+            exit 1
+        fi
+
+        nohup node ${script} ${extra} >> ${logfile} &
+    else
+        echo "Usage: wiserver start <port>"
+        exit 1
+    fi
+}
+
+function display_status(){
+    pid=$(get_background_process)
+
+    if [[ ${pid} != "" ]]; then
+        echo "Running (${pid})"
+    else
+        echo "Not Running"
+    fi
+}
+
+function stop_server(){
+    pid=$(get_background_process)
+
+    if [[ ${pid} != "" ]]; then
+        echo "Stopping server... (${pid})"
+        kill -9 ${pid}
+	echo "Server Stopped."
+    fi
+}
+
+function get_background_process(){
+   ps -aux | grep "node"  | grep "$script" | awk '{print $2}'
+}
+
+if [[ ${command} == "start" ]]; then
+    start_server
+    pid=$(get_background_process)
+    echo "Server started (${pid})"
+fi
+
+if [[ ${command} == "status" ]]; then
+    display_status
+fi
+
+if [[ ${command} == "stop" ]]; then
+    stop_server
+fi
