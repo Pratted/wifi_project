@@ -32,7 +32,7 @@ public class WiInvitationListDialog extends WiDialog{
         super(context);
 
         mMyInvitationsButton = btnMyInvitations;
-
+        mMyInvitationsButton.setInvitationCount(0); // initialize to 0 to prevent the red circle from showing with no invites
 
         mParentParent = new ScrollView(context);
         // create an empty layout to place into the dialog...
@@ -52,22 +52,12 @@ public class WiInvitationListDialog extends WiDialog{
 
 
     public void add(WiInvitation invitation){
-        mMyInvitationsButton.setInvitationCount(mInvitationListItems.size());
-
-        //mInvitations.add(invitation);
         add(new WiInvitationListItem(invitation));
     }
 
     private void add(WiInvitationListItem invitation){
         mInvitationListItems.add(invitation);
-    }
-
-    public ArrayList<WiInvitation> getInvitations() {
-        ArrayList<WiInvitation> result = new ArrayList<>();
-        for (WiInvitationListItem invite : mInvitationListItems){
-            result.add(invite.mInvitation);
-        }
-        return result;
+        mMyInvitationsButton.setInvitationCount(mInvitationListItems.size());
     }
 
     @Override

@@ -34,7 +34,7 @@ public class WiMyInvitationsButton extends RelativeLayout {
         tvInvitationBadge.setText(String.valueOf(count));
 
         // show invitations if there are some. otherwise hide the badge
-        tvInvitationBadge.setVisibility(count > 0 ? View.VISIBLE : View.INVISIBLE);
+        tvInvitationBadge.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
     }
 
     public void setOnClickListener(View.OnClickListener onClickListener){

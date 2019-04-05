@@ -86,7 +86,6 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
                         WiSQLiteDatabase.getInstance(context.get()).delete(mInvitation);
 
                         Toast.makeText(context.get(), mInvitation.networkName + " has been accepted", Toast.LENGTH_LONG).show();
-                        //WiNetworkManager.getInstance().add(mInvitation.getWiConfiguration());
                     }
                 })
                 .negativeText("Decline")
@@ -96,6 +95,7 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
                         if(mDeclineListener != null){
                             mDeclineListener.onDeclined(mInvitation);
                         }
+                        WiSQLiteDatabase.getInstance(context.get()).delete(mInvitation);
                     }
                 })
                 .build();
