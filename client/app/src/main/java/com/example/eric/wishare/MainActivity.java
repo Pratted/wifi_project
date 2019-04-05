@@ -139,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-
     private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(){
         return new WiAddNetworkDialog.OnPasswordEnteredListener() {
             @Override

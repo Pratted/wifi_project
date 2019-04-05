@@ -15,6 +15,7 @@ import com.example.eric.wishare.dialog.WiRevokeAccessDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.view.WiContactSharedNetworkListView;
+import com.example.eric.wishare.view.WiInvitableContactsView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +37,8 @@ public class ContactActivity extends AppCompatActivity {
     private WiRevokeAccessDialog mRevokeAccessDialog;
 
     private WiContactSharedNetworkListView mContactSharedNetworkList;
-
+    private List<WiConfiguration> mPermittedContactList;
     private WiNetworkManager mNetworkManager;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +47,7 @@ public class ContactActivity extends AppCompatActivity {
 
 
         mContact = getIntent().getExtras().getParcelable("contact");
+        mPermittedContactList = mContact.getInvitedNetworks();
 
         try {
             String title = "";
@@ -84,6 +84,9 @@ public class ContactActivity extends AppCompatActivity {
         }
         */
 
+        for(WiConfiguration config: mPermittedContactList) {
+            mContactSharedNetworkList.addSharedNetwork(config);
+        }
 
         btnRevokeAllAccess = findViewById(R.id.btn_revoke_all_access);
         btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
@@ -98,6 +101,7 @@ public class ContactActivity extends AppCompatActivity {
             @Override
             public void onInviteClick(WiConfiguration network) {
                 mContactSharedNetworkList.addSharedNetwork(network);
+
             }
         };
     }

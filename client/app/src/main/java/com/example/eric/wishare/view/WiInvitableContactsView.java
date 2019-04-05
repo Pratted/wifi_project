@@ -18,8 +18,11 @@ import android.widget.TextView;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
+import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
+import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
@@ -46,7 +49,8 @@ public class WiInvitableContactsView extends LinearLayout {
     private boolean mAscendingName;
     private boolean mMultiSelectEnabled;
 
-    private WifiConfiguration mWifiConfiguration;
+    private WiConfiguration mWiConfiguration;
+
 
     public interface OnCheckBoxVisibilitiesChangedListener {
         void onCheckBoxVisibilitiesChanged(int visibilty);
@@ -54,10 +58,9 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private OnCheckBoxVisibilitiesChangedListener mCheckBoxVisibilitiesChangedListener;
 
-
-    public WiInvitableContactsView(Context context, WifiConfiguration config) {
+    public WiInvitableContactsView(Context context, WiConfiguration config) {
         super(context);
-        mWifiConfiguration = config;
+        mWiConfiguration = config;
 
         init();
     }
@@ -68,7 +71,6 @@ public class WiInvitableContactsView extends LinearLayout {
         init();
     }
 
-
     public void animateLeftSwipe() {
         for(WiInvitableContactListItem child: mInvitableContacts){
             if(child.mCheckBox.isChecked()){
@@ -76,6 +78,7 @@ public class WiInvitableContactsView extends LinearLayout {
             }
         }
     }
+
     public void setOnCheckBoxVisibilitiesChangedListener(OnCheckBoxVisibilitiesChangedListener listener){
         mCheckBoxVisibilitiesChangedListener = listener;
     }
@@ -285,11 +288,13 @@ public class WiInvitableContactsView extends LinearLayout {
                         mExpandableLayout.collapse();
                     }
 
-                    WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext(), mWifiConfiguration.SSID);
+                    WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext(), mWiConfiguration.SSID);
                     dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                         @Override
                         public void onInvitationCreated(WiInvitation invitation) {
                             mName.startAnimation(mSwipeLeftAnimation);
+                            mContact.addToInvitedNetworks(mWiConfiguration);
+                            WiContactList.getInstance(getContext()).save(mContact);
 
                             // send all invitations to Eric for testing... remove this when done.
                             //mContact.setPhone("610-737-0292");

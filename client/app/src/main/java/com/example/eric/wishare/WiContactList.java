@@ -157,4 +157,9 @@ public class WiContactList {
     public WiContact getContactByPhone(String phone){
         return mContacts.get(phone);
     }
+
+    public WiContact save(WiContact contact) {
+        mContacts.put(contact.getPhone(), contact);
+        return contact;
+    }
 }

@@ -9,6 +9,7 @@ import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
+import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
@@ -29,14 +30,16 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private WiContact mContact;
     private OnInviteClickListener listener;
     private WiCreateInvitationDialog mCreateInvitationDialog;
+    private Context mContext;
 
 
     public interface OnInviteClickListener {
-        void onInviteClick(WiConfiguration network);
+        void onInviteClick(WiConfiguration config);
     }
 
     public WiInviteContactToNetworkDialog(Context context, WiContact contact, Button btnAddContactToNetwork) {
         super(context);
+        mContext = context.getApplicationContext();
         mContact = contact;
         System.out.println("Contact name: " + mContact.getName());
 
@@ -124,7 +127,9 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         for (WiConfiguration config : getSelectedNetworks(indices)) {
                             Log.d(TAG, "config id: " + config.getSSID());
                             invitation.networkName = config.getSSID();
+                            mContact.addToInvitedNetworks(config);
                             mNetworks.remove(config);
+                            WiContactList.getInstance(mContext).save(mContact);
 
                             WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
                                 @Override
