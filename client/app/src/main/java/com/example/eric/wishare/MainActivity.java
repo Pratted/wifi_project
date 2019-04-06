@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-        mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
+        //mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
 
         btnShowNotification.setOnClickListener(sendNotification());
     }
@@ -135,15 +135,6 @@ public class MainActivity extends AppCompatActivity {
                 notification.show();
 
 
-            }
-        };
-    }
-
-    private WiAddNetworkDialog.OnPasswordEnteredListener onPasswordEntered(){
-        return new WiAddNetworkDialog.OnPasswordEnteredListener() {
-            @Override
-            public void OnPasswordEntered(WiConfiguration config) {
-                mConfiguredNetworkListView.addConfiguredNetwork(config);
             }
         };
     }
