@@ -25,6 +25,7 @@ public class WiAddNetworkDialog extends WiDialog {
     private ArrayList<String> mNetworks;
     private OnPasswordEnteredListener mListener;
     private WeakReference<Context> mContext;
+    private OnNetworkReadyListener mOnNetworkReadyListener;
 
     public interface OnPasswordEnteredListener {
         void OnPasswordEntered(WiConfiguration config);
@@ -81,20 +82,21 @@ public class WiAddNetworkDialog extends WiDialog {
         return new MaterialDialog.ListCallback() {
             @Override
             public void onSelection(MaterialDialog dialog, View itemView, int position, final CharSequence wifiName) {
-                new MaterialDialog.Builder(context.get())
+                MaterialDialog.Builder next = new MaterialDialog.Builder(context.get())
                         .title("Enter Password")
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                         .input("Password", "", false, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, final CharSequence password) {
                                 WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
-                                mListener.OnPasswordEntered(config);
 
-                                WiSQLiteDatabase.getInstance(mContext.get()).insert(config);
-                                mManager.configureNetwork(config);
-                                Toast.makeText(mContext.get(), "Wifi name " + wifiName, Toast.LENGTH_LONG).show();
-                            }})
-                        .neutralText("Test Connection")
+                                WiDialog prompt = mManager.isSsidInRange(wifiName.toString()) ?
+                                        new WiTestableConnectionDialog(context.get(), config) :
+                                        new WiUntestableConnectionDialog(context.get(), config);
+
+                                prompt.show();
+                            }});
+                /*
                         .onNeutral(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
@@ -113,9 +115,74 @@ public class WiAddNetworkDialog extends WiDialog {
                                     }
                                 });
                             }
-                        })
-                        .show();
+                        }).show();
+                        */
+
+
+                next.show();
             }
         };
+    }
+
+    private void onNetworkReady(WiConfiguration config){
+        mListener.OnPasswordEntered(config);
+        WiSQLiteDatabase.getInstance(mContext.get()).insert(config);
+        mManager.configureNetwork(config);
+    }
+
+    public interface OnNetworkReadyListener {
+        void onNetworkReady(WiConfiguration configuration);
+    }
+
+    public void setOnNetworkReadyListener(OnNetworkReadyListener listener){
+        mOnNetworkReadyListener = listener;
+    }
+
+    private class WiTestableConnectionDialog extends WiDialog {
+        private WiConfiguration mConfiguration;
+
+        public WiTestableConnectionDialog(Context context, WiConfiguration config) {
+            super(context);
+            mConfiguration = config;
+        }
+
+        @Override
+        public MaterialDialog build() {
+            String msg = "WiShare recommends testing your network to ensure the correct password has been entered.";
+            msg += " Would you like to test your network connection now?";
+
+            return new MaterialDialog.Builder(context.get())
+                    .title("Test your Network Connection")
+                    .content(msg)
+                    .negativeText("Skip")
+                    .onNegative( new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            mOnNetworkReadyListener.onNetworkReady(mConfiguration);
+                        }
+                    })
+                    .positiveText("Test Connection")
+                    .show();
+        }
+    }
+
+    private class WiUntestableConnectionDialog extends WiDialog {
+        private WiConfiguration mConfiguration;
+
+        public WiUntestableConnectionDialog(Context context, WiConfiguration config) {
+            super(context);
+            mConfiguration = config;
+        }
+
+        @Override
+        public MaterialDialog build() {
+            String msg = "WiShare is unable to test the connection to "+mConfiguration.SSID+" at this time. Your network will still be saved, however WiShare recommends testing the connection to ensure your friends can connect";
+
+            return new MaterialDialog.Builder(context.get())
+                    .content(msg)
+                    .positiveText("Ok")
+                    .checkBoxPrompt("Don't show me again", false, null)
+                    .show();
+        }
     }
 }

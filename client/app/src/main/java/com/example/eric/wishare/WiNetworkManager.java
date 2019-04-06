@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
@@ -103,6 +104,17 @@ public class WiNetworkManager {
     public void removeConfiguredNetwork(WiConfiguration config) {
         mConfiguredNetworks.remove(config);
         mUnConfiguredNetworks.put(config.SSID, config);
+    }
+
+    public boolean isSsidInRange(String ssid){
+        List<ScanResult> results = sWifiManager.getScanResults();
+
+        for(ScanResult res: results){
+            if(res.SSID.replace("\"", "").equals(ssid.replace("\"", ""))){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean testConnection(String ssid){
