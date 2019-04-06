@@ -77,18 +77,24 @@ public class WiInvitationListDialog extends WiDialog{
     @Override
     public MaterialDialog build() {
         ArrayList<String> invs = new ArrayList<>();
+
         for(WiInvitationListItem item: mInvitationListItems){
             invs.add("Invitation to " + item.mInvitation.networkName);
         }
 
-        return new MaterialDialog.Builder(context.get())
+        MaterialDialog.Builder dialog = new MaterialDialog.Builder(context.get())
                 .title("My Invitations")
-                .customView(mParentParent, false)
-                //.items(invs)
-                .negativeText("Clear All")
-                .onNegative(onNegative())
-                .positiveText("Close")
-                .build();
+                .positiveText("Ok");
+
+        if(invs.size() == 0){
+            dialog = dialog.content("You have no invitations!");
+        }
+        else{
+            dialog = dialog.customView(mParentParent, false)
+                    .negativeText("Clear All")
+                    .onNegative(onNegative());
+        }
+        return dialog.build();
     }
 
     public MaterialDialog.SingleButtonCallback onNegative(){
