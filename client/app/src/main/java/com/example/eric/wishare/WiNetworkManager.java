@@ -178,15 +178,6 @@ public class WiNetworkManager {
         return mConfiguredNetworks.get(ssid);
     }
 
-    private WifiConfiguration getWifiConfiguration(String ssid){
-        for(WifiConfiguration config: sWifiManager.getConfiguredNetworks()){
-            if(config.SSID.replace("\"", "").equals(ssid.replace("\"", ""))){
-                return config;
-            }
-        }
-        return null;
-    }
-
     public List<WiConfiguration> getConfiguredNetworks() {
         for(WiConfiguration configuration: mConfiguredNetworks.values()){
             if(configuration != null){

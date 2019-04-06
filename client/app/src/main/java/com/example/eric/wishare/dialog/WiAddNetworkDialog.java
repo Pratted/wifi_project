@@ -40,15 +40,6 @@ public class WiAddNetworkDialog extends WiDialog {
     public WiAddNetworkDialog(Context context, Button btnAddNetwork){
         super(context);
         mNetworkManager = WiNetworkManager.getInstance(context.getApplicationContext());
-
-        btnAddNetwork.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WiAddNetworkDialog.this.show();
-            }
-        });
-
-        build();
     }
 
     private MaterialDialog.ListCallback onNetWorkSelect() {

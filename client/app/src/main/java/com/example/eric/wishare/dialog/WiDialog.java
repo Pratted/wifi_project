@@ -6,7 +6,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.lang.ref.WeakReference;
 
-abstract class WiDialog {
+abstract public class WiDialog {
     protected WeakReference<Context> context;
 
     /*****************************************************

@@ -31,13 +31,6 @@ public class WiManageContactsDialog extends WiDialog{
         super(context);
         mContactList = WiContactList.getInstance(context);
         mContactList.setOnContactListReadyListener(onContactListReady());
-
-        btnManageContacts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WiManageContactsDialog.this.show();
-            }
-        });
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){

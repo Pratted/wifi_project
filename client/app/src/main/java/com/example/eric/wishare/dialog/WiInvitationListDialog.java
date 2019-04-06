@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 
@@ -42,12 +43,10 @@ public class WiInvitationListDialog extends WiDialog{
 
         mParentParent.addView(mParent);
 
-        mMyInvitationsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WiInvitationListDialog.this.show();
-            }
-        });
+        ArrayList<WiInvitation> invitations = WiSQLiteDatabase.getInstance(context).loadAllInvitations();
+        for(WiInvitation inv: invitations){
+            add(inv);
+        }
     }
 
 
