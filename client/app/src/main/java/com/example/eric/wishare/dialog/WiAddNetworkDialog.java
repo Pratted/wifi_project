@@ -37,7 +37,7 @@ public class WiAddNetworkDialog extends WiDialog {
                 .build();
     }
 
-    public WiAddNetworkDialog(Context context, Button btnAddNetwork){
+    public WiAddNetworkDialog(Context context){
         super(context);
         mNetworkManager = WiNetworkManager.getInstance(context.getApplicationContext());
     }

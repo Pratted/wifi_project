@@ -1,33 +1,25 @@
 package com.example.eric.wishare.dialog;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 import android.view.View;
-import android.widget.Button;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 public class WiManageContactsDialog extends WiDialog{
     private WiContactList mContactList;
     private OnContactSelectedListener mOnContactSelectedListener;
-    private SQLiteDatabase mDatabase;
     private ArrayList<WiContact> mContacts;
 
     public interface OnContactSelectedListener{
         void onContactSelected(WiContact contact);
     }
 
-    public WiManageContactsDialog(final Context context, Button btnManageContacts){
+    public WiManageContactsDialog(final Context context){
         super(context);
         mContactList = WiContactList.getInstance(context);
         mContactList.setOnContactListReadyListener(onContactListReady());

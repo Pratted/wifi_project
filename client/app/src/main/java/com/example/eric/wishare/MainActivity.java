@@ -25,6 +25,8 @@ import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 import com.google.firebase.FirebaseApp;
 
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private WiConfiguredNetworkListView mConfiguredNetworkListView;
@@ -80,20 +82,22 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, "DEVICE TOKEN IS: ");
         Log.d(TAG, WiUtils.getDeviceToken());
 
+        mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
+
         btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
 
-        mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
+        btnMyInvitations.setInvitationCount(0); // initialize to 0 to prevent the red circle from showing with no invites
 
-        mInvitationListDialog = new WiInvitationListDialog(this, btnMyInvitations);
+        mAddNetworkDialog = new WiAddNetworkDialog(this);
+        mManageContactsDialog = new WiManageContactsDialog(this);
+        mInvitationListDialog = new WiInvitationListDialog(this);
 
-        mManageContactsDialog = new WiManageContactsDialog(this, btnManageContacts);
-        mManageContactsDialog.setOnContactSelectedListener(startContactActivity());
-
-        mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
         mAddNetworkDialog.setOnNetworkReadyListener(onNetworkReady());
+        mManageContactsDialog.setOnContactSelectedListener(startContactActivity());
+        mInvitationListDialog.setOnInvitationsUpdatedListener(refreshMyInvitationsButtonCounter());
 
         btnAddNetwork.setOnClickListener(showWiDialog(mAddNetworkDialog));
         btnManageContacts.setOnClickListener(showWiDialog(mManageContactsDialog));
@@ -130,6 +134,18 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
+
+    private WiInvitationListDialog.OnInvitationsUpdatedListener refreshMyInvitationsButtonCounter(){
+        return new WiInvitationListDialog.OnInvitationsUpdatedListener() {
+            @Override
+            public void onInvitationsUpdated(List<WiInvitation> invitations) {
+                if(invitations != null){
+                    btnMyInvitations.setInvitationCount(invitations.size());
+                }
+            }
+        };
+    }
+
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {

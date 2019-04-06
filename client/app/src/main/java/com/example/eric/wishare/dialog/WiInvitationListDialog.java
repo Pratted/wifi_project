@@ -13,11 +13,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiInvitation;
-import com.example.eric.wishare.view.WiMyInvitationsButton;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
@@ -25,15 +25,15 @@ public class WiInvitationListDialog extends WiDialog{
     private LinearLayout mParent;
     private LayoutInflater mInflater;
     private ArrayList<WiInvitationListItem> mInvitationListItems = new ArrayList<>();
-    private ArrayList<WiInvitation> mInvitations = new ArrayList<>();
-    private WiMyInvitationsButton mMyInvitationsButton;
     private ScrollView mParentParent;
+    private OnInvitationsUpdatedListener mOnInvitationsUpdatedListener;
 
-    public WiInvitationListDialog(Context context, WiMyInvitationsButton btnMyInvitations){
+    public interface OnInvitationsUpdatedListener {
+        void onInvitationsUpdated(List<WiInvitation> invitations);
+    }
+
+    public WiInvitationListDialog(Context context){
         super(context);
-
-        mMyInvitationsButton = btnMyInvitations;
-        mMyInvitationsButton.setInvitationCount(0); // initialize to 0 to prevent the red circle from showing with no invites
 
         mParentParent = new ScrollView(context);
         // create an empty layout to place into the dialog...
@@ -49,14 +49,29 @@ public class WiInvitationListDialog extends WiDialog{
         }
     }
 
-
     public void add(WiInvitation invitation){
         add(new WiInvitationListItem(invitation));
+
+        if(mOnInvitationsUpdatedListener != null){
+            mOnInvitationsUpdatedListener.onInvitationsUpdated(getInvitations());
+        }
+    }
+
+    private List<WiInvitation> getInvitations(){
+        ArrayList<WiInvitation> invitations = new ArrayList<>();
+
+        for(WiInvitationListItem inv: mInvitationListItems){
+            invitations.add(inv.mInvitation);
+        }
+        return invitations;
     }
 
     private void add(WiInvitationListItem invitation){
         mInvitationListItems.add(invitation);
-        mMyInvitationsButton.setInvitationCount(mInvitationListItems.size());
+    }
+
+    public void setOnInvitationsUpdatedListener(OnInvitationsUpdatedListener listener){
+        mOnInvitationsUpdatedListener = listener;
     }
 
     @Override
@@ -96,7 +111,6 @@ public class WiInvitationListDialog extends WiDialog{
                 mParent.removeView(mInvitationListItems.get(i).mLayout);
                 mInvitationListItems.remove(i);
 
-                mMyInvitationsButton.setInvitationCount(mInvitationListItems.size());
                 return;
             }
         }
