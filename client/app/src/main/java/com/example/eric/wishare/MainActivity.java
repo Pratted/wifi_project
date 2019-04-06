@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mAddNetworkDialog = new WiAddNetworkDialog(this, btnAddNetwork);
-        //mAddNetworkDialog.setOnPasswordEnteredListener(onPasswordEntered());
+        mAddNetworkDialog.setOnNetworkReadyListener(onNetworkReady());
 
         btnShowNotification.setOnClickListener(sendNotification());
     }
@@ -135,6 +135,16 @@ public class MainActivity extends AppCompatActivity {
                 notification.show();
 
 
+            }
+        };
+    }
+
+    private WiAddNetworkDialog.OnNetworkReadyListener onNetworkReady(){
+        return new WiAddNetworkDialog.OnNetworkReadyListener() {
+            @Override
+            public void onNetworkReady(WiConfiguration configuration) {
+                WiSQLiteDatabase.getInstance(MainActivity.this).insert(configuration);
+                mConfiguredNetworkListView.addConfiguredNetwork(configuration);
             }
         };
     }

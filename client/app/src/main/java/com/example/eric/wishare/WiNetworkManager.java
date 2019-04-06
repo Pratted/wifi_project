@@ -43,9 +43,11 @@ public class WiNetworkManager {
     private Map<String, WiConfiguration> mConfiguredNetworks;
     private Map<String, WifiConfiguration> mUnConfiguredNetworks;
 
+
     private WiNetworkManager(Context context) {
         mContext = new WeakReference<>(context.getApplicationContext());
         sWifiManager = (WifiManager) mContext.get().getApplicationContext().getSystemService(WIFI_SERVICE);
+        WiSharedPreferences.initialize(context);
 
         mEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
@@ -117,7 +119,23 @@ public class WiNetworkManager {
         return false;
     }
 
-    public boolean testConnection(String ssid){
+    public void testConnection(String ssid){
+        Log.d(TAG, "Preparing for test connection");
+
+        WiConfiguration targetNetwork = getConfiguredNetwork(ssid);
+        if(targetNetwork == null){
+            Log.d(TAG, "Could not find WiConfiguration");
+            return;
+        }
+
+        Log.d(TAG, "Adding network to devices Wifi...");
+        int networkId = sWifiManager.addNetwork(targetNetwork.configure());
+        Log.d(TAG, "Target Network Id: " + networkId);
+
+        if(networkId == -1){
+            return;
+        }
+
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
         mContext.get().registerReceiver(getWifiConnectedReceiver(), intentFilter);
@@ -126,36 +144,29 @@ public class WiNetworkManager {
         NetworkInfo tmp = cm.getActiveNetworkInfo();
 
         if(tmp == null){
-            System.out.println("No current network...");
-            return false;
+            Log.d(TAG, "No current network...");
+            return;
         }
 
         if(tmp.isConnected()){
             WifiInfo info = sWifiManager.getConnectionInfo();
-            System.out.println("adding shit to prefs...");
+            Log.d(TAG, "Currently connected to "+ info.getSSID()+ ". Saving current connection...");
 
-            mEditor.putString("prev_network", info.getSSID());
-            mEditor.putString("target_network", ssid);
-            mEditor.putBoolean("test_connection", true);
-            mEditor.commit(); // save now, blocking
+            WiSharedPreferences.putString("prev_network", info.getSSID());
+            WiSharedPreferences.putString("target_network", ssid);
+            WiSharedPreferences.putBoolean("test_connection", true);
+            WiSharedPreferences.save(); // save now, blocking
+
+
+            Log.d(TAG, "Disabling " + info.getSSID());
+            Log.d(TAG, "Success? " + sWifiManager.disableNetwork(info.getNetworkId()));
+            sWifiManager.disconnect();
         }
 
-        System.out.println("Target: " + ssid);
-
-        for(WifiConfiguration config : sWifiManager.getConfiguredNetworks()){
-            System.out.println("Current: " + config.SSID.replace("\"", ""));
-
-            if(config.SSID.replace("\"", "").equals(ssid)){
-                System.out.println("Attempting to connect to " + ssid);
-                return testConnection(config);
-            }
-        }
-
-        return false;
-    }
-
-    public boolean testConnection(WifiConfiguration config){
-        return sWifiManager.enableNetwork(config.networkId, true);
+        Log.d(TAG, "Target Network: " + ssid);
+        Log.d(TAG, "Attempting to connect to " + targetNetwork.getSSID());
+        sWifiManager.enableNetwork(networkId, true);
+        sWifiManager.reconnect();
     }
 
     // returning ArrayList here so .values() gets changed from collection to list
@@ -165,6 +176,15 @@ public class WiNetworkManager {
 
     public WiConfiguration getConfiguredNetwork(String ssid){
         return mConfiguredNetworks.get(ssid);
+    }
+
+    private WifiConfiguration getWifiConfiguration(String ssid){
+        for(WifiConfiguration config: sWifiManager.getConfiguredNetworks()){
+            if(config.SSID.replace("\"", "").equals(ssid.replace("\"", ""))){
+                return config;
+            }
+        }
+        return null;
     }
 
     public List<WiConfiguration> getConfiguredNetworks() {
@@ -201,39 +221,53 @@ public class WiNetworkManager {
         return new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
+                String TAG = "WiNetworkManager.Rec";
                 String action = intent.getAction();
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-                SharedPreferences.Editor editor = prefs.edit();
+                String prevNetwork = WiSharedPreferences.getString("prev_network", "");
+                String targetNetwork = WiSharedPreferences.getString("target_network", "");
+                boolean testConnection = WiSharedPreferences.getBoolean("test_connection", false);
 
-                String prevNetwork = prefs.getString("prev_network", "");
-                String targetNetwork = prefs.getString("target_network", "");
-                boolean testConnection = prefs.getBoolean("test_connection", false);
+                if(action == null){
+                    Log.d(TAG, "No action found. Exiting");
+                    return;
+                }
 
-                System.out.println("Prev " + prevNetwork);
-                System.out.println("Target " + targetNetwork);
+                Log.d(TAG, "Previous Network: " + prevNetwork);
+                Log.d(TAG, "Target Network: " + targetNetwork);
 
-                if(action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION) && testConnection){
-                    System.out.println("Connected changed!!!");
+                // only pay attention to network state if we're trying to test a connection
+                if(testConnection && action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
+                    Log.d(TAG, "Connection state changed");
+
                     NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                    System.out.println("Connected? " + info.isConnected());
+                    Log.d(TAG, "Currently connected to a network? " + info.isConnected());
 
                     if(info.isConnected()){
-                        WifiManager manager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-                        String ssid = manager.getConnectionInfo().getSSID();
+                        WifiManager manager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                        WifiInfo curr = manager.getConnectionInfo();
 
-                        System.out.println("Connected!!!");
+
+                        if(curr == null){
+                            Log.d(TAG, "Could not get the current connection SSID. Unable to continue");
+
+                            return;
+                        }
+
+                        String ssid = curr.getSSID();
 
                         if(ssid.replace("\"","").equals(targetNetwork.replace("\"", ""))){
-                            System.out.println("The connection was successful!");
+                            Log.d(TAG, "Connected to target network");
 
                             //update shared prefs to avoid testing the connection more than once
-                            editor.putString("prev_network", "");
-                            editor.putString("target_network", "");
-                            editor.putBoolean("test_connection", false);
-                            editor.commit();
+                            WiSharedPreferences.putString("prev_network", "");
+                            WiSharedPreferences.putString("target_network", "");
+                            WiSharedPreferences.putBoolean("test_connection", false);
+                            WiSharedPreferences.save();
 
+                            // unregister this receiver since it is no longer needed
                             context.unregisterReceiver(this);
+
+                            /*
                             // if the user was previously connect to 'A' and just tested connection 'B', disconnect them from 'B'
                             // and connect them back to 'A'.
                             if(!prevNetwork.replace("\"", "").equals(targetNetwork.replace("\"", ""))){
@@ -242,8 +276,15 @@ public class WiNetworkManager {
                                 // connect back to original network..
                                 manager.enableNetwork(getPrevNetworkId(manager, prevNetwork), true);
                             }
+                            */
 
                             mOnTestConnectionCompleteListener.onTestConnectionComplete(true);
+                        }
+                        else{
+                            Log.d(TAG, "Connected to old network, disconnecting...");
+                            manager.disconnect();
+                            //manager.enableNetwork(getPrevNetworkId(manager, ssid), true);
+                            //manager.reconnect();
                         }
                     }
                 }

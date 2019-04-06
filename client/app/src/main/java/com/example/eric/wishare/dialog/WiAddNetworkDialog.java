@@ -62,7 +62,13 @@ public class WiAddNetworkDialog extends WiDialog {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, final CharSequence password) {
                                 final WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
+                                mNetworkManager.configureNetwork(config); // now that the password has been entered the network is configured
 
+                                if(mOnNetworkReadyListener != null){
+                                    mOnNetworkReadyListener.onNetworkReady(config);
+                                }
+
+                                /*
                                 // SSID is in range, try and test the connection...
                                 if(mNetworkManager.isSsidInRange(wifiName.toString())){
 
@@ -104,6 +110,7 @@ public class WiAddNetworkDialog extends WiDialog {
                                         mOnNetworkReadyListener.onNetworkReady(config);
                                     }
                                 }
+                                */
                             }}).show();
             }
         };
