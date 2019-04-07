@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;
@@ -14,6 +15,7 @@ import com.example.eric.wishare.model.WiInvitation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
@@ -27,65 +29,84 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     private static final String TAG = "WiSQLiteDatabase";
 
     public static class TABLE_CONTACTS {
-        public static final String COL_CONTACT_ID = "contact_id";
         public static final String COL_NAME = "name";
         public static final String COL_PHONE = "phone";
+        public static final String COL_DATE_CREATED = "date_created";
         public static final String TABLE_NAME = "SynchronizedContacts";
     }
 
     public static class TABLE_CONFIGURED_NETWORKS {
-        public static final String COL_NETWORK_ID = "network_id";
         public static final String COL_SSID = "ssid";
         public static final String COL_PASSWORD = "password";
+        public static final String COL_DATE_CREATED = "date_created";
         public static final String TABLE_NAME = "ConfiguredNetworks";
     }
 
     public static class TABLE_PERMITTED_CONTACTS {
-        public static final String COL_NETWORK_ID = "network_id";
-        public static final String COL_CONTACT_ID = "contact_id";
         public static final String COL_SSID = "ssid";
         public static final String COL_PHONE = "phone";
         public static final String COL_DATA_LIMIT = "data_limit";
+        public static final String COL_EXPIRES = "expires";
+        public static final String COL_DATE_CREATED = "date_created";
         public static final String TABLE_NAME = "PermittedContacts";
     }
 
     public static class TABLE_INVITATIONS {
-        public static final String COL_INVITATION_ID = "invitation_id";
         public static final String COL_SSID = "ssid";
         public static final String COL_SENDER = "sender";
         public static final String COL_EXPIRES = "expires";
         public static final String COL_DATA_LIMIT = "data_limit";
+        public static final String COL_DATE_CREATED = "date_created";
         public static final String TABLE_NAME = "Invitations";
+    }
+
+    private static class TABLE_PENDING_INVITATIONS {
+        public static final String COL_SSID = "ssid";
+        public static final String COL_PHONE = "phone";
+        public static final String COL_EXPIRES = "expires";
+        public static final String COL_DATA_LIMIT = "data_limit";
+        public static final String COL_DATE_CREATED = "date_created";
+        public static final String TABLE_NAME = "PendingInvitations";
     }
 
     //Table with variables
     //Common variable types include INT, FLOAT, DATE, TIME, varchar([max characters])    <-- string, BIT <-- boolean with 0 | 1
     private static final String mSQL_CREATE_SYNCHRONIZEDCONTACTS =
             "CREATE TABLE " + TABLE_CONTACTS.TABLE_NAME + " (" +
-                    TABLE_CONTACTS.COL_CONTACT_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                    TABLE_CONTACTS.COL_PHONE + " varchar(255) UNIQUE," +
+                    TABLE_CONTACTS.COL_PHONE + " varchar(255) PRIMARY KEY ," +
                     TABLE_CONTACTS.COL_NAME + " varchar(255))";
+
     private static final String mSQL_CREATE_CONFIGUREDNETWORKS =
             "CREATE TABLE " + TABLE_CONFIGURED_NETWORKS.TABLE_NAME + " (" +
-                     TABLE_CONFIGURED_NETWORKS.COL_NETWORK_ID + " INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," +
-                     TABLE_CONFIGURED_NETWORKS.COL_SSID + " varchar(255)," +
+                     TABLE_CONFIGURED_NETWORKS.COL_SSID + " varchar(255) PRIMARY KEY," +
                      TABLE_CONFIGURED_NETWORKS.COL_PASSWORD + " varchar(255))";
+
     private static final String mSQL_CREATE_PERMITTEDCONTACTS =
             "CREATE TABLE " + TABLE_PERMITTED_CONTACTS.TABLE_NAME + " (" +
-                    TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID + " INTEGER NOT NULL," +
-                    TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID + " INTEGER NOT NULL," +
                     TABLE_PERMITTED_CONTACTS.COL_SSID + " varchar(255)," +
-                    TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT + " varchar(255)," +
                     TABLE_PERMITTED_CONTACTS.COL_PHONE + " varchar(255)," +
-                    "PRIMARY KEY(" + TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID + "," + TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID + "))";
+                    TABLE_PERMITTED_CONTACTS.COL_EXPIRES + " varchar(255)," +
+                    TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT + " varchar(255)," +
+                    "PRIMARY KEY(" + TABLE_PERMITTED_CONTACTS.COL_SSID + "," + TABLE_PERMITTED_CONTACTS.COL_PHONE + "))";
 
     private static final String mSQL_CREATE_INVITATION =
             "CREATE TABLE " + TABLE_INVITATIONS.TABLE_NAME + " (" +
-                    TABLE_INVITATIONS.COL_INVITATION_ID + " Integer not null primary key autoincrement," +
                     TABLE_INVITATIONS.COL_SSID + " varchar(255)," +
                     TABLE_INVITATIONS.COL_SENDER + " varchar(255)," +
                     TABLE_INVITATIONS.COL_EXPIRES + " varchar(255)," +
-                    TABLE_INVITATIONS.COL_DATA_LIMIT + " Integer)";
+                    TABLE_INVITATIONS.COL_DATA_LIMIT + " varchar(255)," +
+                    TABLE_INVITATIONS.COL_DATE_CREATED + " varchar(255)," +
+                    "PRIMARY KEY(" + TABLE_INVITATIONS.COL_SSID + "," + TABLE_INVITATIONS.COL_SENDER + "))";
+
+    private static final String mSQL_CREATE_PENDING_INVITATION =
+            "CREATE TABLE " + TABLE_PENDING_INVITATIONS.TABLE_NAME + " (" +
+                    TABLE_PENDING_INVITATIONS.COL_SSID + " varchar(255)," +
+                    TABLE_PENDING_INVITATIONS.COL_PHONE + " varchar(255)," +
+                    TABLE_PENDING_INVITATIONS.COL_EXPIRES + " varchar(255)," +
+                    TABLE_PENDING_INVITATIONS.COL_DATA_LIMIT + " varchar(255)," +
+                    TABLE_PENDING_INVITATIONS.COL_DATE_CREATED + " varchar(255)," +
+                    "PRIMARY KEY(" + TABLE_PENDING_INVITATIONS.COL_SSID + "," + TABLE_PENDING_INVITATIONS.COL_PHONE + "))";
+
 
     private static final String mSQL_DELETE_SYNCHRONIZEDCONTACTS =
             "DROP TABLE IF EXISTS " + TABLE_CONTACTS.TABLE_NAME;
@@ -95,6 +116,8 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + TABLE_PERMITTED_CONTACTS.TABLE_NAME;
     private static final String mSQL_DELETE_INVITATION =
             "DROP TABLE IF EXISTS " + TABLE_INVITATIONS.TABLE_NAME;
+    private static final String mSQL_DELETE_PENDING_INVITATION =
+            "DROP TABLE IF EXISTS " + TABLE_INVITATIONS.TABLE_NAME;
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
@@ -103,55 +126,65 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     public synchronized HashMap<String, WiContact> loadContacts(){
         HashMap<String, WiContact> contacts = new HashMap<>();
 
-        SQLiteDatabase db = sInstance.getReadableDatabase();
-        db.query(TABLE_CONTACTS.TABLE_NAME, null, null, null, null, null, "name");
-
-        Cursor cur = db.query(TABLE_CONTACTS.TABLE_NAME, null, null, null, null, null, "name");
+        // load all the contacts from the contacts table...
+        Cursor cur = getReadableDatabase().query(TABLE_CONTACTS.TABLE_NAME, null, null, null, null, null, null);
 
         if (cur != null && cur.moveToFirst()) {
             do {
                 WiContact contact = new WiContact(
                         cur.getString(cur.getColumnIndex(TABLE_CONTACTS.COL_NAME)),
-                        cur.getString(cur.getColumnIndex(TABLE_CONTACTS.COL_PHONE)),
-                        cur.getString(cur.getColumnIndex(TABLE_CONTACTS.COL_CONTACT_ID)));
-
+                        cur.getString(cur.getColumnIndex(TABLE_CONTACTS.COL_PHONE)));
                 contacts.put(contact.getPhone(), contact);
             } while (cur.moveToNext());
         }
 
-        cur.close();
+        // load all pending invitations and apply to each contact...
+        cur = getReadableDatabase().query(TABLE_PENDING_INVITATIONS.TABLE_NAME, null, null, null, null, null, null);
 
-        /*
-        cur = db.rawQuery("select phone, ssid from SynchronizedContacts sc join PermittedNetworks pn on sc.ssid = pn.ssid", null);
-
-        if (cur != null && cur.moveToFirst()) {
+        if(cur.moveToFirst()){
             do {
-                WiContact contact = new WiContact(
-                        cur.getString(cur.getColumnIndex("name")),
-                        cur.getString(cur.getColumnIndex("phone")),
-                        cur.getString(cur.getColumnIndex("contact_id")));
+                String recipientPhone = cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_PHONE));
 
-                contacts.put(contact.getPhone(), contact);
-            } while (cur.moveToNext());
+                WiInvitation invitation = new WiInvitation(
+                        cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_SSID)),
+                        WiUtils.getDevicePhone(),
+                        cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_EXPIRES)),
+                        "",
+                        cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_DATA_LIMIT))
+                );
+
+                contacts.get(recipientPhone).invite(invitation);
+            } while(cur.moveToNext());
         }
 
+        // load all permitted networks and apply to each contact
+        cur = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, null, null, null, null, null);
 
-        cur.close();
-        */
+        if(cur.moveToFirst()){
+            do {
+                String ssid = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID));
+                String recipientPhone = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_PHONE));
+                //String expires = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_EXPIRES));
+                //String dataLimit = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT));
+
+                WiConfiguration config = new WiConfiguration(ssid, "");
+                contacts.get(recipientPhone).grantAccess(config);
+            } while(cur.moveToNext());
+        }
 
         return contacts;
     }
 
     public ArrayList<WiConfiguration> loadNetworks(){
         ArrayList<WiConfiguration> networks = new ArrayList<>();
-        Cursor cur = sInstance.getReadableDatabase().rawQuery("select * from " + TABLE_CONFIGURED_NETWORKS.TABLE_NAME, null);
+        Cursor cur = sInstance.getReadableDatabase().query(TABLE_CONFIGURED_NETWORKS.TABLE_NAME, null, null, null, null, null, null);
 
         if (cur != null && cur.moveToFirst()) {
             do {
                 WiConfiguration wiConfiguration = new WiConfiguration(
                         cur.getString(cur.getColumnIndex(TABLE_CONFIGURED_NETWORKS.COL_SSID)),
                         cur.getString(cur.getColumnIndex(TABLE_CONFIGURED_NETWORKS.COL_PASSWORD)),
-                        cur.getString(cur.getColumnIndex(TABLE_CONFIGURED_NETWORKS.COL_NETWORK_ID)));
+                        "");
                 networks.add(wiConfiguration);
             } while (cur.moveToNext());
         }
@@ -171,6 +204,81 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             }
         });
     }
+
+    private List<WiConfiguration> loadPermittedNetworks(WiContact contact){
+        ArrayList<WiConfiguration> permittedNetworks = new ArrayList<>();
+        Cursor cur = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
+                "phone=?", new String[]{contact.getPhone()}, null, null, null);
+
+        if(cur.moveToFirst()){
+            do {
+                permittedNetworks.add(new WiConfiguration(cur.getString(0),""));
+            } while(cur.moveToNext());
+        }
+
+        return permittedNetworks;
+    }
+
+    private List<WiInvitation> loadPendingInvitations(WiContact contact){
+        ArrayList<WiInvitation> pendingInvitations = new ArrayList<>();
+        Cursor cur = getReadableDatabase().query(TABLE_PENDING_INVITATIONS.TABLE_NAME, new String[]{TABLE_PENDING_INVITATIONS.COL_SSID},
+                "phone=?", new String[]{contact.getPhone()}, null, null, null);
+
+        if(cur.moveToFirst()){
+            do {
+                WiInvitation invitation = new WiInvitation(
+                    cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_SSID)),
+                    WiUtils.getDevicePhone(),
+                    cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_EXPIRES)),
+                    "",
+                    cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_DATA_LIMIT))
+                );
+
+                pendingInvitations.add(invitation);
+            } while(cur.moveToNext());
+        }
+
+        return pendingInvitations;
+    }
+
+
+    public synchronized void insertPendingInvitation(final WiInvitation invitation, final WiContact recipient){
+        Log.d(TAG, "ssid=" + invitation.getWiConfiguration().SSID);
+        Log.d(TAG, "phone=" + recipient.getPhone());
+
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                Log.d(TAG, "Adding pending invitation to database");
+                ContentValues vals = new ContentValues();
+                vals.put(TABLE_PENDING_INVITATIONS.COL_PHONE, recipient.getPhone());
+                vals.put(TABLE_PENDING_INVITATIONS.COL_SSID, invitation.getWiConfiguration().SSID);
+                vals.put(TABLE_PENDING_INVITATIONS.COL_DATE_CREATED, WiUtils.getDateTime());
+                theDB.insert(TABLE_PENDING_INVITATIONS.TABLE_NAME, null, vals);
+                Log.d(TAG, "Inserted pending invitation to database");
+            }
+        });
+    }
+
+    public synchronized void insertPermittedContact(final WiConfiguration config, final WiContact contact){
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                Log.d(TAG, "Adding permitted contact to database");
+                ContentValues vals = new ContentValues();
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, config.SSID);
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_PHONE, contact.getPhone());
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_EXPIRES, contact.getExpiresIn());
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT, "None");
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_DATE_CREATED, WiUtils.getDateTime());
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, config.getSSID());
+
+                theDB.insert(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, vals);
+                Log.d(TAG, "Added permitted contact to database");
+            }
+        });
+    }
+
 
     public synchronized void insert(final WiContact contact){
         getWritableDatabase(new OnDBReadyListener() {
@@ -194,6 +302,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         });
     }
 
+    /*
     public synchronized void insert(final WiContact contact, final WiConfiguration config) {
         getWritableDatabase(new OnDBReadyListener() {
             @Override
@@ -208,6 +317,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             }
         });
     }
+    */
 
     public synchronized void delete(final WiConfiguration config){
         getWritableDatabase(new OnDBReadyListener() {
@@ -272,6 +382,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         db.execSQL(mSQL_CREATE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_CREATE_PERMITTEDCONTACTS);
         db.execSQL(mSQL_CREATE_INVITATION);
+        db.execSQL(mSQL_CREATE_PENDING_INVITATION);
     }
 
     @Override
@@ -280,6 +391,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         db.execSQL(mSQL_DELETE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_DELETE_PERMITTEDCONTACTS);
         db.execSQL(mSQL_DELETE_INVITATION);
+        db.execSQL(mSQL_DELETE_PENDING_INVITATION);
         onCreate(db);
     }
 

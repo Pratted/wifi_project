@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onNetworkReady(WiConfiguration configuration) {
                 WiSQLiteDatabase.getInstance(MainActivity.this).insert(configuration);
+                WiNetworkManager.getInstance(MainActivity.this).refresh();
                 mConfiguredNetworkListView.addConfiguredNetwork(configuration);
             }
         };

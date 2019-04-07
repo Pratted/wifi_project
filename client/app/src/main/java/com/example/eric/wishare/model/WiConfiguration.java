@@ -11,8 +11,8 @@ import org.json.JSONObject;
 
 @SuppressLint("ParcelCreator")
 public class WiConfiguration extends WifiConfiguration implements Parcelable {
-
-    private String mNetworkID;
+    // the network id for the database, NOT android
+    private String mNetworkID = "";
 
     public WiConfiguration(String ssid, String password, String network_id) {
         SSID = ssid;
@@ -70,6 +70,10 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
     }
 
     public String getNetworkID(){return mNetworkID;}
+
+    public void setNetworkId(String networkId){
+        mNetworkID = networkId;
+    }
 
     @Override
     public int describeContents() {

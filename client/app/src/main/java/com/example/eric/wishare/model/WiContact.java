@@ -11,7 +11,9 @@ import com.example.eric.wishare.WiUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -20,22 +22,18 @@ import java.util.regex.Pattern;
 public class WiContact implements Parcelable{
     private String name;
     private String phone;
-    private String contact_id;
     private Integer mDataUsage;
     private Integer mExpiresIn;
-    private List<WiConfiguration> mInvitedNetworks;
 
-    private Set<WiConfiguration> mPermittedNetworks;
+    // invitations sent to the client that they havent yet acknowledged
+    private Map<String, WiInvitation> mPendingInvitations;
+
+    // all the networks this client has access too
+    private Map<String, WiConfiguration> mPermittedNetworks;
 
     public WiContact(String name, String phone){
         this.name = name;
         this.phone = phone;
-        init();
-    }
-    public WiContact(String name, String phone, String contact_id){
-        this.name = name;
-        this.phone = phone;
-        this.contact_id = contact_id;
         init();
     }
 
@@ -49,7 +47,8 @@ public class WiContact implements Parcelable{
     }
 
     private void init() {
-        this.mInvitedNetworks = new ArrayList<>();
+        mPermittedNetworks = new HashMap<>();
+        mPendingInvitations = new HashMap<>();
 
         Random r = new Random();
         mDataUsage = r.nextInt(100);
@@ -57,6 +56,18 @@ public class WiContact implements Parcelable{
 
         if(mDataUsage % 2 == 1) mDataUsage = -1;
         if(mExpiresIn % 2 == 1) mExpiresIn = -1;
+    }
+
+    public boolean hasPendingInvitation(String ssid){
+        return mPendingInvitations.containsKey(ssid);
+    }
+
+    public boolean hasAccessTo(String ssid){
+        return mPermittedNetworks.containsKey(ssid);
+    }
+
+    public List<WiConfiguration> getPermittedNetworks(){
+        return new ArrayList<WiConfiguration>(mPermittedNetworks.values());
     }
 
     public static final Creator<WiContact> CREATOR = new Creator<WiContact>() {
@@ -71,22 +82,8 @@ public class WiContact implements Parcelable{
         }
     };
 
-    public void addToInvitedNetworks(WiConfiguration config) {
-        if(mInvitedNetworks != null)
-            this.mInvitedNetworks.add(config);
-        else System.out.println("HOW IS THIS NULL??????");
-    }
-
-    public void updateInvitedNetworks(Context c) {
-        for(WiConfiguration config : WiNetworkManager.getInstance(c).getConfiguredNetworks()) {
-            if(!this.mInvitedNetworks.contains(config)) {
-                this.mInvitedNetworks.add(config);
-            }
-        }
-    }
-
-    public List<WiConfiguration> getInvitedNetworks() {
-        return this.mInvitedNetworks;
+    public void invite(WiInvitation invitation){
+        mPendingInvitations.put(invitation.getNetworkName(), invitation);
     }
 
     public String getName() {
@@ -100,7 +97,6 @@ public class WiContact implements Parcelable{
     public String getPhone() {
         return WiUtils.formatPhoneNumber(phone);
     }
-    public String getContactID(){return contact_id;}
 
     public void setPhone(String phone) {
         this.phone = phone;
@@ -147,11 +143,8 @@ public class WiContact implements Parcelable{
         return vals;
     }
 
-    public void grantAccess(WiConfiguration config) {
-        mPermittedNetworks.add(config);
-    }
 
-    public Set<WiConfiguration> getPermittedNetworks(){
-        return mPermittedNetworks;
+    public void grantAccess(WiConfiguration config) {
+        mPermittedNetworks.put(config.SSID, config);
     }
 }

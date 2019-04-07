@@ -37,7 +37,6 @@ public class ContactActivity extends AppCompatActivity {
     private WiRevokeAccessDialog mRevokeAccessDialog;
 
     private WiContactSharedNetworkListView mContactSharedNetworkList;
-    private List<WiConfiguration> mPermittedContactList;
     private WiNetworkManager mNetworkManager;
 
     @Override
@@ -45,9 +44,7 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
-
         mContact = getIntent().getExtras().getParcelable("contact");
-        mPermittedContactList = mContact.getInvitedNetworks();
 
         try {
             String title = "";
@@ -74,17 +71,7 @@ public class ContactActivity extends AppCompatActivity {
         mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
         mContactSharedNetworkList.populateNetworks(this, mContact);
 
-        /*
-        mNetworks = WiNetworkManager.getUnConfiguredNetworks(this);
-
-        ArrayList<WiConfiguration> networkList = new ArrayList<>();
-
-        for (WifiConfiguration configuration : mNetworks) {
-            networkList.add(new WiConfiguration(configuration, ""));
-        }
-        */
-
-        for(WiConfiguration config: mPermittedContactList) {
+        for(WiConfiguration config: mContact.getPermittedNetworks()) {
             mContactSharedNetworkList.addSharedNetwork(config);
         }
 

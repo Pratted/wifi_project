@@ -68,25 +68,15 @@ public class WiTabbedScrollView extends LinearLayout {
         mViewPager = findViewById(R.id.view_pager);
     }
 
-    public void setWiConfiguration(WiConfiguration wiConfiguration){
-        mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, wiConfiguration);
-        mInvitableContactsView = new WiInvitableContactsView(getContext(), wiConfiguration);
+    public void setWiConfiguration(WiConfiguration config){
+        mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, config);
+        mInvitableContactsView = new WiInvitableContactsView(getContext(), config);
 
-        HashMap<String, Boolean> permContacts = new HashMap<>();
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(mContext.get()).getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts WHERE SSID=?", new String[]{wiConfiguration.getSSID()});
-
-        if (cur != null && cur.moveToFirst()) {
-            do {
-                permContacts.put(cur.getString(cur.getColumnIndex("contact_id")), true);
-            } while (cur.moveToNext());
-        }
-        cur.close();
         for(WiContact contact: mContactList.getWiContacts().values()){
-            if(permContacts.containsKey(contact.getContactID())){
+            if(contact.hasAccessTo(config.SSID)){
                 mPermittedContactsView.addPermittedContact(contact);
             }
-            else {
+            else{
                 mInvitableContactsView.add(contact);
             }
         }

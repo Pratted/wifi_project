@@ -12,6 +12,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
@@ -96,11 +97,11 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             Log.d(TAG, "IN BUILD Config SSID: " + config.getSSID());
         }
 
-        mNetworks.removeAll(mContact.getInvitedNetworks());
+        mNetworks.removeAll(mContact.getPermittedNetworks());
 
-        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty() " + mContact.getInvitedNetworks().isEmpty());
+        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty() " + mContact.getPermittedNetworks().isEmpty());
 
-        for (WiConfiguration config : mContact.getInvitedNetworks()) {
+        for (WiConfiguration config : mContact.getPermittedNetworks()) {
             Log.d(TAG, "IN BUILD 2 Config SSID: " + config.getSSID());
         }
     }
@@ -127,9 +128,14 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                         for (WiConfiguration config : getSelectedNetworks(indices)) {
                             Log.d(TAG, "config id: " + config.getSSID());
                             invitation.networkName = config.getSSID();
-                            mContact.addToInvitedNetworks(config);
-                            mNetworks.remove(config);
+                            invitation.setWiConfiguration(config);
+
+                            mContact.invite(invitation);
+
                             WiContactList.getInstance(mContext).save(mContact);
+                            WiSQLiteDatabase.getInstance(mContext).insertPendingInvitation(invitation, mContact);
+
+                            Log.d(TAG, "Adding permitted contact to database");
 
                             WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
                                 @Override

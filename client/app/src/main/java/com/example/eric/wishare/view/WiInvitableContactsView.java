@@ -15,11 +15,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
 import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.model.WiConfiguration;
@@ -288,13 +290,22 @@ public class WiInvitableContactsView extends LinearLayout {
                         mExpandableLayout.collapse();
                     }
 
+                    // TODO: notify user client has already been invited
+                    if(mContact.hasPendingInvitation(mWiConfiguration.SSID)){
+                        Toast.makeText(getContext(), mContact.getName() + " has already been invited to " + mWiConfiguration.SSID, Toast.LENGTH_LONG).show();
+                        return;
+                    }
+
                     WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext(), mWiConfiguration.SSID);
                     dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                         @Override
                         public void onInvitationCreated(WiInvitation invitation) {
-                            mName.startAnimation(mSwipeLeftAnimation);
-                            mContact.addToInvitedNetworks(mWiConfiguration);
+                            invitation.setWiConfiguration(mWiConfiguration);
+                            mContact.invite(invitation); // invite the contact by giving it the invitation
+
+                            // save this information in the contact list and in the database.
                             WiContactList.getInstance(getContext()).save(mContact);
+                            WiSQLiteDatabase.getInstance(getContext()).insertPendingInvitation(invitation, mContact);
 
                             // send all invitations to Eric for testing... remove this when done.
                             //mContact.setPhone("610-737-0292");
@@ -309,6 +320,9 @@ public class WiInvitableContactsView extends LinearLayout {
 
                             System.out.println("The phone is: " + mContact.getPhone());
                             WiDataMessageController.getInstance(getContext()).send(msg);
+
+                            mName.startAnimation(mSwipeLeftAnimation);
+
                         }
                     });
                     dialog.show();

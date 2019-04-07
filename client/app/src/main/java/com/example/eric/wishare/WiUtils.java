@@ -2,6 +2,9 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,6 +40,14 @@ public class WiUtils {
 
     public static void setCurrentActivity(CurrentActivity activity){
         WiSharedPreferences.putString("current_activity", activity.toString());
+    }
+
+    public static String getDateTime(){
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+        );
+        Date date = new Date();
+        return formatter.format(date);
     }
 
     public static String formatPhoneNumber(String phone){

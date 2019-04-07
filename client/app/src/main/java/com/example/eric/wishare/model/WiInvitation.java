@@ -64,6 +64,10 @@ public class WiInvitation implements Parcelable {
         mAccepted = true;
     }
 
+    public void setWiConfiguration(WiConfiguration config){
+        mConfiguration = config;
+    }
+
     public WiInvitation(JSONObject json) {
         try {
             this.networkName = json.getString("network_name");
