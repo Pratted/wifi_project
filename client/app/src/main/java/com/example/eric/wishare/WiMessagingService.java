@@ -1,9 +1,12 @@
 package com.example.eric.wishare;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
@@ -111,8 +114,12 @@ public class WiMessagingService extends FirebaseMessagingService {
         WiDataMessageController.getInstance(this).send(msg);
 
         WiContact contact = WiContactList.getInstance(this).getContactByPhone(invitation.sender);
+
+        String name = contact != null ? contact.getName() : invitation.sender;
+        displayToast(name + " has accepted your invitation to " + invitation.networkName);
+
         //contact.grantAccess(config);
-        WiSQLiteDatabase.getInstance(this).insert(contact, config);
+        //WiSQLiteDatabase.getInstance(this).insert(contact, config);
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){
@@ -195,5 +202,15 @@ public class WiMessagingService extends FirebaseMessagingService {
 // You can also include some extra data.
         intent.putExtra("key", msg);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void displayToast(final String msg){
+        Handler h = new Handler(Looper.getMainLooper());
+        h.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
