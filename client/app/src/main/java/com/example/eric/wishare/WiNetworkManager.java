@@ -97,15 +97,28 @@ public class WiNetworkManager {
         }
     }
 
+    public void removeConfiguredNetwork(WiConfiguration config){
+        try{
+            List<WifiConfiguration> networks = sWifiManager.getConfiguredNetworks();
+            int nID = -1;
+            for (WifiConfiguration wc: networks){
+                if (wc.SSID.equals(config.getSSID()))
+                    nID = wc.networkId;
+            }
+            System.out.println("Android network ID is: " + nID);
+            boolean retVal = sWifiManager.removeNetwork(nID);
+            System.out.println("Remove success boolean: " + retVal);
+            mConfiguredNetworks.remove(config);
+            mUnConfiguredNetworks.put(config.SSID, config);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     // invoked by the host when they enter a network password.
     public void configureNetwork(WiConfiguration config){
         mConfiguredNetworks.put(config.SSID, config);
         mUnConfiguredNetworks.remove(config.SSID);
-    }
-
-    public void removeConfiguredNetwork(WiConfiguration config) {
-        mConfiguredNetworks.remove(config);
-        mUnConfiguredNetworks.put(config.SSID, config);
     }
 
     public boolean isSsidInRange(String ssid){

@@ -30,6 +30,7 @@ public abstract class WiDataMessage extends JSONObject {
     public static final int MSG_CONTACT_LIST = 3;
     public static final int MSG_INVITATION_ACCEPTED = 4;
     public static final int MSG_INVITATION_DECLINED = 5;
+    public static final int MSG_REVOKE_ACCESS = 6;
 
     public static String BASE_URL = "http://192.3.135.177:3000/";
 

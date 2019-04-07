@@ -66,6 +66,10 @@ public class WiMessagingService extends FirebaseMessagingService {
                     onCredentialsReceived(new WiConfiguration(msg));
                     break;
 
+                case WiDataMessage.MSG_REVOKE_ACCESS:
+                    onAccessYoinked(new WiConfiguration(msg));
+                    break;
+
                 default:
                     Log.d(TAG, "Unknown message type received -> " + msg.getMessageType());
                     break;
@@ -113,6 +117,12 @@ public class WiMessagingService extends FirebaseMessagingService {
 
     public void onWiInvitationDeclined(WiInvitation invitation){
 
+    }
+
+    public void onAccessYoinked(WiConfiguration config){
+        Log.d(TAG, "Revoke Access Request Received!");
+        Log.d(TAG, "SSID = " + config.SSID);
+        Log.d(TAG, "PASSWORD = " + config.getPassword());
     }
 
     public void onCredentialsReceived(WiConfiguration config){
