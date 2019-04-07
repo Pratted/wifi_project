@@ -194,15 +194,15 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         });
     }
 
-    public synchronized void insert(final WiContact bitch, final WiConfiguration config) {
+    public synchronized void insert(final WiContact contact, final WiConfiguration config) {
         getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 ContentValues vals = new ContentValues();
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID, bitch.getContactID());
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID, config.networkId);
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID, contact.getContactID());
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID, config.getNetworkID());
                 vals.put(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT, "None");
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, "wtf?");
+                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, config.getSSID());
 
                 theDB.insert(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, vals);
             }

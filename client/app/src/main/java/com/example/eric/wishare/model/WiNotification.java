@@ -9,6 +9,9 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.model.messaging.InvitationNotificationGroup;
+
+import java.util.Random;
 
 public abstract class WiNotification{
     protected String mTitle;
@@ -60,6 +63,7 @@ public abstract class WiNotification{
                 .setContentText(text)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setVibrate(null)
+                .setGroup(Integer.toString(mNotificationType))
                 .setSound(null, 0);
     }
 
@@ -73,11 +77,20 @@ public abstract class WiNotification{
     public abstract void onNotificationClick();
     public void show() {
         onNotificationClick();
-
+        Random r = new Random();
+        int rand = r.nextInt(10000)+1;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            mNotificationManager.notify(1, mNotification.build());
+/*            if(mNotificationType == 1) {
+                InvitationNotificationGroup group = InvitationNotificationGroup.getInstance(mContext, mChannelID);
+                mNotificationManager.notify(mNotificationType, group.getBuilder().build());
+            }*/
+            mNotificationManager.notify(rand, mNotification.build());
         } else {
-            mNotificationManager.notify(1, mOldBuilder.build());
+/*            if(mNotificationType == 1) {
+                InvitationNotificationGroup group = InvitationNotificationGroup.getInstance(mContext, mChannelID);
+                mNotificationManager.notify(mNotificationType, group.getBuilder().build());
+            }*/
+            mNotificationManager.notify(rand, mOldBuilder.build());
         }
     }
 }

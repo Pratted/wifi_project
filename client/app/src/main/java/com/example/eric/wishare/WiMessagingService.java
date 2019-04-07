@@ -106,9 +106,9 @@ public class WiMessagingService extends FirebaseMessagingService {
 
         WiDataMessageController.getInstance(this).send(msg);
 
-        WiContact bitch = WiContactList.getInstance(this).getContactByPhone(invitation.sender);
-        bitch.grantAccess(config);
-        WiSQLiteDatabase.getInstance(this).insert(bitch, config);
+        WiContact contact = WiContactList.getInstance(this).getContactByPhone(invitation.sender);
+        //contact.grantAccess(config);
+        WiSQLiteDatabase.getInstance(this).insert(contact, config);
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){
