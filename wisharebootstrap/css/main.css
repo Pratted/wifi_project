@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css?family=Raleway');
+/*
+	<color name="themedarker">#4c4c4c</color>
+    <color name="themedarkest">#333333</color>
+    <color name="themedark">#808080</color>
+    <color name="themeGreen">#1A964E</color>
+    */
+body{
+	padding: 0;
+	margin: 0;
+	background:#333333;
+}
+html,h1,h2,h3,h4,h5,h6,a{
+	font-family: "Raleway";
+}
+.navbar{
+	background:#1A964E;
+}
+.nav-link , .navbar-brand{
+	color: #333333;
+	cursor: pointer;
+}
+.nav-link{
+	margin-right: 1em !important;
+}
+.nav-link:hover{
+	background: #333333;
+	color: #1A964E;
+
+}
+.navbar-collapse{
+ justify-content: flex-end;
+}
+.navbar-toggler{
+  background:#333333 !important;
+}
+
+.header{
+	position: relative;
+	background-color: #4c4c4c;
+
+	background-size: cover;
+	background-position: center;
+}
+
+
+.description{
+    position: absolute;
+    top: 30%;
+    margin: auto;
+    padding: 2em;
+
+}
+.description h1{
+	color:#1A964E ;
+}
+.description p{
+	color:#666;
+	font-size: 20px;
+	width: 50%;
+	line-height: 1.5;
+}
+.description button{
+	border:1px  solid #1A964E;
+	background:#1A964E;
+	color:#333333;
+}
+
+
+.about{
+	margin: 4em 0;
+	padding: 1em;
+	position: relative;
+	background-color: #333333;
+}
+.about aroungimage {
+
+}
+.about img {
+	margin: 0 auto;
+}
+.about h1{
+	color:#1A964E;
+	margin: 2em;
+}
+.about span{
+	display: block;
+	color: #888;
+	position: absolute;
+	left: 115px;
+	margin: 0 auto;
+}
+.about .desc{
+	padding-left: 20px;
+	border-left:4px solid #1A964E;
+}
+.about .desc h3{
+	color: #808080;
+}
+.about .desc p{
+	line-height:2;
+	color:#888;
+}
+
+.try{
+	margin: 4em 0;
+    position: relative;	
+}
+.try h1{
+	color:#1A964E;
+	margin: 0 auto;
+}
+.try h2{
+	color:#1A964E;
+	width: 50%;
+	margin: 0 auto;
+}
+.try h3{
+	color: #808080;
+	width: 50%;
+	margin: 0 auto;
+}
+
+.docs{
+	margin: 4em 0;
+	position: relative;	
+}
+.docs h1{
+	 color:#1A964E;
+	 margin: 2em;
+ }
+.docs h2{
+	color:#1A964E;
+	margin: 2em;
+}
+.team{
+	margin: 4em 0;
+	position: relative;
+}
+.team h1{
+	color:#1A964E;
+	margin: 2em;	
+}
+.team .item{
+	position: relative;
+	overflow: hidden;	
+}
+.team .des{
+	background: #1A964E;
+	color: #333333;
+	text-align: center;
+	border-top-right-radius: 93%;
+	transition:.3s ease-in-out;
+	position: absolute;
+	width: 88%;
+	bottom: 24px;
+
+
+}
+.team .item:hover .des{
+	height: 100%;
+	background:#1A964E7d;
+    position: absolute;
+	width: 89%;
+	padding: 5em;
+	top: 0;
+	border-top-right-radius: 0;
+}
+.support {
+	margin: 2em;
+	position: relative;
+}
+.support h1{
+	margin: 0 auto;
+	color: #1A964E;
+}
+.contact-form{
+	margin: 6em 0;
+	position: relative;		
+}
+
+.contact-form h1{
+	padding:2em 1px;
+	color: #1A964E;
+}
+.contact-form .right{
+	max-width: 600px;
+}
+.contact-form .right .btn-secondary{
+	background:  #1A964E;
+	color: #333333;
+	border:0;
+}
+.contact-form .right .form-control::placeholder{
+	color: #888;
+	font-size: 16px;
+}
