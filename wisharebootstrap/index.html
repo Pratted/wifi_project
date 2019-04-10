@@ -4,6 +4,7 @@
 	<title>WiShare</title>
       <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
       <link rel="stylesheet" type="text/css" href="css/main.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 </head>
 <body>
   <nav class="navbar navbar-expand-lg fixed-top ">
@@ -49,7 +50,7 @@
 				</div>
 				<div class="col-lg-8 col-md-8 col-sm-12 desc">
 					<div class="embed-responsive embed-responsive-16by9">
-						<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/-rmtJ6-EY1E?rel=0" allowfullscreen></iframe>
+						<iframe class="embed-responsive-item" src="https://www.youtube.com/embed/UyOg0mt2R2k?rel=0" allowfullscreen></iframe>
 					</div>
 				</div>
 			</div>
@@ -74,9 +75,9 @@
 </div>
 
 <div class="try" id="try">
-     <h1 class="text-center">- Try it -</h1>
-	<div class="container" style="padding-top: 50px">
-		<h3>
+	<div class="container" style="padding-top: 100px">
+		<h1 class="text-center">- Try it -</h1>
+		<h3 style="padding-top: 50px">
 			WiShare is an android application,
 			you can download it now on the Google Play Store
 		</h3>
@@ -86,28 +87,79 @@
 
 
 <div class="support" id="support">
-	<div class="container">
+	<div class="container" style="padding-top: 100px">
 		<h1 class="text-center">- Support -</h1>
-		<div class="row">
 			<div class="col-lg-4 col-md-4 col-sm-12">
 				<h1>STUFF HERE</h1>
-			</div>
 		</div>
 	</div>
 </div>
 
-<div class="docs" id="docs">
-	<div class="container">
-	<h1 class="text-center">- Documentation -</h1>
-		<div class="row">
-			<h2>stuff here</h2>
+	<div class="docs" id="docs">
+		<div class="container" style="padding-top: 20px">
+			<h1 class="text-center">- Documentation -</h1>
+			<div class="row">
+				<div class="container">
+					<img src="https://i.imgur.com/oVc8NSd.png" data-toggle="modal" data-target="#myModal" style="height: 200px; width: 200px">
+					<div class="modal" id="myModal">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<img src="https://i.imgur.com/oVc8NSd.png" style="height: fit-content; width: fit-content">
+							</div>
+						</div>
+					</div>
+					<img src="https://i.imgur.com/oVc8NSd.png" data-toggle="modal" data-target="#myModal2" style="height: 200px; width: 200px">
+					<div class="modal" id="myModal2">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<img src="https://i.imgur.com/oVc8NSd.png" style="height: fit-content; width: fit-content">
+							</div>
+						</div>
+					</div>
+					<img src="https://i.imgur.com/oVc8NSd.png" data-toggle="modal" data-target="#myModal3" style="height: 200px; width: 200px">
+					<div class="modal" id="myModal3">
+						<div class="modal-dialog">
+							<div class="modal-content">
+								<span style="height: fit-content; width: 500px">
+									APP - WiShare
+									CLIENT USER - Invited by the host user to join their network
+									CLIENT DEVICE - the device belonging to the client user
+									CONFIGURED NETWORK LIST - list of network configurations stored on the host device
+									CONTACT - methods of communication for a person that is stored for easier access
+									CONTACT LIST - May contain multiple contacts. Needs permission to be accessed
+									CREDENTIALS - network name and password
+									DATA LIMIT - A limit set by the host of how much data the client can use on the network
+									DEVICE - A device with network access. Can be a client device, host device, or both.
+									FIREBASE SERVER - The server forwards messages between the client and host devices
+									GOOGLE SERVER - Creates a token for new users
+									HOST DEVICE - the device belonging to the host user
+									HOST USER - the user responsible for adding new network configurations. Invites client users onto their configured networks.
+									INIVITATION - A single time invitation or permanent invitation
+									NETWORK CONFIGURATION - connection information and credentials
+									OPTIONS - Ability for host to set parameters for their invites to the client
+									PASSWORD - the password of the network
+									PERMANENT INVITATION - Host user gives client user unlimited access to the network
+									POSTGRES DATABASE - Stores user’s tokens, phone numbers and other device information.
+									PHONE NUMBER - Phone number of the device
+									PROXIMITY - Relative distance of the client’s device to the network
+									TIME LIMIT - A limit set by the host of how long the client can stay connected to the network
+									TOKEN - A unique identifier used by the firebase server to identify a device
+									SINGLE TIME INVITATION - Host user gives client user one time access to the network
+									SQLITE DATABASE - A database specific for each device. Stores contact information, token information, and network configurations.
+									USER - A client user or host user that uses WiShare
+									WIFI/NETWORK - Wireless internet
+								</span>
+							</div>
+						</div>
+					</div>
+					<h2>stuff here</h2>
+				</div>
+			</div>
 		</div>
-	</div>
-</div>
 
 <!-- Team section -->
 <div class="team" id="team">
-	<div class="container">
+	<div class="container" style="padding-top: 20px">
 	   <h1 class="text-center">- Our Team -</h1>
 		<div class="row">
 			<div class="col-lg-3 col-md-3 col-sm-12 item">
