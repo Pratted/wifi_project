@@ -13,6 +13,12 @@ body{
 html,h1,h2,h3,h4,h5,h6,a{
 	font-family: "Raleway";
 }
+
+.navbar-brand:hover {
+	background: #333333;
+	color: #1A964E;
+	border-radius: 10px;
+}
 .navbar{
 	background:#1A964E;
 }
@@ -26,6 +32,7 @@ html,h1,h2,h3,h4,h5,h6,a{
 .nav-link:hover{
 	background: #333333;
 	color: #1A964E;
+	border-radius: 10px;
 
 }
 .navbar-collapse{
