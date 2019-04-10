@@ -1,6 +1,8 @@
 package com.example.eric.wishare;
 
 import android.net.wifi.WifiConfiguration;
+import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -9,16 +11,20 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.dialog.WiRevokeAccessDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 import com.example.eric.wishare.view.WiContactSharedNetworkListView;
 import com.example.eric.wishare.view.WiInvitableContactsView;
+import com.example.eric.wishare.view.WiPermittedContactsView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ContactActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
@@ -92,6 +98,20 @@ public class ContactActivity extends AppCompatActivity {
             }
         };
     }
+    public MaterialDialog.SingleButtonCallback removeAllNetworks(){
+        return new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                mContactSharedNetworkList.hideAllNetworks();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    for (WiConfiguration config: mContact.getPermittedNetworks()){
+                        WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(config, mContact.getPhone());
+                        WiDataMessageController.getInstance(getApplicationContext()).send(msg);
+                    }
+                }
+            }
+        };
+    }
 
     private View.OnClickListener revokeAllAccess() {
         return new View.OnClickListener() {
@@ -104,7 +124,7 @@ public class ContactActivity extends AppCompatActivity {
                                 " This action is permanent.")
                         .negativeText("Cancel")
                         .positiveText("Yes")
-                        .onPositive(mContactSharedNetworkList.hideAllNetworks())
+                        .onPositive(removeAllNetworks())
                         .show();
             }
         };
