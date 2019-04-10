@@ -203,7 +203,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
             //mContactsWithSharedNetwork = findViewById(R.id.ll_contacts_with_shared_network);
 
-            mNetworkName.setOnClickListener(expand());
+//            mNetworkName.setOnClickListener(expand());
             mNetworkName.setOnLongClickListener(onLongClick());
             (findViewById(R.id.center_view)).setOnClickListener(expand());
             (findViewById(R.id.center_view)).setOnLongClickListener(onLongClick());

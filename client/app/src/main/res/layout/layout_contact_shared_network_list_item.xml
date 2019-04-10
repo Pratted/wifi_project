@@ -3,8 +3,6 @@
     android:id="@+id/center_view"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    style="@drawable/ripple"
-    android:background="@drawable/ripple"
     android:paddingBottom="10dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -36,52 +34,50 @@
             android:orientation="vertical"
             xmlns:android="http://schemas.android.com/apk/res/android">
 
-            <ru.rambler.libs.swipe_layout.SwipeLayout
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+            <!--android:background="@drawable/card_view_outline">-->
+
+            <!--Follow layout_permitted_contacts_list_item.xml-->
+            <!--Add checkboxes-->
+            <LinearLayout
+                android:layout_marginTop="6dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/card_view_outline">
+                android:orientation="horizontal"
+                android:layout_marginLeft="4dp">
 
-                <!--Follow layout_permitted_contacts_list_item.xml-->
-                <!--Add checkboxes-->
+                <ImageView
+                    android:id="@+id/iv_wifi_icon_spot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_wifi_black_48dp"/>
+
                 <LinearLayout
-                    android:layout_marginTop="6dp"
+                    android:layout_marginStart="16dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginLeft="4dp">
-
-                    <ImageView
-                        android:id="@+id/iv_wifi_icon_spot"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_wifi_black_48dp"/>
+                    android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_marginStart="16dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:textSize="20sp"
+                            android:id="@+id/btn_network_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-                            <TextView
-                                android:textSize="20sp"
-                                android:id="@+id/btn_network_name"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-
-                            <ImageView
-                                android:layout_marginLeft="8dp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:id="@+id/iv_configured_status"
-                                android:src="@drawable/ic_warning_orange_24dp"/>
-                        </LinearLayout>
+                        <ImageView
+                            android:layout_marginLeft="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:id="@+id/iv_configured_status"
+                            android:src="@drawable/ic_warning_orange_24dp"/>
                     </LinearLayout>
                 </LinearLayout>
-            </ru.rambler.libs.swipe_layout.SwipeLayout>
+            </LinearLayout>
 
             <net.cachapa.expandablelayout.ExpandableLayout
                 android:id="@+id/expandable_network"
@@ -106,12 +102,12 @@
                             android:layout_weight="1"
                             android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/tv_connection_status_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingLeft="8dp"
-                            android:text="Connection status: "/>
+                            <TextView
+                                android:id="@+id/tv_connection_status_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="8dp"
+                                android:text="Connection status: "/>
                         </LinearLayout>
 
                         <LinearLayout
@@ -119,11 +115,11 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:orientation="horizontal">
-                        <TextView
-                            android:id="@+id/tv_connection_status_result"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Good"/>
+                            <TextView
+                                android:id="@+id/tv_connection_status_result"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Good"/>
                         </LinearLayout>
 
                     </LinearLayout>
@@ -160,14 +156,14 @@
                         </LinearLayout>
                         <!--ScrollView for contacts connected to this network-->
                         <!--<ScrollView-->
-                            <!--android:layout_width="match_parent"-->
-                            <!--android:layout_height="wrap_content">-->
-                            <!--<LinearLayout-->
-                                <!--android:id="@+id/ll_contacts_with_shared_network"-->
-                                <!--android:layout_width="match_parent"-->
-                                <!--android:layout_height="wrap_content"-->
-                                <!--android:orientation="vertical">-->
-                            <!--</LinearLayout>-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content">-->
+                        <!--<LinearLayout-->
+                        <!--android:id="@+id/ll_contacts_with_shared_network"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:orientation="vertical">-->
+                        <!--</LinearLayout>-->
                         <!--</ScrollView>-->
                     </LinearLayout>
                     <LinearLayout
