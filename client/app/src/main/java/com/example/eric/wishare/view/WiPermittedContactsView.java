@@ -16,10 +16,16 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiDataMessageController;
+import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -96,6 +102,8 @@ public class WiPermittedContactsView extends WiPage{
                         @Override
                         public boolean test(WiPermittedContactsViewListItem wiPermittedContactsViewListItem) {
                             if(wiPermittedContactsViewListItem.mCheckBox.isChecked()){
+                                WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
+                                WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                                 removeListItem(wiPermittedContactsViewListItem);
                             }
 
@@ -303,7 +311,7 @@ public class WiPermittedContactsView extends WiPage{
                             .content("Are you want to revoke access for " + contact.getName() + "? This action cannot be undone.")
                             .negativeText("Cancel")
                             .positiveText("Revoke")
-                            .onPositive(removeContact(WiPermittedContactsViewListItem.this))
+                            .onPositive(removeContact(WiPermittedContactsViewListItem.this, contact))
                             .show();
                 }
             };
@@ -344,10 +352,12 @@ public class WiPermittedContactsView extends WiPage{
             };
         }
 
-        private MaterialDialog.SingleButtonCallback removeContact(final WiPermittedContactsViewListItem item){
+        private MaterialDialog.SingleButtonCallback removeContact(final WiPermittedContactsViewListItem item, final WiContact contact){
             return new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                    WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, contact.getPhone());
+                    WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                     removeListItem(item);
                 }
             };
