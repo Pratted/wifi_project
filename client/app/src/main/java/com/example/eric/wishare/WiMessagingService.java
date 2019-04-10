@@ -15,7 +15,6 @@ import com.example.eric.wishare.model.messaging.WiConfigurationDataMessage;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiIncomingDataMessage;
-import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 import com.example.eric.wishare.model.WiInvitationNotification;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,7 +26,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class WiMessagingService extends FirebaseMessagingService {
@@ -72,6 +70,7 @@ public class WiMessagingService extends FirebaseMessagingService {
                 case WiDataMessage.MSG_REVOKE_ACCESS:
                     onAccessYoinked(new WiConfiguration(msg));
                     break;
+
 
                 default:
                     Log.d(TAG, "Unknown message type received -> " + msg.getMessageType());
@@ -130,7 +129,9 @@ public class WiMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "Revoke Access Request Received!");
         Log.d(TAG, "SSID = " + config.SSID);
         Log.d(TAG, "PASSWORD = " + config.getPassword());
+        WiNetworkManager.getInstance(this).removeConfiguredNetwork(config);
     }
+
 
     public void onCredentialsReceived(WiConfiguration config){
         Log.d(TAG, "Credentials Received!");

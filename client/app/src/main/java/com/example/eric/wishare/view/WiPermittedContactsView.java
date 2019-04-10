@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiDataMessageController;
+import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
@@ -105,6 +106,7 @@ public class WiPermittedContactsView extends WiPage{
                                 WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
                                 WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                                 removeListItem(wiPermittedContactsViewListItem);
+                                WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
                             }
 
                             return wiPermittedContactsViewListItem.mCheckBox.isChecked();
@@ -359,6 +361,7 @@ public class WiPermittedContactsView extends WiPage{
                     WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, contact.getPhone());
                     WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                     removeListItem(item);
+                    WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, contact.getPhone());
                 }
             };
         }

@@ -333,7 +333,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         });
     }
 
-    public void delete(final WiInvitation mInvitation) {
+    public synchronized void delete(final WiInvitation mInvitation) {
         getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
@@ -343,6 +343,21 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                         new String[]{mInvitation.networkName});
 
                 Log.d(TAG, "removed invitation from database");
+            }
+        });
+    }
+
+    public synchronized void delete(final WiConfiguration config, final String phone) {
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                Log.d(TAG, "removing permitted contact from database");
+                theDB.delete(TABLE_PERMITTED_CONTACTS.TABLE_NAME,
+                        TABLE_PERMITTED_CONTACTS.COL_SSID + "=?," +
+                                TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?",
+                        new String[]{config.getSSID(), phone});
+
+                Log.d(TAG, "removed permitted contact from database");
             }
         });
     }

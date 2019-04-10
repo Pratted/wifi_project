@@ -107,6 +107,7 @@ public class ContactActivity extends AppCompatActivity {
                     for (WiConfiguration config: mContact.getPermittedNetworks()){
                         WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(config, mContact.getPhone());
                         WiDataMessageController.getInstance(getApplicationContext()).send(msg);
+                        WiSQLiteDatabase.getInstance(getApplicationContext()).delete(config, mContact.getPhone());
                     }
                 }
             }
