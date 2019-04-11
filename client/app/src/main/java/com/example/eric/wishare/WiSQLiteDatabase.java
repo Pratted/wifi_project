@@ -31,7 +31,6 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     public static class TABLE_CONTACTS {
         public static final String COL_NAME = "name";
         public static final String COL_PHONE = "phone";
-        public static final String COL_DATE_CREATED = "date_created";
         public static final String TABLE_NAME = "SynchronizedContacts";
     }
 
@@ -260,7 +259,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         });
     }
 
-    public synchronized void insertPermittedContact(final WiConfiguration config, final WiContact contact){
+    public synchronized void insertPermittedContact(final WiContact contact, final WiConfiguration config){
         getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {

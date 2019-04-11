@@ -117,12 +117,17 @@ public class WiMessagingService extends FirebaseMessagingService {
         String name = contact != null ? contact.getName() : invitation.sender;
         displayToast(name + " has accepted your invitation to " + invitation.networkName);
 
-        //contact.grantAccess(config);
-        //WiSQLiteDatabase.getInstance(this).insert(contact, config);
+        contact.grantAccess(config);
+        sendMessageToActivity(WiUtils.ACTIVITY_CONTACT, config);
+        WiContactList.getInstance(this).save(contact);
+        WiSQLiteDatabase.getInstance(this).insertPermittedContact(contact, config);
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){
-
+        WiContact contact = WiContactList.getInstance(this).getContactByPhone(invitation.sender);
+        String name = contact != null ? contact.getName() : invitation.sender;
+        String toasText = name + " has declined your invitation to " + invitation.networkName;
+        displayToast(toasText);
     }
 
     public void onAccessYoinked(WiConfiguration config){
@@ -131,7 +136,6 @@ public class WiMessagingService extends FirebaseMessagingService {
         Log.d(TAG, "PASSWORD = " + config.getPassword());
         WiNetworkManager.getInstance(this).removeConfiguredNetwork(config);
     }
-
 
     public void onCredentialsReceived(WiConfiguration config){
         Log.d(TAG, "Credentials Received!");
@@ -193,15 +197,21 @@ public class WiMessagingService extends FirebaseMessagingService {
 
     private void sendMessageToActivity(String msg) {
         Intent intent = new Intent(WiUtils.ACTIVITY_MAIN);
-// You can also include some extra data.
+        // You can also include some extra data.
         intent.putExtra("key", msg);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 
     private void sendMessageToActivity(String activity, String msg){
         Intent intent = new Intent(activity);
-// You can also include some extra data.
+        // You can also include some extra data.
         intent.putExtra("key", msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendMessageToActivity(String activity, WiConfiguration config) {
+        Intent intent = new Intent(activity);
+        intent.putExtra("config", config);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

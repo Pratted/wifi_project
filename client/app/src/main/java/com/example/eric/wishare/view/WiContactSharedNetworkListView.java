@@ -6,21 +6,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiSQLiteDatabase;
-import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
-import com.example.eric.wishare.R;
 import com.example.eric.wishare.model.*;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GridLabelRenderer;
@@ -30,6 +29,7 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import net.cachapa.expandablelayout.ExpandableLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WiContactSharedNetworkListView extends LinearLayout {
 
@@ -38,13 +38,12 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
     private LinearLayout mSharedNetworkListItems;
 
-    private ArrayList<WiContactSharedNetworkListViewItem> mSharedNetworks;
+    private List<WiContactSharedNetworkListViewItem> mSharedNetworkListItem;
+    private List<WiConfiguration> mSharedNetworks;
 
     public interface OnCheckBoxVisibleListener {
         void onCheckBoxVisible();
     }
-
-//    public interface
 
     private OnCheckBoxVisibleListener listener;
 
@@ -67,10 +66,13 @@ public class WiContactSharedNetworkListView extends LinearLayout {
     public void init() {
         inflate(getContext(), R.layout.layout_contact_shared_network_list, this);
 
+        mSharedNetworkListItem = new ArrayList<>();
         mSharedNetworks = new ArrayList<>();
 
         mSelectAll = findViewById(R.id.cb_select_all_networks);
-        mNetworkLabel = findViewById(R.id.btn_sort_networks);
+        mNetworkLabel = findViewById(R.id.btn_refresh_networks);
+
+//        mNetworkLabel.setOnClickListener(refreshListView());
 
         mSharedNetworkListItems = findViewById(R.id.ll_network_list_items);
 
@@ -78,11 +80,20 @@ public class WiContactSharedNetworkListView extends LinearLayout {
         mSelectAll.setOnCheckedChangeListener(onSelect());
     }
 
+    private OnClickListener refreshListView() {
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), "Networks refreshed.", Toast.LENGTH_SHORT).show();
+            }
+        };
+    }
+
     private CompoundButton.OnCheckedChangeListener onSelect() {
         return new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
+                for(WiContactSharedNetworkListViewItem network : mSharedNetworkListItem) {
                     network.mCheckBox.setChecked(isChecked);
                 }
             }
@@ -91,7 +102,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
 
     public void populateNetworks(Context context, WiContact contact){
         SQLiteDatabase db = WiSQLiteDatabase.getInstance(context.getApplicationContext()).getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts NATURAL JOIN SynchronizedContacts WHERE(phone=?)", new String[]{contact.getPhone()});
+        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts NATURAL JOIN SynchronizedContacts WHERE (phone=?)", new String[]{contact.getPhone()});
 
         if (cur != null && cur.moveToFirst()) {
             do {
@@ -101,6 +112,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
                         cur.getString(cur.getColumnIndex("network_id")));
 
                 addSharedNetwork(config);
+                Log.d("SharedNetworkList", config.getSSID() + " added");
             } while (cur.moveToNext());
         }
         cur.close();
@@ -109,13 +121,17 @@ public class WiContactSharedNetworkListView extends LinearLayout {
     public void addSharedNetwork(WiConfiguration config) {
         WiContactSharedNetworkListViewItem item = new WiContactSharedNetworkListViewItem(getContext(), config);
 
-        mSharedNetworks.add(item);
+        mSharedNetworks.add(config);
         mSharedNetworkListItems.addView(item);
+    }
+
+    public boolean contains(WiConfiguration configuration) {
+        return mSharedNetworks.contains(configuration);
     }
 
     public void showAllCheckBoxes() {
         mSelectAll.setVisibility(VISIBLE);
-        for(WiContactSharedNetworkListViewItem child : mSharedNetworks) {
+        for(WiContactSharedNetworkListViewItem child : mSharedNetworkListItem) {
             child.mCheckBox.setVisibility(VISIBLE);
         }
     }
@@ -124,18 +140,16 @@ public class WiContactSharedNetworkListView extends LinearLayout {
         mSelectAll.setVisibility(GONE);
         mSelectAll.setChecked(false);
 
-        for(WiContactSharedNetworkListViewItem child : mSharedNetworks) {
+        for(WiContactSharedNetworkListViewItem child : mSharedNetworkListItem) {
             child.mCheckBox.setVisibility(GONE);
             child.mCheckBox.setChecked(false);
         }
     }
 
     public void hideSelectedNetworks() {
-        int networks = 0;
-        for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
+        for(WiContactSharedNetworkListViewItem network : mSharedNetworkListItem) {
             System.out.println("Checkbox: " + network.getCheckBoxStatus());
             if(network.getCheckBoxStatus()) {
-                networks++;
                 network.hide();
             }
         }
@@ -146,7 +160,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
         return new MaterialDialog.SingleButtonCallback() {
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
+                for(WiContactSharedNetworkListViewItem network : mSharedNetworkListItem) {
                     network.hide();
                 }
             }

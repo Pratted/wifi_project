@@ -67,7 +67,7 @@ public class WiContact implements Parcelable{
     }
 
     public List<WiConfiguration> getPermittedNetworks(){
-        return new ArrayList<WiConfiguration>(mPermittedNetworks.values());
+        return new ArrayList<>(mPermittedNetworks.values());
     }
 
     public static final Creator<WiContact> CREATOR = new Creator<WiContact>() {
@@ -142,7 +142,6 @@ public class WiContact implements Parcelable{
         vals.put("phone", phone);
         return vals;
     }
-
 
     public void grantAccess(WiConfiguration config) {
         mPermittedNetworks.put(config.SSID, config);

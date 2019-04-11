@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <LinearLayout
@@ -20,10 +19,10 @@
             style="@drawable/ripple"/>
 
         <Button
-            android:id="@+id/btn_sort_networks"
+            android:id="@+id/btn_refresh_networks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Networks"
+            android:text="@string/btn_refresh_networks"
             android:background="@drawable/ripple"
             style="@drawable/ripple"/>
     </LinearLayout>

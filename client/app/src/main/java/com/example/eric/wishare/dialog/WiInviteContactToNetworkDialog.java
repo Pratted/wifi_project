@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
@@ -33,7 +34,6 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private WiCreateInvitationDialog mCreateInvitationDialog;
     private Context mContext;
 
-
     public interface OnInviteClickListener {
         void onInviteClick(WiConfiguration config);
     }
@@ -41,7 +41,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     public WiInviteContactToNetworkDialog(Context context, WiContact contact, Button btnAddContactToNetwork) {
         super(context);
         mContext = context.getApplicationContext();
-        mContact = contact;
+        mContact = WiContactList.getInstance(context.getApplicationContext()).getContactByPhone(contact.getPhone());
         System.out.println("Contact name: " + mContact.getName());
 
         mNetworkManager = WiNetworkManager.getInstance(context.getApplicationContext());
@@ -125,7 +125,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                 mCreateInvitationDialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                     @Override
                     public void onInvitationCreated(WiInvitation invitation) {
-                        for (WiConfiguration config : getSelectedNetworks(indices)) {
+                        for (final WiConfiguration config : getSelectedNetworks(indices)) {
                             Log.d(TAG, "config id: " + config.getSSID());
                             invitation.networkName = config.getSSID();
                             invitation.setWiConfiguration(config);
@@ -144,7 +144,9 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                                 }
                             };
                             WiDataMessageController.getInstance(context.get().getApplicationContext()).send(msg);
-                            listener.onInviteClick(config);
+                            String toastText = mContact.getName() + " has been invited to " + config.getSSID();
+                            Toast.makeText(context.get(), toastText, Toast.LENGTH_LONG).show();
+//                            listener.onInviteClick(config);
                         }
                     }
                 });

@@ -119,4 +119,13 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         vals.put("password", preSharedKey);
         return vals;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if(o instanceof WiConfiguration) {
+            WiConfiguration that = (WiConfiguration) o;
+            return this.SSID.equals(that.SSID) && this.preSharedKey.equals(that.preSharedKey);
+        }
+        return false;
+    }
 }
