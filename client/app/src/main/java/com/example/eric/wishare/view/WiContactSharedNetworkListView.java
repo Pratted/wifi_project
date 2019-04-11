@@ -152,21 +152,6 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             }
         };
     }
-//    public MaterialDialog.SingleButtonCallback hideSelectedNetworks() {
-//        return new MaterialDialog.SingleButtonCallback() {
-//            @Override
-//            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                for(WiContactSharedNetworkListViewItem network : mSharedNetworks) {
-//                    System.out.println("Network name here: " + network.getName());
-//                    System.out.println("Checkbox: " + network.getCheckBoxStatus());
-//                    if(network.getCheckBoxStatus()) {
-//                        System.out.println("IN IF Network name here: " + network.getName());
-//                        network.hide();
-//                    }
-//                }
-//            }
-//        };
-//    }
 
     private class WiContactSharedNetworkListViewItem extends LinearLayout {
 
@@ -207,7 +192,6 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             mNetworkName.setOnLongClickListener(onLongClick());
             (findViewById(R.id.center_view)).setOnClickListener(expand());
             (findViewById(R.id.center_view)).setOnLongClickListener(onLongClick());
-
 
             GraphView graph = (GraphView) findViewById(R.id.graph);
             LineGraphSeries<DataPoint> series = new LineGraphSeries<DataPoint>(new DataPoint[] {
