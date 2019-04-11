@@ -14,6 +14,14 @@ html,h1,h2,h3,h4,h5,h6,a{
 	font-family: "Raleway";
 }
 
+.docs .thumbnail:hover {
+	border: 6px double #1A964E;
+	border-radius: 40px;
+}
+.text-muted {
+	font-size: 14pt;
+}
+
 .navbar-brand:hover {
 	background: #333333;
 	color: #1A964E;
