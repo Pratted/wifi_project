@@ -108,16 +108,14 @@ public abstract class WiDataMessage extends JSONObject {
             Log.d(TAG, "SEND INVITATION TO SELF ENABLED? " + sendToSelf);
 
             // discard any recipients and only send to self...
-            if(sendToSelf){
+            if(sendToSelf && messageType == MSG_INVITATION){
                 mRecipients.clear();
                 mRecipients.add(new WiContact("Self", WiUtils.getDevicePhone()));
             }
-            else{
-                for(WiContact recipient: mRecipients){
-                    getJSONArray("to").put(recipient.getPhone());
-                }
-            }
 
+            for(WiContact recipient: mRecipients){
+                getJSONArray("to").put(recipient.getPhone());
+            }
         } catch (JSONException e){
             e.printStackTrace();
         }

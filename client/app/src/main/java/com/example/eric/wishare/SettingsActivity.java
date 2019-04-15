@@ -331,11 +331,16 @@ public class SettingsActivity extends PreferenceActivity {
 
         private void savePreferences(){
             Log.d(TAG, "Saving preferences...");
-            boolean dbEnabled = prefEnableDatabase.isEnabled();
-            boolean sendInvitationsToSelf =  prefSendInvitationsToSelf.isEnabled();
+            boolean dbEnabled = prefEnableDatabase.isChecked();
+            boolean sendInvitationsToSelf =  prefSendInvitationsToSelf.isChecked();
 
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, dbEnabled);
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, sendInvitationsToSelf);
+
+            Log.d(TAG, "DB Enabled? " + dbEnabled);
+            Log.d(TAG, "Send invite to self? " + sendInvitationsToSelf);
+
+            WiSharedPreferences.save();
             Log.d(TAG, "Saved preferences!");
         }
     }

@@ -95,46 +95,6 @@ public class WiMessagingService extends FirebaseMessagingService {
     public void onWiInvitationReceived(final WiInvitation invitation){
         Log.d(TAG, "About to show notification");
 
-        //WiSQLiteDatabase.getInstance(this).insert(invitation);
-
-        /*
-        WiInvitationNotification inv = new WiInvitationNotification(this, invitation, WiNotification.REGULAR_NOTIFICATION) {
-            @Override
-            public void onNotificationClick() {
-                String currentActivity = WiSharedPreferences.getString("current_activity", "");
-
-                Intent intent = new Intent("fuck");
-                PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                // app is not in foreground.
-                if(currentActivity.equals("")){
-                    Log.d(TAG, "The app is not in the foreground...");
-                }
-
-                // main activity is in foreground
-                else if(currentActivity.equals(WiUtils.ACTIVITY_MAIN)){
-                    Log.d(TAG, "MainActivity is in the foreground...");
-                    //sendInvitationToActivity(invitation);
-                    //sendMessageToActivity(WiUtils.ACTIVITY_MAIN, "");
-                }
-
-                //
-                else{
-
-                }
-
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    mNotification.setContentIntent(contentIntent);
-                }
-                else{
-                    mOldBuilder.setContentIntent(contentIntent);
-                }
-            }
-        };
-
-        inv.show();
-        */
-
         WiInvitationNotification notification = new WiInvitationNotification(this, invitation, WiNotification.REGULAR_NOTIFICATION);
         notification.show();
         //notification.show();
@@ -143,6 +103,9 @@ public class WiMessagingService extends FirebaseMessagingService {
 
     public void onWiInvitationAccepted(WiInvitation invitation){
         Log.d(TAG, invitation.sender + " has accepted the invitation");
+
+        WiNetworkManager.getInstance(this).getConfiguredNetworks();
+
         WiConfiguration config = WiNetworkManager.getInstance(this).getConfiguredNetwork(invitation.networkName);
 
         WiConfigurationDataMessage msg = new WiConfigurationDataMessage(config, invitation.sender) {
