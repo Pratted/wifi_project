@@ -16,9 +16,15 @@ import android.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
@@ -225,6 +231,9 @@ public class SettingsActivity extends PreferenceActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class DeveloperPreferenceFragment extends PreferenceFragment {
+
+        Preference prefRebuildDatabase;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -237,6 +246,27 @@ public class SettingsActivity extends PreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference("pk_port"));
             bindPreferenceSummaryToValue(findPreference("pk_host"));
+
+            prefRebuildDatabase = findPreference("pk_rebuild_database");
+            prefRebuildDatabase.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new MaterialDialog.Builder(getContext())
+                            .title("Rebuild Database")
+                            .content("Are you sure you want to rebuild the database?")
+                            .positiveText("yes")
+                            .negativeText("cancel")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    //WiSQLiteDatabase.getInstance(getContext()).reset(); // this doesn't work yet...
+                                    //Toast.makeText(getContext(), "Rebuilt database!", Toast.LENGTH_LONG).show();
+                                }
+                            }).show();
+                    return false;
+                }
+            });
         }
 
         @Override
@@ -248,6 +278,15 @@ public class SettingsActivity extends PreferenceActivity {
                 return true;
             }
             return super.onOptionsItemSelected(item);
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+
+            Preference p = findPreference("pk_rebuild_database");
+
+            Log.d("Developer Settings", "PAUSED!");
         }
     }
 }

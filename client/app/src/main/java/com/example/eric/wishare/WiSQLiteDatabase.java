@@ -390,8 +390,14 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         return sInstance;
     }
 
-    @Override
-    public void onCreate(SQLiteDatabase db) {
+    public synchronized void reset(){
+        SQLiteDatabase db = getWritableDatabase();
+
+        deleteAllTables(db);
+        createAllTables(db);
+    }
+
+    public synchronized void createAllTables(SQLiteDatabase db){
         db.execSQL(mSQL_CREATE_SYNCHRONIZEDCONTACTS);
         db.execSQL(mSQL_CREATE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_CREATE_PERMITTEDCONTACTS);
@@ -399,13 +405,22 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         db.execSQL(mSQL_CREATE_PENDING_INVITATION);
     }
 
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public synchronized void deleteAllTables(SQLiteDatabase db){
         db.execSQL(mSQL_DELETE_SYNCHRONIZEDCONTACTS);
         db.execSQL(mSQL_DELETE_CONFIGUREDNETWORKS);
         db.execSQL(mSQL_DELETE_PERMITTEDCONTACTS);
         db.execSQL(mSQL_DELETE_INVITATION);
         db.execSQL(mSQL_DELETE_PENDING_INVITATION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        createAllTables(db);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        deleteAllTables(db);
         onCreate(db);
     }
 
