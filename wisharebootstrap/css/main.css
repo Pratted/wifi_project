@@ -152,6 +152,16 @@ html,h1,h2,h3,h4,h5,h6,a{
 	margin: 4em 0;
 	position: relative;
 }
+.docs .des{
+	background: #1A964E;
+	color: #333333;
+	text-align: center;
+	border-top-right-radius: 93%;
+	transition:.5s ease-in-out;
+	position: absolute;
+	width: 90%;
+	bottom: 24px;
+}
 .team h1{
 	color:#1A964E;
 	margin: 2em;	
@@ -165,12 +175,10 @@ html,h1,h2,h3,h4,h5,h6,a{
 	color: #333333;
 	text-align: center;
 	border-top-right-radius: 93%;
-	transition:.3s ease-in-out;
+	transition:.5s ease-in-out;
 	position: absolute;
-	width: 88%;
+	width: 90%;
 	bottom: 24px;
-
-
 }
 .team .item:hover .des{
 	height: 100%;
