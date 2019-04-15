@@ -105,7 +105,8 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
-                                    System.out.println("mConfig.getSSID(): " + mConfig.getSSID()) ;
+                                    System.out.println("mConfig.getSSID(): " + mConfig.getSSID());
+
                                     mNetworkManager.removeConfiguredNetwork(mConfig);
                                     mDatabase.delete(mConfig);
                                 }

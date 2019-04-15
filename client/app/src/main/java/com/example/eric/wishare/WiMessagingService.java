@@ -18,7 +18,6 @@ import com.example.eric.wishare.model.messaging.WiConfigurationDataMessage;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiIncomingDataMessage;
-import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 import com.example.eric.wishare.model.WiInvitationNotification;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -30,7 +29,6 @@ import com.google.firebase.messaging.RemoteMessage;
 import org.json.JSONObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class WiMessagingService extends FirebaseMessagingService {
@@ -75,6 +73,7 @@ public class WiMessagingService extends FirebaseMessagingService {
                 case WiDataMessage.MSG_REVOKE_ACCESS:
                     onAccessYoinked(new WiConfiguration(msg));
                     break;
+
 
                 default:
                     Log.d(TAG, "Unknown message type received -> " + msg.getMessageType());
@@ -160,18 +159,24 @@ public class WiMessagingService extends FirebaseMessagingService {
         String name = contact != null ? contact.getName() : invitation.sender;
         displayToast(name + " has accepted your invitation to " + invitation.networkName);
 
-        //contact.grantAccess(config);
-        //WiSQLiteDatabase.getInstance(this).insert(contact, config);
+        contact.grantAccess(config);
+        sendMessageToActivity(WiUtils.ACTIVITY_CONTACT, config);
+        WiContactList.getInstance(this).save(contact);
+        WiSQLiteDatabase.getInstance(this).insertPermittedContact(contact, config);
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){
-
+        WiContact contact = WiContactList.getInstance(this).getContactByPhone(invitation.sender);
+        String name = contact != null ? contact.getName() : invitation.sender;
+        String toasText = name + " has declined your invitation to " + invitation.networkName;
+        displayToast(toasText);
     }
 
     public void onAccessYoinked(WiConfiguration config){
         Log.d(TAG, "Revoke Access Request Received!");
         Log.d(TAG, "SSID = " + config.SSID);
         Log.d(TAG, "PASSWORD = " + config.getPassword());
+        WiNetworkManager.getInstance(this).removeConfiguredNetwork(config);
     }
 
     public void onCredentialsReceived(WiConfiguration config){
@@ -234,7 +239,7 @@ public class WiMessagingService extends FirebaseMessagingService {
 
     private void sendMessageToActivity(String msg) {
         Intent intent = new Intent(WiUtils.ACTIVITY_MAIN);
-// You can also include some extra data.
+        // You can also include some extra data.
         intent.putExtra("key", msg);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
@@ -249,8 +254,14 @@ public class WiMessagingService extends FirebaseMessagingService {
 
     private void sendMessageToActivity(String activity, String msg){
         Intent intent = new Intent(activity);
-// You can also include some extra data.
+        // You can also include some extra data.
         intent.putExtra("key", msg);
+        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
+
+    private void sendMessageToActivity(String activity, WiConfiguration config) {
+        Intent intent = new Intent(activity);
+        intent.putExtra("config", config);
         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
     }
 

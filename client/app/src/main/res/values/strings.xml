@@ -11,6 +11,11 @@
     <string name="tv_change_password">Change Password</string>
     <string name="btn_show_notification">Show Notification</string>
     <string name="edit_text_search_bar_hint">Search contacts...</string>
+    <string name="btn_refresh_networks">Networks</string>
+    <string name="btn_invite_to_network">Invite to network</string>
+    <string name="btn_revoke_all_accesses">Revoke all accesses</string>
+    <string name="btn_revoke_selective_access">Revoke Access</string>
+    <string name="btn_cancel">Cancel</string>
 
     <string-array name="time_limits">
         <item>Never</item>

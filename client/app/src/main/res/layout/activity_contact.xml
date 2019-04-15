@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/ripple"
-            android:text="Invite to network" />
+            android:text="@string/btn_invite_to_network" />
 
         <Button
             android:id="@+id/btn_revoke_all_access"
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/ripple"
-            android:text="Revoke all access" />
+            android:text="@string/btn_revoke_all_accesses" />
     </LinearLayout>
 
     <LinearLayout
@@ -92,7 +92,7 @@
                     android:visibility="gone"
                     style="@drawable/ripple"
                     android:background="@drawable/ripple"
-                    android:text="Cancel"/>
+                    android:text="@string/btn_cancel"/>
 
                 <Button
                     android:id="@+id/btn_revoke_selective_access"
@@ -101,7 +101,7 @@
                     android:layout_weight="1"
                     android:visibility="gone"
                     android:background="@drawable/ripple"
-                    android:text="Revoke Access"/>
+                    android:text="@string/btn_revoke_selective_access"/>
 
             </LinearLayout>
         </LinearLayout>

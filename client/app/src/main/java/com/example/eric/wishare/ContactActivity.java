@@ -1,6 +1,13 @@
 package com.example.eric.wishare;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.wifi.WifiConfiguration;
+import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -8,17 +15,18 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.dialog.WiRevokeAccessDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 import com.example.eric.wishare.view.WiContactSharedNetworkListView;
-import com.example.eric.wishare.view.WiInvitableContactsView;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ContactActivity extends AppCompatActivity {
     private ScrollView mNetworkScrollView;
@@ -26,7 +34,6 @@ public class ContactActivity extends AppCompatActivity {
 
     private WiContact mContact;
 
-    private Button btnRevokeAllAccess;
     private Button btnInviteContactToNetwork;
     private Button btnRevokeSelectiveAccess;
     private Button btnHideCheckBoxes;
@@ -44,6 +51,9 @@ public class ContactActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(
+                mConfigReceiver, new IntentFilter(WiUtils.ACTIVITY_CONTACT));
+
         mContact = getIntent().getExtras().getParcelable("contact");
 
         try {
@@ -58,11 +68,6 @@ public class ContactActivity extends AppCompatActivity {
             System.out.println("SET TITLE NULL POINTER IN CONTACT ACTIVITY");
         }
 
-//        ((TextView) findViewById(R.id.tv_contact_number)).setText(contact.getPhone());
-//        ((TextView) findViewById(R.id.tv_permitted_networks)).setText("Networks " + contact.getName() + " has access to:");
-
-//        mNetworkManager = WiNetworkManager.getInstance();
-
         mContactSharedNetworkList = findViewById(R.id.contactNetworkList);
         mHiddenLayout = findViewById(R.id.ll_hidden_btn_layout);
 
@@ -75,13 +80,23 @@ public class ContactActivity extends AppCompatActivity {
             mContactSharedNetworkList.addSharedNetwork(config);
         }
 
-        btnRevokeAllAccess = findViewById(R.id.btn_revoke_all_access);
         btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
 
-        btnRevokeAllAccess.setOnClickListener(revokeAllAccess());
+        findViewById(R.id.btn_revoke_all_access).setOnClickListener(revokeAllAccess());
+//        findViewById(R.id.contactNetworkList).setOnClickListener(reload());
         mInviteToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
         mInviteToNetwork.setOnInviteClickListener(onInviteClick());
     }
+
+    private BroadcastReceiver mConfigReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            WiConfiguration config = intent.getParcelableExtra("config");
+            //tvStatus.setText(message);
+            reload();
+        }
+    };
 
     private WiInviteContactToNetworkDialog.OnInviteClickListener onInviteClick() {
         return new WiInviteContactToNetworkDialog.OnInviteClickListener() {
@@ -89,6 +104,31 @@ public class ContactActivity extends AppCompatActivity {
             public void onInviteClick(WiConfiguration network) {
                 mContactSharedNetworkList.addSharedNetwork(network);
 
+            }
+        };
+    }
+
+    private void reload() {
+        for(WiConfiguration config : mContact.getPermittedNetworks()) {
+            if(!mContactSharedNetworkList.contains(config)) {
+                mContactSharedNetworkList.addSharedNetwork(config);
+            }
+        }
+        Toast.makeText(getApplicationContext(), "Networks refreshed.", Toast.LENGTH_SHORT).show();
+    }
+
+    public MaterialDialog.SingleButtonCallback removeAllNetworks(){
+        return new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                mContactSharedNetworkList.hideAllNetworks();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    for (WiConfiguration config: mContact.getPermittedNetworks()){
+                        WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(config, mContact.getPhone());
+                        WiDataMessageController.getInstance(getApplicationContext()).send(msg);
+                        WiSQLiteDatabase.getInstance(getApplicationContext()).delete(config, mContact.getPhone());
+                    }
+                }
             }
         };
     }
@@ -104,7 +144,7 @@ public class ContactActivity extends AppCompatActivity {
                                 " This action is permanent.")
                         .negativeText("Cancel")
                         .positiveText("Yes")
-                        .onPositive(mContactSharedNetworkList.hideAllNetworks())
+                        .onPositive(removeAllNetworks())
                         .show();
             }
         };

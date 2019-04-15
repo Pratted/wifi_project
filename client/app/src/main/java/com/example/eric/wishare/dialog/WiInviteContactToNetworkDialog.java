@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.DialogAction;
@@ -33,7 +34,6 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private WiCreateInvitationDialog mCreateInvitationDialog;
     private Context mContext;
 
-
     public interface OnInviteClickListener {
         void onInviteClick(WiConfiguration config);
     }
@@ -41,7 +41,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     public WiInviteContactToNetworkDialog(Context context, WiContact contact, Button btnAddContactToNetwork) {
         super(context);
         mContext = context.getApplicationContext();
-        mContact = contact;
+        mContact = WiContactList.getInstance(context.getApplicationContext()).getContactByPhone(contact.getPhone());
         System.out.println("Contact name: " + mContact.getName());
 
         mNetworkManager = WiNetworkManager.getInstance(context.getApplicationContext());
@@ -125,7 +125,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                 mCreateInvitationDialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
                     @Override
                     public void onInvitationCreated(WiInvitation invitation) {
-                        for (WiConfiguration config : getSelectedNetworks(indices)) {
+                        for (final WiConfiguration config : getSelectedNetworks(indices)) {
                             Log.d(TAG, "config id: " + config.getSSID());
                             invitation.networkName = config.getSSID();
                             invitation.setWiConfiguration(config);
@@ -144,7 +144,9 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                                 }
                             };
                             WiDataMessageController.getInstance(context.get().getApplicationContext()).send(msg);
-                            listener.onInviteClick(config);
+                            String toastText = mContact.getName() + " has been invited to " + config.getSSID();
+                            Toast.makeText(context.get(), toastText, Toast.LENGTH_LONG).show();
+//                            listener.onInviteClick(config);
                         }
                     }
                 });
@@ -152,65 +154,4 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             }
         };
     }
-
-//    private MaterialDialog.SingleButtonCallback onInvitationCreateClick(){
-//        return new MaterialDialog.SingleButtonCallback() {
-//            @Override
-//            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-//                final Integer indices[] = dialog.getSelectedIndices();
-//
-////                final MaterialDialog spinnyThing = new MaterialDialog.Builder(context.get())
-////                        .progress(true, 100)
-////                        .content("Sending Invitation")
-////                        .canceledOnTouchOutside(false)
-////                        .show();
-//
-//                mCreateInvitationDialog = new WiCreateInvitationDialog(context.get(), "");
-//                mCreateInvitationDialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {
-//                    @Override
-//                    public void onInvitationCreated(WiInvitation invitation) {
-//                        if(indices.length == 1) {
-//                            WiConfiguration config = mNetworks.get(indices[0]);
-//                            mContact.addToInvitedNetworks(config);
-//                            mNetworks.remove(config);
-//
-//                            invitation.networkName = config.getSSID();
-//                            WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
-//                                @Override
-//                                public void onResponse(JSONObject response) {
-////                                    spinnyThing.dismiss();
-//                                }
-//                            };
-//
-//                            WiDataMessageController.getInstance(context.get()).send(msg);
-//                        } else {
-//                            for(int i = indices.length - 1; i >= 0; i--) {
-//                                WiConfiguration config = mNetworks.get(i);
-//                                mContact.addToInvitedNetworks(config);
-//                                mNetworks.remove(config);
-//
-//                                invitation.networkName = config.getSSID();
-//                                WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
-//                                    @Override
-//                                    public void onResponse(JSONObject response) {
-////                                        spinnyThing.dismiss();
-//                                    }
-//                                };
-//
-//                                WiDataMessageController.getInstance(context.get()).send(msg);
-//                            }
-//                        }
-//                    }
-//                });
-//
-//                mCreateInvitationDialog.build();
-//
-//                /* TODO: put this listener in the class which receives the accept
-//                   TODO: or decline message from the invited contact
-//                */
-//
-//
-//            }
-//        };
-//    }
 }
