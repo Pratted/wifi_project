@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "Creating Main Activity");
+
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(WiUtils.ACTIVITY_MAIN));
 
@@ -157,7 +159,36 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        WiSharedPreferences.putString("current_activity", WiUtils.ACTIVITY_MAIN);
+        WiSharedPreferences.save();
+
         Intent intent = getIntent();
+
+        if(intent != null){
+            if(intent.hasExtra("invitation")){
+                Log.d(TAG, "PREPARNG INVITATION");
+
+                WiInvitation invitation = intent.getParcelableExtra("invitation");
+                mInvitationListDialog.add(invitation);
+                new WiInvitationAcceptDeclineDialog(this, invitation).show();
+                intent.removeExtra("invitation");
+            }
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        WiSharedPreferences.putString("current_activity", "");
+        WiSharedPreferences.save();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Log.d(TAG, "HOLY FUCK");
 
         if(intent != null){
             if(intent.hasExtra("invitation")){

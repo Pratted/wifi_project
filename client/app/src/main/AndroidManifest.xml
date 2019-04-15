@@ -24,6 +24,7 @@
         android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".WiSplash">
         </activity>
 
@@ -41,6 +42,7 @@
         <activity android:name=".NetworkActivity"
                   android:parentActivityName=".MainActivity"/>
         <activity android:name=".WiSplash"
+            android:launchMode="singleInstance"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

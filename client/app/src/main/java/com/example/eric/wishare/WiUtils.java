@@ -26,20 +26,12 @@ public class WiUtils {
         return WiSharedPreferences.getString("token", "");
     }
 
-    public static CurrentActivity getCurrentActivity() {
-        return CurrentActivity.valueOf(WiSharedPreferences.getString("current_activity", ACTIVITY_MAIN));
-    }
-
     public static boolean isDeviceRegistered(){
         return WiSharedPreferences.getBoolean("registered", false);
     }
 
     public static boolean isFreshInstall(Context context){
         return WiSharedPreferences.getBoolean("fresh_install", false);
-    }
-
-    public static void setCurrentActivity(CurrentActivity activity){
-        WiSharedPreferences.putString("current_activity", activity.toString());
     }
 
     public static String getDateTime(){

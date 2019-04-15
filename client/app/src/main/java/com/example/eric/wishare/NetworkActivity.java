@@ -146,4 +146,22 @@ public class NetworkActivity extends AppCompatActivity {
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
+        Log.d(TAG, "HOLY FUCK");
+
+        if(intent != null){
+            if(intent.hasExtra("invitation")){
+                Log.d(TAG, "PREPARNG INVITATION");
+
+                WiInvitation invitation = intent.getParcelableExtra("invitation");
+
+                new WiInvitationAcceptDeclineDialog(this, invitation).show();
+                intent.removeExtra("invitation");
+            }
+        }
+    }
 }

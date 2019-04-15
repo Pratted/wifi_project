@@ -6,11 +6,14 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.example.eric.wishare.MainActivity;
+import com.example.eric.wishare.NetworkActivity;
 import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.WiNotification;
 
 import java.util.Map;
+
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 
 public class WiInvitationNotification extends WiNotification {
     private Map<String,String> mData;
@@ -29,14 +32,18 @@ public class WiInvitationNotification extends WiNotification {
         mInvitation = invitation;
     }
 
-    @Override
     public void onNotificationClick() {
+        Log.d(TAG, "The notification was clicked!");
         Intent intent = new Intent(mContext, MainActivity.class);
+        Intent intent1  = new Intent(mContext, NetworkActivity.class);
         
-        Log.d(TAG, "Current Activity " + WiUtils.getCurrentActivity());
+        //Log.d(TAG, "Current Activity " + WiUtils.getCurrentActivity());
         intent.putExtra("invitation", mInvitation);
+        intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
+
 
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent contentIntent2 = PendingIntent.getActivity(mContext, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             mNotification.setContentIntent(contentIntent);
@@ -45,4 +52,5 @@ public class WiInvitationNotification extends WiNotification {
             mOldBuilder.setContentIntent(contentIntent);
         }
     }
+
 }
