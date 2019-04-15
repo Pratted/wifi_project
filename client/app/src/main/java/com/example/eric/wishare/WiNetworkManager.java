@@ -102,14 +102,16 @@ public class WiNetworkManager {
             List<WifiConfiguration> networks = sWifiManager.getConfiguredNetworks();
             int nID = -1;
             for (WifiConfiguration wc: networks){
-                if (wc.SSID.equals(config.getSSID()))
+                if(wc.SSID.replace("\"", "").equals(config.SSID.replace("\"", ""))){
                     nID = wc.networkId;
+                    break;
+                }
             }
             System.out.println("Android network ID is: " + nID);
             boolean retVal = sWifiManager.removeNetwork(nID);
             System.out.println("Remove success boolean: " + retVal);
-            mConfiguredNetworks.remove(config);
-            mUnConfiguredNetworks.put(config.SSID, config);
+            //mConfiguredNetworks.remove(config);
+            //mUnConfiguredNetworks.put(config.SSID, config);
         } catch (Exception e){
             e.printStackTrace();
         }

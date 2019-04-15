@@ -355,7 +355,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 theDB.delete(TABLE_PERMITTED_CONTACTS.TABLE_NAME,
                         TABLE_PERMITTED_CONTACTS.COL_SSID + "=?," +
                                 TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?",
-                        new String[]{config.getSSID(), phone});
+                        new String[]{config.SSID, phone});
 
                 Log.d(TAG, "removed permitted contact from database");
             }
