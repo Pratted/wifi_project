@@ -152,6 +152,12 @@ html,h1,h2,h3,h4,h5,h6,a{
 	margin: 4em 0;
 	position: relative;
 }
+
+.img-responsive {
+	position:absolute;
+	max-width: 850px;
+	max-height: 750px;
+}
 .docs .des{
 	background: #1A964E;
 	color: #333333;
