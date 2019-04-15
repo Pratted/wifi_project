@@ -86,6 +86,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                     TABLE_PERMITTED_CONTACTS.COL_PHONE + " varchar(255)," +
                     TABLE_PERMITTED_CONTACTS.COL_EXPIRES + " varchar(255)," +
                     TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT + " varchar(255)," +
+                    TABLE_PERMITTED_CONTACTS.COL_DATE_CREATED + " varchar(255)," +
                     "PRIMARY KEY(" + TABLE_PERMITTED_CONTACTS.COL_SSID + "," + TABLE_PERMITTED_CONTACTS.COL_PHONE + "))";
 
     private static final String mSQL_CREATE_INVITATION =
@@ -116,7 +117,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     private static final String mSQL_DELETE_INVITATION =
             "DROP TABLE IF EXISTS " + TABLE_INVITATIONS.TABLE_NAME;
     private static final String mSQL_DELETE_PENDING_INVITATION =
-            "DROP TABLE IF EXISTS " + TABLE_INVITATIONS.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + TABLE_PENDING_INVITATIONS.TABLE_NAME;
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);

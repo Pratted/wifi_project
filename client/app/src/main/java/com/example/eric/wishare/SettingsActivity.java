@@ -285,8 +285,8 @@ public class SettingsActivity extends PreferenceActivity {
                             .onPositive(new MaterialDialog.SingleButtonCallback() {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                                    //WiSQLiteDatabase.getInstance(getContext()).reset(); // this doesn't work yet...
-                                    //Toast.makeText(getContext(), "Rebuilt database!", Toast.LENGTH_LONG).show();
+                                    WiSQLiteDatabase.getInstance(getContext()).reset(); // this doesn't work yet...
+                                    Toast.makeText(getContext(), "Rebuilt database!", Toast.LENGTH_LONG).show();
                                 }
                             }).show();
                     return false;
