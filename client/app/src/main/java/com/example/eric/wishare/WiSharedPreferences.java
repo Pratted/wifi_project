@@ -17,6 +17,9 @@ public class WiSharedPreferences {
 
     private WiSharedPreferences() {}
 
+    public static String KEY_DATABASE_ENABLED = "db_enabled";
+    public static String KEY_SEND_INVITATIONS_TO_SELF = "send_invitations_to_self";
+
     public synchronized static void putString(String key, String value) {
         mBuffer.put(key, value);
         mEditor.putString(key, value);

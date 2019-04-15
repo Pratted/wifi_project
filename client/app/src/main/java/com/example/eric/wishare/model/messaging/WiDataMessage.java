@@ -9,6 +9,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -103,8 +104,18 @@ public abstract class WiDataMessage extends JSONObject {
             put("to", new JSONArray());
             put("sender", WiUtils.getDevicePhone());
 
-            for(WiContact recipient: mRecipients){
-                getJSONArray("to").put(recipient.getPhone());
+            boolean sendToSelf = WiUtils.sendInvitationsToSelf();
+            Log.d(TAG, "SEND INVITATION TO SELF ENABLED? " + sendToSelf);
+
+            // discard any recipients and only send to self...
+            if(sendToSelf){
+                mRecipients.clear();
+                mRecipients.add(new WiContact("Self", WiUtils.getDevicePhone()));
+            }
+            else{
+                for(WiContact recipient: mRecipients){
+                    getJSONArray("to").put(recipient.getPhone());
+                }
             }
 
         } catch (JSONException e){

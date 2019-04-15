@@ -2,12 +2,12 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="fuck"
+        android:key="pk_enable_database"
         android:title="Enable Database"/>
 
     <SwitchPreference
         android:defaultValue="false"
-        android:key="idk"
+        android:key="pk_send_invitations_to_self"
         android:title="Send invitations to self"/>
 
     <EditTextPreference
@@ -20,6 +20,12 @@
         android:defaultValue="192.3.135.177"
         android:title="Host"
         android:key="pk_host"
+        android:inputType="text"/>
+
+    <EditTextPreference
+        android:defaultValue="555-555-5555"
+        android:title="Phone"
+        android:key="pk_phone"
         android:inputType="text"/>
 
     <Preference android:title="Rebuild Database"

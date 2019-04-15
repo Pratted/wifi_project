@@ -8,11 +8,11 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.example.eric.wishare.WiUtils.CurrentActivity.ACTIVITY_MAIN;
-
 public class WiUtils {
 
-    public enum CurrentActivity {ACTIVITY_MAIN, ACTIVITY_NETWORK, ACTIVITY_CONTACT}
+    public static boolean sendInvitationsToSelf() {
+        return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, false);
+    }
 
     public static String ACTIVITY_MAIN = "ACTIVITY_MAIN";
     public static String ACTIVITY_NETWORK = "ACTIVITY_NETWORK";

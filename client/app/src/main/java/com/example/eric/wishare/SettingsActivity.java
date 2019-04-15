@@ -9,6 +9,8 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
@@ -16,7 +18,9 @@ import android.app.ActionBar;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
@@ -127,6 +131,8 @@ public class SettingsActivity extends PreferenceActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setupActionBar();
+
+        WiSharedPreferences.initialize(this);
     }
 
     /**
@@ -231,8 +237,15 @@ public class SettingsActivity extends PreferenceActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class DeveloperPreferenceFragment extends PreferenceFragment {
-
         Preference prefRebuildDatabase;
+        Preference prefAddContact;
+
+        SwitchPreference prefSendInvitationsToSelf;
+        SwitchPreference prefEnableDatabase;
+
+        EditTextPreference prefPhone;
+
+        private String TAG = "DeveloperSettingsFrag";
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -240,15 +253,27 @@ public class SettingsActivity extends PreferenceActivity {
             addPreferencesFromResource(R.xml.pref_developer);
             setHasOptionsMenu(true);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
             bindPreferenceSummaryToValue(findPreference("pk_port"));
             bindPreferenceSummaryToValue(findPreference("pk_host"));
+            bindPreferenceSummaryToValue(findPreference("pk_phone"));
+
+            prefPhone = (EditTextPreference) findPreference("pk_phone");
+            prefPhone.setSummary(WiUtils.getDevicePhone());
+            prefPhone.setDefaultValue(WiUtils.getDevicePhone());
+            prefPhone.setText(WiUtils.getDevicePhone());
+
+            prefEnableDatabase = (SwitchPreference) findPreference("pk_enable_database");
+            prefSendInvitationsToSelf = (SwitchPreference) findPreference("pk_send_invitations_to_self");
 
             prefRebuildDatabase = findPreference("pk_rebuild_database");
-            prefRebuildDatabase.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            prefAddContact = findPreference("pk_add_contact");
+
+            prefRebuildDatabase.setOnPreferenceClickListener(displayRebuildDatabaseDialog());
+            prefAddContact.setOnPreferenceClickListener(displayAddContactDialog());
+        }
+
+        private Preference.OnPreferenceClickListener displayRebuildDatabaseDialog(){
+            return new Preference.OnPreferenceClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
@@ -266,7 +291,23 @@ public class SettingsActivity extends PreferenceActivity {
                             }).show();
                     return false;
                 }
-            });
+            };
+        }
+
+        private Preference.OnPreferenceClickListener displayAddContactDialog(){
+            return new Preference.OnPreferenceClickListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M)
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    new MaterialDialog.Builder(getContext())
+                            .title("Add a Contact")
+                            .content("Custom dialog here...")
+                            .positiveText("add contact")
+                            .negativeText("cancel")
+                            .show();
+                    return false;
+                }
+            };
         }
 
         @Override
@@ -283,10 +324,19 @@ public class SettingsActivity extends PreferenceActivity {
         @Override
         public void onPause() {
             super.onPause();
+            Log.d(TAG, " onPause() called");
 
-            Preference p = findPreference("pk_rebuild_database");
+            savePreferences();
+        }
 
-            Log.d("Developer Settings", "PAUSED!");
+        private void savePreferences(){
+            Log.d(TAG, "Saving preferences...");
+            boolean dbEnabled = prefEnableDatabase.isEnabled();
+            boolean sendInvitationsToSelf =  prefSendInvitationsToSelf.isEnabled();
+
+            WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, dbEnabled);
+            WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, sendInvitationsToSelf);
+            Log.d(TAG, "Saved preferences!");
         }
     }
 }
