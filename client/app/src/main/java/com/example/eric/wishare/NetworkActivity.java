@@ -10,9 +10,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -38,6 +40,7 @@ public class NetworkActivity extends AppCompatActivity {
     private WiTabbedScrollView mTabbedScrollView;
 
     private EditText searchBar;
+    private Toolbar mToolbar;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -55,6 +58,12 @@ public class NetworkActivity extends AppCompatActivity {
         searchBar = findViewById(R.id.edit_text_search_bar);
         searchBar.addTextChangedListener(search());
 
+        mConfig = getIntent().getParcelableExtra("NetworkInfo");
+
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbar.setTitle(mConfig.getSSID());
+        setSupportActionBar(mToolbar);
+
         findViewById(R.id.btn_edit_network).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,14 +71,6 @@ public class NetworkActivity extends AppCompatActivity {
             }
         });
 
-        mConfig = getIntent().getParcelableExtra("NetworkInfo");
-
-        try {
-            getSupportActionBar().setTitle(mConfig.getSSID());
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch (NullPointerException e) {
-            System.out.println("SET TITLE NULL POINTER IN NETWORK ACTIVITY");
-        }
 
         mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
 
@@ -91,33 +92,6 @@ public class NetworkActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private ArrayList<WiContact> getPermittedContacts(){
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(this).getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts WHERE network_id=?", new String[]{mConfig.getNetworkID()});
-
-        if (cur != null && cur.moveToFirst()) {
-            do {
-                WiConfiguration wiConfiguration = new WiConfiguration(
-                        cur.getString(cur.getColumnIndex("SSID")),
-                        cur.getString(cur.getColumnIndex("password")));
-               // mConfiguredNetworks.add(wiConfiguration);
-            } while (cur.moveToNext());
-        }
-        cur.close();
-        return new ArrayList<WiContact>();
     }
 
     public TextWatcher search() {
@@ -162,6 +136,28 @@ public class NetworkActivity extends AppCompatActivity {
                 new WiInvitationAcceptDeclineDialog(this, invitation).show();
                 intent.removeExtra("invitation");
             }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                startActivity(new Intent(NetworkActivity.this, SettingsActivity.class));
+                return true;
+
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

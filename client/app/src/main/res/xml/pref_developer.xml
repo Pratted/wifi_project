@@ -1,0 +1,32 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="fuck"
+        android:title="Enable Database"/>
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="idk"
+        android:title="Send invitations to self"/>
+
+    <EditTextPreference
+        android:defaultValue="3000"
+        android:title="Port"
+        android:key="pk_port"
+        android:inputType="number"/> <!-- pk means preference key-->
+
+    <EditTextPreference
+        android:defaultValue="192.3.135.177"
+        android:title="Host"
+        android:key="pk_host"
+        android:inputType="text"/>
+
+    <Preference android:title="Rebuild Database"
+        android:key="pk_rebuild_database" />
+
+    <Preference android:title="Add a Contact"
+        android:summary="Create a fake contact for testing and demonstration purposes. This contact will not be able to send or receive messages."
+        android:key="pk_add_contact" />
+
+</PreferenceScreen>

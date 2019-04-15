@@ -10,6 +10,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -45,6 +47,7 @@ public class ContactActivity extends AppCompatActivity {
 
     private WiContactSharedNetworkListView mContactSharedNetworkList;
     private WiNetworkManager mNetworkManager;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,17 +59,9 @@ public class ContactActivity extends AppCompatActivity {
 
         mContact = getIntent().getExtras().getParcelable("contact");
 
-        try {
-            String title = "";
-            title += mContact.getName();
-            if(!mContact.getPhone().isEmpty()) {
-                title += ": " + mContact.getPhone();
-            }
-            getSupportActionBar().setTitle(title);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        } catch (NullPointerException e) {
-            System.out.println("SET TITLE NULL POINTER IN CONTACT ACTIVITY");
-        }
+        mToolbar = findViewById(R.id.toolbar);
+        mToolbar.setTitle(mContact.getName());
+        setSupportActionBar(mToolbar);
 
         mContactSharedNetworkList = findViewById(R.id.contactNetworkList);
         mHiddenLayout = findViewById(R.id.ll_hidden_btn_layout);
@@ -193,8 +188,19 @@ public class ContactActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.mainmenu, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                startActivity(new Intent(ContactActivity.this, SettingsActivity.class));
+                return true;
+
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -202,7 +208,6 @@ public class ContactActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 
 /*    private WiContactListDialog.OnContactSelectedListener onContactSelected(){

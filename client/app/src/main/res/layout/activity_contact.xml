@@ -7,6 +7,17 @@
     android:orientation="vertical"
     tools:context=".ContactActivity">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        android:theme="@style/AppTheme">
+
+    </android.support.v7.widget.Toolbar>
+
     <LinearLayout
         android:id="@+id/ll_contact_buttons"
         android:layout_width="match_parent"
