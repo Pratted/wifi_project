@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.messaging.WiSynchronizeContactDataMessage;
@@ -161,5 +162,11 @@ public class WiContactList {
     public WiContact save(WiContact contact) {
         mContacts.put(contact.getPhone(), contact);
         return contact;
+    }
+
+    public void deleteNetworkFromAllContacts(String networkID) {
+        for(WiContact contact : mContacts.values()) {
+            contact.revokeAccess(networkID);
+        }
     }
 }

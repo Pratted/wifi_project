@@ -17,6 +17,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.NetworkActivity;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.WiSQLiteDatabase;
@@ -134,6 +135,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                     }
 
                                     mNetworkManager.removeConfiguredNetwork(mConfig);
+                                    WiContactList.getInstance(getContext()).deleteNetworkFromAllContacts(mConfig.getSSID());
                                     mDatabase.delete(mConfig);
                                 }
                             }).show();

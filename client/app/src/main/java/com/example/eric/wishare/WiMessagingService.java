@@ -123,8 +123,8 @@ public class WiMessagingService extends FirebaseMessagingService {
         displayToast(name + " has accepted your invitation to " + invitation.networkName);
 
         contact.grantAccess(config);
-        sendMessageToActivity(WiUtils.ACTIVITY_CONTACT, config);
         WiContactList.getInstance(this).save(contact);
+        sendMessageToActivity(WiUtils.ACTIVITY_CONTACT, config);
         WiSQLiteDatabase.getInstance(this).insertPermittedContact(contact, config);
     }
 

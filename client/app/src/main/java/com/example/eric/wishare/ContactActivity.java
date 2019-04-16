@@ -89,6 +89,8 @@ public class ContactActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             WiConfiguration config = intent.getParcelableExtra("config");
             //tvStatus.setText(message);
+            String out = "BR: " + config.getSSID();
+            Toast.makeText(ContactActivity.this, out, Toast.LENGTH_LONG).show();
             reload();
         }
     };
@@ -208,7 +210,6 @@ public class ContactActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 
 /*    private WiContactListDialog.OnContactSelectedListener onContactSelected(){
         return new WiContactListDialog.OnContactSelectedListener() {
