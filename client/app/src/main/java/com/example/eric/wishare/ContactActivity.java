@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -16,22 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
-import com.example.eric.wishare.dialog.WiRevokeAccessDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 import com.example.eric.wishare.view.WiContactSharedNetworkListView;
 
-import java.util.ArrayList;
-
 public class ContactActivity extends AppCompatActivity {
-    private ScrollView mNetworkScrollView;
     private LinearLayout mHiddenLayout;
 
     private WiContact mContact;
@@ -40,13 +34,9 @@ public class ContactActivity extends AppCompatActivity {
     private Button btnRevokeSelectiveAccess;
     private Button btnHideCheckBoxes;
 
-    private ArrayList<WifiConfiguration> mNetworks;
-
     private WiInviteContactToNetworkDialog mInviteToNetwork;
-    private WiRevokeAccessDialog mRevokeAccessDialog;
 
     private WiContactSharedNetworkListView mContactSharedNetworkList;
-    private WiNetworkManager mNetworkManager;
     private Toolbar mToolbar;
 
     @Override
@@ -71,16 +61,10 @@ public class ContactActivity extends AppCompatActivity {
         mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
         mContactSharedNetworkList.populateNetworks(this, mContact);
 
-        for(WiConfiguration config: mContact.getPermittedNetworks()) {
-            mContactSharedNetworkList.addSharedNetwork(config);
-        }
-
         btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
 
         findViewById(R.id.btn_revoke_all_access).setOnClickListener(revokeAllAccess());
-//        findViewById(R.id.contactNetworkList).setOnClickListener(reload());
         mInviteToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
-        mInviteToNetwork.setOnInviteClickListener(onInviteClick());
     }
 
     private BroadcastReceiver mConfigReceiver = new BroadcastReceiver() {
@@ -89,18 +73,19 @@ public class ContactActivity extends AppCompatActivity {
             // Get extra data included in the Intent
             WiConfiguration config = intent.getParcelableExtra("config");
             //tvStatus.setText(message);
+            mInviteToNetwork.setOnInviteAcceptListener(onInviteAccept());
+            mInviteToNetwork.inviteIsAccepted(config);
             String out = "BR: " + config.getSSID();
             Toast.makeText(ContactActivity.this, out, Toast.LENGTH_LONG).show();
             reload();
         }
     };
 
-    private WiInviteContactToNetworkDialog.OnInviteClickListener onInviteClick() {
-        return new WiInviteContactToNetworkDialog.OnInviteClickListener() {
+    private WiInviteContactToNetworkDialog.OnInviteAcceptListener onInviteAccept() {
+        return new WiInviteContactToNetworkDialog.OnInviteAcceptListener() {
             @Override
-            public void onInviteClick(WiConfiguration network) {
+            public void onInviteAccept(WiConfiguration network) {
                 mContactSharedNetworkList.addSharedNetwork(network);
-
             }
         };
     }

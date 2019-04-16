@@ -30,12 +30,12 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
     private List<WiConfiguration> mNetworks;
     private WiNetworkManager mNetworkManager;
     private WiContact mContact;
-    private OnInviteClickListener listener;
+    private OnInviteAcceptListener listener;
     private WiCreateInvitationDialog mCreateInvitationDialog;
     private Context mContext;
 
-    public interface OnInviteClickListener {
-        void onInviteClick(WiConfiguration config);
+    public interface OnInviteAcceptListener {
+        void onInviteAccept(WiConfiguration config);
     }
 
     public WiInviteContactToNetworkDialog(Context context, WiContact contact, Button btnAddContactToNetwork) {
@@ -56,8 +56,12 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         });
     }
 
-    public void setOnInviteClickListener(OnInviteClickListener listener) {
+    public void setOnInviteAcceptListener(OnInviteAcceptListener listener) {
         this.listener = listener;
+    }
+
+    public void inviteIsAccepted(WiConfiguration config) {
+        listener.onInviteAccept(config);
     }
 
     @Override
