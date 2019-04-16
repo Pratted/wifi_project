@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -106,6 +107,8 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
                                     System.out.println("mConfig.getSSID(): " + mConfig.getSSID());
+
+                                    
 
                                     mNetworkManager.removeConfiguredNetwork(mConfig);
                                     mDatabase.delete(mConfig);
