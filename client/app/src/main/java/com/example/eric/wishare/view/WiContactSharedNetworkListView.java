@@ -101,21 +101,13 @@ public class WiContactSharedNetworkListView extends LinearLayout {
     }
 
     public void populateNetworks(Context context, WiContact contact){
-        SQLiteDatabase db = WiSQLiteDatabase.getInstance(context.getApplicationContext()).getReadableDatabase();
-        Cursor cur = db.rawQuery("SELECT * FROM PermittedContacts NATURAL JOIN SynchronizedContacts WHERE (phone=?)", new String[]{contact.getPhone()});
-
-        if (cur != null && cur.moveToFirst()) {
-            do {
-                WiConfiguration config = new WiConfiguration(
-                        cur.getString(cur.getColumnIndex("SSID")),
-                        "",
-                        cur.getString(cur.getColumnIndex("network_id")));
+        ArrayList<String> SSIDList = WiSQLiteDatabase.getInstance(context).getContactNetworks(contact);
+        for (String SSID: SSIDList){
+                WiConfiguration config = new WiConfiguration(SSID, "");
 
                 addSharedNetwork(config);
                 Log.d("SharedNetworkList", config.getSSID() + " added");
-            } while (cur.moveToNext());
         }
-        cur.close();
     }
 
     public void addSharedNetwork(WiConfiguration config) {

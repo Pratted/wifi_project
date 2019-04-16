@@ -243,6 +243,16 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         return pendingInvitations;
     }
 
+    public synchronized ArrayList<String> getContactNetworks(WiContact contact){
+        ArrayList<String> ssidList = new ArrayList<>();
+        Log.d(TAG, "Getting all contact's network from database");
+        Cursor cursor = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID}, TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?", new String[]{contact.getPhone()}, null, null, null);
+        while(cursor != null && cursor.moveToNext()) {
+            ssidList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID)));
+        }
+        return ssidList;
+    }
+
 
     public synchronized void insertPendingInvitation(final WiInvitation invitation, final WiContact recipient){
         Log.d(TAG, "ssid=" + invitation.getWiConfiguration().SSID);
@@ -366,16 +376,11 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     public synchronized ArrayList<String> getNetworksContacts(final WifiConfiguration config){
         final ArrayList<String> phoneList = new ArrayList<String>();
-        getWritableDatabase(new OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase theDB) {
-                Log.d(TAG, "getting ALL permitted contacts for the selected network");
-                Cursor cursor = theDB.query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_PHONE}, TABLE_PERMITTED_CONTACTS.COL_SSID + "=?", new String[]{config.SSID}, null, null, null);
-                while(cursor != null && cursor.moveToNext()) {
-                    phoneList.add(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
-                }
+            Log.d(TAG, "getting ALL permitted contacts for the selected network");
+            Cursor cursor = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_PHONE}, TABLE_PERMITTED_CONTACTS.COL_SSID + "=?", new String[]{config.SSID}, null, null, null);
+            while(cursor != null && cursor.moveToNext()) {
+                phoneList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_PHONE)));
             }
-        });
         return phoneList;
     }
 
