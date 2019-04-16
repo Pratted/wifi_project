@@ -69,7 +69,7 @@ public class WiContactList {
                     @Override
                     public void onResponse(JSONObject response) {
                         if(response == null){
-                            Log.e(TAG, "Shit. Server did not respond");
+                            Log.e(TAG, "Frick. Server did not respond");
                             return;
                         }
 
@@ -87,6 +87,9 @@ public class WiContactList {
                             else{ // they've already been loaded from DB, so do nothing
                             }
                         }
+
+                        // TODO: Remove after testing is finished.
+                        mContacts.put(WiUtils.getDevicePhone(), new WiContact("Aditya Khandkar", WiUtils.getDevicePhone()));
 
                         if(mContactListReadyListener != null){
                             mContactListReadyListener.onContactListReady(mContacts);

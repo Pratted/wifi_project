@@ -22,7 +22,9 @@ import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class WiInviteContactToNetworkDialog extends WiDialog {
 
@@ -101,12 +103,18 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             Log.d(TAG, "IN BUILD Config SSID: " + config.getSSID());
         }
 
-        mNetworks.removeAll(mContact.getPermittedNetworks());
+//        List<String> SSID = WiSQLiteDatabase.getInstance(mContext).getContactNetworks(mContact);
+        Set<String> SSID = new HashSet<>(WiSQLiteDatabase.getInstance(mContext).getContactNetworks(mContact));
+        Log.d(TAG, "SSID.isEmpty() " + SSID.isEmpty());
 
-        Log.d(TAG, "mContact.getInvitedNetworks().isEmpty() " + mContact.getPermittedNetworks().isEmpty());
+        for(String ssid : SSID) {
+            Log.d(TAG, "SSID: " + ssid);
+        }
 
-        for (WiConfiguration config : mContact.getPermittedNetworks()) {
-            Log.d(TAG, "IN BUILD 2 Config SSID: " + config.getSSID());
+        for (int i = 0; i < mNetworks.size(); i++) {
+            if(SSID.contains(mNetworks.get(i).getSSID())) {
+                mNetworks.remove(i--);
+            }
         }
     }
 
