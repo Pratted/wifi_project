@@ -29,7 +29,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -299,11 +302,68 @@ public class SettingsActivity extends PreferenceActivity {
                 @RequiresApi(api = Build.VERSION_CODES.M)
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
+                    final WiContact contact = new WiContact("", WiUtils.randomPhoneNumber());
+
                     new MaterialDialog.Builder(getContext())
                             .title("Add a Contact")
-                            .content("Custom dialog here...")
-                            .positiveText("add contact")
-                            .negativeText("cancel")
+                            .input("Name", "", false, new MaterialDialog.InputCallback() {
+                                @Override
+                                public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                                    contact.setName(input.toString());
+                                    Log.d(TAG, "Setting contact name...");
+                                }
+                            })
+                            .content("Enter the contact's name")
+                            .positiveText("Add Contact")
+                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    WiContactList.getInstance(getContext()).save(contact);
+                                }
+                            })
+                            .neutralText("Networks")
+                            .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                                @Override
+                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                    final List<WiConfiguration> networks = WiNetworkManager.getInstance(getContext()).getConfiguredNetworks();
+                                    final List<String> ssids = new ArrayList<>();
+                                    String name = dialog.getInputEditText().getText().toString();
+                                    contact.setName(name);
+
+                                    for(WiConfiguration config: networks){
+                                        ssids.add(config.SSID.replace("\"", ""));
+                                    }
+
+                                    new MaterialDialog.Builder(getContext())
+                                            .title("Permitted Networks")
+                                            .items(ssids)
+                                            .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                                                @Override
+                                                public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                                                    return false;
+                                                }
+                                            })
+                                            .negativeText("Cancel")
+                                            .positiveText("Add Contact")
+                                            .onPositive(new MaterialDialog.SingleButtonCallback() {
+                                                @Override
+                                                public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                                    Integer indices[] = dialog.getSelectedIndices();
+
+                                                    for(int i: indices){
+                                                        Log.d(TAG, "Granting access to "+ networks.get(i).SSID);
+                                                        contact.grantAccess(networks.get(i));
+                                                    }
+
+                                                    Log.d(TAG, "Saved contact: " + contact.getName());
+
+                                                    WiContactList.getInstance(getContext()).save(contact);
+                                                }
+                                            })
+                                            .show();
+                                }
+                            })
+                            .negativeText("Cancel")
                             .show();
                     return false;
                 }

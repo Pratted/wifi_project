@@ -5,6 +5,7 @@ import android.content.Context;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,6 +33,18 @@ public class WiUtils {
 
     public static boolean isFreshInstall(Context context){
         return WiSharedPreferences.getBoolean("fresh_install", false);
+    }
+
+    private static long random10DigitNumber(){
+        Random r = new Random();
+        int upper = Integer.MAX_VALUE;
+        int lower = 1000000000;
+
+        return r.nextInt(upper - lower) + lower;
+    }
+
+    public static String randomPhoneNumber(){
+        return formatPhoneNumber(String.valueOf(random10DigitNumber()));
     }
 
     public static String getDateTime(){

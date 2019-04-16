@@ -35,4 +35,9 @@
         android:summary="Create a fake contact for testing and demonstration purposes. This contact will not be able to send or receive messages."
         android:key="pk_add_contact" />
 
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pk_demo_mode"
+        android:title="Demo Mode"/>
+
 </PreferenceScreen>
