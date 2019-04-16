@@ -5,8 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.net.wifi.WifiConfiguration;
 import android.os.AsyncTask;
 import android.os.Looper;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;
@@ -360,6 +362,21 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 Log.d(TAG, "removed permitted contact from database");
             }
         });
+    }
+
+    public synchronized ArrayList<String> getNetworksContacts(final WifiConfiguration config){
+        final ArrayList<String> phoneList = new ArrayList<String>();
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+                Log.d(TAG, "getting ALL permitted contacts for the selected network");
+                Cursor cursor = theDB.query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_PHONE}, TABLE_PERMITTED_CONTACTS.COL_SSID + "=?", new String[]{config.SSID}, null, null, null);
+                while(cursor != null && cursor.moveToNext()) {
+                    phoneList.add(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)));
+                }
+            }
+        });
+        return phoneList;
     }
 
 
