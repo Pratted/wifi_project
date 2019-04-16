@@ -2,6 +2,7 @@ package com.example.eric.wishare;
 
 import android.content.Context;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -38,8 +39,30 @@ public class WiUtils {
         SimpleDateFormat formatter = new SimpleDateFormat(
                 "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
         );
+
         Date date = new Date();
         return formatter.format(date);
+    }
+
+    public static String getDateTime(Date date){
+        SimpleDateFormat formatter = new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss", Locale.getDefault()
+        );
+
+        return formatter.format(date);
+    }
+
+    public static Date fromDateTime(String dateTime){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+
+        try {
+            date = formatter.parse(dateTime);
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        return date;
     }
 
     public static String formatPhoneNumber(String phone){

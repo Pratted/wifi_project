@@ -14,8 +14,10 @@ import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
@@ -68,6 +70,12 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         public static final String TABLE_NAME = "PendingInvitations";
     }
 
+    private static class TABLE_TIMEOUTS {
+        public static final String COL_SSID = "ssid";
+        public static final String COL_TIMEOUT = "timeout";
+        public static final String TABLE_NAME = "Timeouts";
+    }
+
     //Table with variables
     //Common variable types include INT, FLOAT, DATE, TIME, varchar([max characters])    <-- string, BIT <-- boolean with 0 | 1
     private static final String mSQL_CREATE_SYNCHRONIZEDCONTACTS =
@@ -107,6 +115,11 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                     TABLE_PENDING_INVITATIONS.COL_DATE_CREATED + " varchar(255)," +
                     "PRIMARY KEY(" + TABLE_PENDING_INVITATIONS.COL_SSID + "," + TABLE_PENDING_INVITATIONS.COL_PHONE + "))";
 
+    private static final String mSQL_CREATE_TABLE_TIMEOUTS =
+            "CREATE TABLE " + TABLE_TIMEOUTS.TABLE_NAME + " (" +
+                    TABLE_TIMEOUTS.COL_SSID + " varchar(255)," +
+                    TABLE_TIMEOUTS.COL_TIMEOUT + " varchar(255)," +
+                    "PRIMARY KEY(" + TABLE_TIMEOUTS.COL_SSID + "))";
 
     private static final String mSQL_DELETE_SYNCHRONIZEDCONTACTS =
             "DROP TABLE IF EXISTS " + TABLE_CONTACTS.TABLE_NAME;
@@ -118,6 +131,8 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + TABLE_INVITATIONS.TABLE_NAME;
     private static final String mSQL_DELETE_PENDING_INVITATION =
             "DROP TABLE IF EXISTS " + TABLE_PENDING_INVITATIONS.TABLE_NAME;
+    private static final String mSQL_DELETE_TIMEOUTS =
+            "DROP TABLE IF EXISTS " + TABLE_TIMEOUTS.TABLE_NAME;
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
@@ -239,6 +254,24 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         }
 
         return pendingInvitations;
+    }
+
+    public Map<String, Date> loadTimeouts() {
+        Map<String, Date> timeouts = new HashMap<>();
+
+        Cursor cur = getReadableDatabase().query(TABLE_TIMEOUTS.TABLE_NAME, null, null, null, null, null, null);
+
+        if(cur.moveToFirst()){
+            do {
+                String ssid = cur.getString(cur.getColumnIndex(TABLE_TIMEOUTS.COL_SSID));
+                String dateTime = cur.getString(cur.getColumnIndex(TABLE_TIMEOUTS.COL_TIMEOUT));
+
+                Date date = WiUtils.fromDateTime(dateTime);
+                timeouts.put(ssid, date);
+            } while(cur.moveToNext());
+        }
+
+        return timeouts;
     }
 
 
@@ -404,6 +437,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         db.execSQL(mSQL_CREATE_PERMITTEDCONTACTS);
         db.execSQL(mSQL_CREATE_INVITATION);
         db.execSQL(mSQL_CREATE_PENDING_INVITATION);
+        db.execSQL(mSQL_CREATE_TABLE_TIMEOUTS);
     }
 
     public synchronized void deleteAllTables(SQLiteDatabase db){
@@ -412,6 +446,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         db.execSQL(mSQL_DELETE_PERMITTEDCONTACTS);
         db.execSQL(mSQL_DELETE_INVITATION);
         db.execSQL(mSQL_DELETE_PENDING_INVITATION);
+        db.execSQL(mSQL_DELETE_TIMEOUTS);
     }
 
     @Override

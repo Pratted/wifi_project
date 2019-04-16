@@ -2,6 +2,7 @@ package com.example.eric.wishare;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -124,6 +125,8 @@ public class WiSplash extends Activity {
     }
 
     public void startWiShare(int delay){
+
+
         new Handler().postDelayed(new Runnable() {
 
             @Override
@@ -139,7 +142,13 @@ public class WiSplash extends Activity {
         }, delay);
     }
 
+
     public void startWiShare(){
         startWiShare(0);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }

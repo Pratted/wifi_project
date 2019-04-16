@@ -360,8 +360,8 @@ public class WiPermittedContactsView extends WiPage{
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                     WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, contact.getPhone());
                     WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
-                    removeListItem(item);
-                    WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, contact.getPhone());
+                    //removeListItem(item);
+                    //WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, contact.getPhone());
                 }
             };
         }

@@ -1,6 +1,7 @@
 package com.example.eric.wishare;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -69,6 +70,9 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar myToolbar;
 
+    private WiTimerService mTimerService;
+    private Intent mTimerServiceIntent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +88,13 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
         WiSharedPreferences.initialize(this);
+
+        mTimerService = new WiTimerService(getApplicationContext());
+        mTimerServiceIntent = new Intent(getApplicationContext(), mTimerService.getClass());
+
+        if (!isMyServiceRunning(mTimerService.getClass())) {
+            startService(mTimerServiceIntent);
+        }
 
         registerDevice();
 
@@ -232,5 +243,23 @@ public class MainActivity extends AppCompatActivity {
                 // Invoke the superclass to handle it.
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopService(mTimerServiceIntent);
+        super.onDestroy();
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
+        }
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
     }
 }

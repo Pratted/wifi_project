@@ -35,6 +35,11 @@ public class WiMessagingService extends FirebaseMessagingService {
     private static final String TAG = "WiMessagingService";
 
     @Override
+    public void onCreate() {
+        super.onCreate();
+    }
+
+    @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
     
