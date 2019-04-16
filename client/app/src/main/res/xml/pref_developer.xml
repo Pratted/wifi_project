@@ -3,12 +3,20 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="pk_enable_database"
+        android:summary="All changes made will persist across runs"
         android:title="Enable Database"/>
 
     <SwitchPreference
         android:defaultValue="false"
         android:key="pk_send_invitations_to_self"
+        android:summary="All outgoing invitations will be sent to this device"
         android:title="Send invitations to self"/>
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pk_wifi_manager"
+        android:summary="Allows the device's WifiManager to save wifi configurations to the device"
+        android:title="Enable WifiManager"/>
 
     <EditTextPreference
         android:defaultValue="3000"

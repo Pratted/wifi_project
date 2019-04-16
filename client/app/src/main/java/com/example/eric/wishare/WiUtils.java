@@ -43,6 +43,10 @@ public class WiUtils {
         return r.nextInt(upper - lower) + lower;
     }
 
+    public static boolean isWifiManagerEnabled(){
+        return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_WIFI_MANAGER_ENABLED, true);
+    }
+
     public static String randomPhoneNumber(){
         return formatPhoneNumber(String.valueOf(random10DigitNumber()));
     }

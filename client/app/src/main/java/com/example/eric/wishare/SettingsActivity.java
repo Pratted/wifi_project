@@ -9,7 +9,6 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -20,7 +19,6 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.util.Log;
@@ -245,6 +243,7 @@ public class SettingsActivity extends PreferenceActivity {
 
         SwitchPreference prefSendInvitationsToSelf;
         SwitchPreference prefEnableDatabase;
+        SwitchPreference prefEnableWifiManager;
 
         EditTextPreference prefPhone;
 
@@ -267,6 +266,7 @@ public class SettingsActivity extends PreferenceActivity {
 
             prefEnableDatabase = (SwitchPreference) findPreference("pk_enable_database");
             prefSendInvitationsToSelf = (SwitchPreference) findPreference("pk_send_invitations_to_self");
+            prefEnableWifiManager = (SwitchPreference) findPreference("pk_wifi_manager");
 
             prefRebuildDatabase = findPreference("pk_rebuild_database");
             prefAddContact = findPreference("pk_add_contact");
@@ -392,13 +392,16 @@ public class SettingsActivity extends PreferenceActivity {
         private void savePreferences(){
             Log.d(TAG, "Saving preferences...");
             boolean dbEnabled = prefEnableDatabase.isChecked();
-            boolean sendInvitationsToSelf =  prefSendInvitationsToSelf.isChecked();
+            boolean sendInvitationsToSelf = prefSendInvitationsToSelf.isChecked();
+            boolean wifiManagerEnabled = prefEnableWifiManager.isChecked();
 
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, dbEnabled);
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, sendInvitationsToSelf);
+            WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_WIFI_MANAGER_ENABLED, wifiManagerEnabled);
 
             Log.d(TAG, "DB Enabled? " + dbEnabled);
             Log.d(TAG, "Send invite to self? " + sendInvitationsToSelf);
+            Log.d(TAG, "WifiManger Enabled? " + sendInvitationsToSelf);
 
             WiSharedPreferences.save();
             Log.d(TAG, "Saved preferences!");

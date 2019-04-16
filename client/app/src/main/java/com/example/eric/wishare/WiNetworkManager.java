@@ -87,13 +87,17 @@ public class WiNetworkManager {
 
     // called by a client when a host sends them network credentials
     public void addConfiguredNetwork(WiConfiguration config) {
-        try{
-            // the call to configure() here ensures all the parameters are formatted correctly
-            // (i.e. double quotes)
-            int retVal = sWifiManager.addNetwork(config.configure()); // <- actually saves the network into android wifi
-            System.out.println("STRING LITERALLLLLLL" + retVal); // retVal might be an error code
-        } catch (Exception e){
-            e.printStackTrace();
+        Log.d(TAG, "WifiManagerEnabled? " + WiUtils.isWifiManagerEnabled());
+
+        if(WiUtils.isWifiManagerEnabled()){
+            try{
+                // the call to configure() here ensures all the parameters are formatted correctly
+                // (i.e. double quotes)
+                int retVal = sWifiManager.addNetwork(config.configure()); // <- actually saves the network into android wifi
+                System.out.println("STRING LITERALLLLLLL" + retVal); // retVal might be an error code
+            } catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
