@@ -109,7 +109,6 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                     TABLE_PENDING_INVITATIONS.COL_DATE_CREATED + " varchar(255)," +
                     "PRIMARY KEY(" + TABLE_PENDING_INVITATIONS.COL_SSID + "," + TABLE_PENDING_INVITATIONS.COL_PHONE + "))";
 
-
     private static final String mSQL_DELETE_SYNCHRONIZEDCONTACTS =
             "DROP TABLE IF EXISTS " + TABLE_CONTACTS.TABLE_NAME;
     private static final String mSQL_DELETE_CONFIGUREDNETWORKS =
@@ -154,7 +153,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                         "",
                         cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_DATA_LIMIT))
                 );
-
+                Log.d(TAG, "Reciepient phone = " + recipientPhone);
                 contacts.get(recipientPhone).invite(invitation);
             } while(cur.moveToNext());
         }
@@ -246,7 +245,8 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     public synchronized ArrayList<String> getContactNetworks(WiContact contact){
         ArrayList<String> ssidList = new ArrayList<>();
         Log.d(TAG, "Getting all contact's network from database");
-        Cursor cursor = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID}, TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?", new String[]{contact.getPhone()}, null, null, null);
+        Cursor cursor = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
+                TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?", new String[]{contact.getPhone()}, null, null, null);
         while(cursor != null && cursor.moveToNext()) {
             ssidList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID)));
         }
@@ -383,7 +383,6 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             }
         return phoneList;
     }
-
 
     public ArrayList<WiInvitation> loadAllInvitations(){
         ArrayList<WiInvitation> invitations = new ArrayList<>();

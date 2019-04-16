@@ -59,7 +59,6 @@ public class WiSplash extends Activity {
                             String phone = input.toString();
                             WiSharedPreferences.putString("phone", WiUtils.formatPhoneNumber(phone));
                             WiSharedPreferences.save();
-
                             startWiShare();
                         }
                     })
@@ -85,6 +84,8 @@ public class WiSplash extends Activity {
 
         mPermissions = WiPermissions.getInstance(this);
 
+        // TODO: Remove the following line before deployment
+        WiSQLiteDatabase.getInstance(this).insert(new WiContact("Aditya Khandkar", "7178029623"));
 
         if(!mPermissions.hasAllPermissions()){
             final ArrayList<String> request = new ArrayList<>();

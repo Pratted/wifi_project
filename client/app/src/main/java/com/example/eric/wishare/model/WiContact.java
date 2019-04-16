@@ -37,7 +37,7 @@ public class WiContact implements Parcelable{
         init();
     }
 
-    protected WiContact(Parcel in) {
+    public WiContact(Parcel in) {
         name = in.readString();
         phone = in.readString();
         mDataUsage = in.readInt();
