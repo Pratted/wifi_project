@@ -88,9 +88,6 @@ public class WiContactList {
                             }
                         }
 
-                        // TODO: Remove after testing is finished.
-                        mContacts.put(WiUtils.getDevicePhone(), new WiContact("Aditya Khandkar", WiUtils.getDevicePhone()));
-
                         if(mContactListReadyListener != null){
                             mContactListReadyListener.onContactListReady(mContacts);
                         }

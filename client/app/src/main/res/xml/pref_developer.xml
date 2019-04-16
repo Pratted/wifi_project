@@ -15,8 +15,8 @@
     <SwitchPreference
         android:defaultValue="true"
         android:key="pk_wifi_manager"
-        android:summary="Allows the device's WifiManager to save wifi configurations to the device"
-        android:title="Enable WifiManager"/>
+        android:summary="Accepted invitations are automatically added to the device's list of known wifi networks"
+        android:title="Configure Accepted Invitations"/>
 
     <EditTextPreference
         android:defaultValue="3000"

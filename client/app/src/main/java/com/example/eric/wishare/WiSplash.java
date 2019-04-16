@@ -58,6 +58,8 @@ public class WiSplash extends Activity {
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
                             String phone = input.toString();
                             WiSharedPreferences.putString("phone", WiUtils.formatPhoneNumber(phone));
+                            WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
+
                             WiSharedPreferences.save();
                             startWiShare();
                         }
@@ -69,8 +71,8 @@ public class WiSplash extends Activity {
             WiSharedPreferences.putString("phone", phone);
 
             Log.d("Shit", "Saving Phone: " + phone);
+            WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
             WiSharedPreferences.save();
-
             startWiShare();
         }
     }
@@ -85,7 +87,6 @@ public class WiSplash extends Activity {
         mPermissions = WiPermissions.getInstance(this);
 
         // TODO: Remove the following line before deployment
-        WiSQLiteDatabase.getInstance(this).insert(new WiContact("Aditya Khandkar", "7178029623"));
 
         if(!mPermissions.hasAllPermissions()){
             final ArrayList<String> request = new ArrayList<>();
