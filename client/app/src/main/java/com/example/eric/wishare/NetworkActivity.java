@@ -47,6 +47,7 @@ public class NetworkActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_network);
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_NETWORK);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(WiUtils.ACTIVITY_NETWORK));
@@ -78,20 +79,16 @@ public class NetworkActivity extends AppCompatActivity {
             mTabbedScrollView.setWiConfiguration(mConfig);
     }
 
-    private WiContactList.OnContactListReadyListener onContactListReady(){
-        return new WiContactList.OnContactListReadyListener(){
-            @Override
-            public void onContactListReady(HashMap<String, WiContact> contacts) {
-                //Build Tabbed List
-
-            }
-        };
+    @Override
+    protected void onStart() {
+        super.onStart();
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_NETWORK);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_NETWORK);
     }
 
     public TextWatcher search() {
@@ -124,17 +121,13 @@ public class NetworkActivity extends AppCompatActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-
-        Log.d(TAG, "HOLY FUCK");
+        Log.d(TAG, "Received a new intent!");
 
         if(intent != null){
             if(intent.hasExtra("invitation")){
-                Log.d(TAG, "PREPARNG INVITATION");
-
+                Log.d(TAG, "Prepaing invitation dialog...");
                 WiInvitation invitation = intent.getParcelableExtra("invitation");
-
                 new WiInvitationAcceptDeclineDialog(this, invitation).show();
-                intent.removeExtra("invitation");
             }
         }
     }

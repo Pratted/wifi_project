@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_MAIN);
+
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -152,11 +154,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_MAIN);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-
-        WiSharedPreferences.putString("current_activity", WiUtils.ACTIVITY_MAIN);
-        WiSharedPreferences.save();
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_MAIN);
 
         Intent intent = getIntent();
 
@@ -175,9 +181,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        WiSharedPreferences.putString("current_activity", "");
-        WiSharedPreferences.save();
     }
 
     @Override

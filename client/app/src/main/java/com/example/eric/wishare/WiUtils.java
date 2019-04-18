@@ -10,14 +10,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WiUtils {
+    private static String currentActivity;
 
     public static boolean sendInvitationsToSelf() {
         return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, false);
     }
 
-    public static String ACTIVITY_MAIN = "ACTIVITY_MAIN";
-    public static String ACTIVITY_NETWORK = "ACTIVITY_NETWORK";
-    public static String ACTIVITY_CONTACT = "ACTIVITY_CONTACT";
+    public final static String ACTIVITY_MAIN = "ACTIVITY_MAIN";
+    public final static String ACTIVITY_NETWORK = "ACTIVITY_NETWORK";
+    public final static String ACTIVITY_CONTACT = "ACTIVITY_CONTACT";
+    public final static String ACTIVITY_SETTINGS = "ACTIVITY_SETTINGS";
 
     public static String getDevicePhone(){
         return WiSharedPreferences.getString("phone", "");
@@ -27,12 +29,12 @@ public class WiUtils {
         return WiSharedPreferences.getString("token", "");
     }
 
-    public static boolean isDeviceRegistered(){
-        return WiSharedPreferences.getBoolean("registered", false);
+    public static void setCurrentActivity(String currentActivity){
+        WiUtils.currentActivity = currentActivity;
     }
 
-    public static boolean isFreshInstall(Context context){
-        return WiSharedPreferences.getBoolean("fresh_install", false);
+    public static String getCurrentActivity(){
+        return currentActivity;
     }
 
     private static long random10DigitNumber(){

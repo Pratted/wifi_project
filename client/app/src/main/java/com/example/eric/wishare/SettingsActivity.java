@@ -27,8 +27,10 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,7 @@ import java.util.List;
  * API Guide</a> for more information on developing a Settings UI.
  */
 public class SettingsActivity extends PreferenceActivity {
+    private static String TAG = "SettingsActivity";
 
     /**
      * A preference value change listener that updates the preference's summary
@@ -97,6 +100,20 @@ public class SettingsActivity extends PreferenceActivity {
             return true;
         }
     };
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "Received a new intent!");
+
+        if(intent != null){
+            if(intent.hasExtra("invitation")){
+                Log.d(TAG, "Prepaing invitation dialog...");
+                WiInvitation invitation = intent.getParcelableExtra("invitation");
+                new WiInvitationAcceptDeclineDialog(this, invitation).show();
+            }
+        }
+    }
 
     /**
      * Helper method to determine if the device has an extra-large screen. For

@@ -24,6 +24,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".SettingsActivity"
+            android:launchMode="singleTop"
             android:label="@string/title_activity_settings"></activity>
         <activity
             android:name=".MainActivity"
@@ -41,9 +42,11 @@
 
         <activity
             android:name=".ContactActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".NetworkActivity"
+            android:launchMode="singleTop"
             android:parentActivityName=".MainActivity" />
         <activity
             android:name=".WiSplash"

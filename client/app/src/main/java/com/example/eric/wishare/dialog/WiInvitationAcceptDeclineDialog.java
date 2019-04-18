@@ -27,7 +27,7 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
     private LinearLayout mCustomView;
     private WiInvitation mInvitation;
 
-    interface OnAcceptedListener {
+    public interface OnAcceptedListener {
         void onAccepted(WiInvitation invitation);
     }
 

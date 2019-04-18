@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +20,17 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
+import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 import com.example.eric.wishare.view.WiContactSharedNetworkListView;
 
 public class ContactActivity extends AppCompatActivity {
     private LinearLayout mHiddenLayout;
+    private String TAG = "ContactActivity";
 
     private WiContact mContact;
 
@@ -43,6 +47,7 @@ public class ContactActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact);
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_CONTACT);
 
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mConfigReceiver, new IntentFilter(WiUtils.ACTIVITY_CONTACT));
@@ -210,6 +215,20 @@ public class ContactActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+        WiUtils.setCurrentActivity(WiUtils.ACTIVITY_CONTACT);
+    }
 
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.d(TAG, "Received a new intent!");
+
+        if(intent != null){
+            if(intent.hasExtra("invitation")){
+                Log.d(TAG, "Preparing invitation dialog...");
+                WiInvitation invitation = intent.getParcelableExtra("invitation");
+                new WiInvitationAcceptDeclineDialog(this, invitation).show();
+            }
+        }
     }
 }
