@@ -162,18 +162,20 @@ public class WiMessagingService extends FirebaseMessagingService {
         // get the phone number, register the device with remote DB
         String phone = WiSharedPreferences.getString("phone", "");
 
+        // This condition is ALWAYS false after a fresh install since the device token is received
+        // before permissions are granted
         if(!phone.isEmpty()){
-            registerDevice(token, phone);
+            registerDevice(token, phone, null);
             WiSharedPreferences.putBoolean("registered", true);
         }
         else{
-            Log.d(TAG, "Cannot register device. Phone is empty -> " + phone);
+            Log.d(TAG, "Cannot register device at this time. Phone is empty -> " + phone);
         }
 
         WiSharedPreferences.save();
     }
 
-    public static void registerDevice(String token, String phone){
+    public static void registerDevice(final String token, final String phone, final OnDeviceRegisteredListener listener){
         Map<String, Object> record = new HashMap<>();
         FirebaseFirestore firestore = FirebaseFirestore.getInstance();
 
@@ -195,9 +197,16 @@ public class WiMessagingService extends FirebaseMessagingService {
                     @Override
                     public void onSuccess(Void aVoid) {
                         Log.d(TAG, "Successfully added token to database!");
+
+                        if(listener != null){
+                            listener.onDeviceRegistered(token, phone);
+                        }
                     }
                 });
+    }
 
+    interface OnDeviceRegisteredListener{
+        void onDeviceRegistered(String token, String phone);
     }
 
     private void sendMessageToActivity(String msg) {

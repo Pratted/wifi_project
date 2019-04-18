@@ -61,7 +61,15 @@ public class WiSplash extends Activity {
                             WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
 
                             WiSharedPreferences.save();
-                            startWiShare();
+
+                            WiMessagingService.registerDevice(WiUtils.getDeviceToken(), phone, new WiMessagingService.OnDeviceRegisteredListener() {
+                                @Override
+                                public void onDeviceRegistered(String token, String phone) {
+                                    WiSharedPreferences.putBoolean("registered", true);
+                                    WiSharedPreferences.save();
+                                    startWiShare();
+                                }
+                            });
                         }
                     })
                     .show();
@@ -73,9 +81,18 @@ public class WiSplash extends Activity {
             Log.d("Shit", "Saving Phone: " + phone);
             WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
             WiSharedPreferences.save();
-            startWiShare();
+
+            WiMessagingService.registerDevice(WiUtils.getDeviceToken(), phone, new WiMessagingService.OnDeviceRegisteredListener() {
+                @Override
+                public void onDeviceRegistered(String token, String phone) {
+                    WiSharedPreferences.putBoolean("registered", true);
+                    WiSharedPreferences.save();
+                    startWiShare();
+                }
+            });
         }
     }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

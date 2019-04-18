@@ -44,19 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private WiAddNetworkDialog mAddNetworkDialog;
     private WiManageContactsDialog mManageContactsDialog;
 
-    @SuppressLint("ApplySharedPref")
-    private void registerDevice(){
-        if(!WiUtils.isDeviceRegistered()){
-            WiMessagingService.registerDevice(
-                    WiUtils.getDeviceToken(),
-                    WiUtils.getDevicePhone()
-            );
-
-            WiSharedPreferences.putBoolean("registered", true);
-            WiSharedPreferences.save();
-        }
-    }
-
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -84,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseApp.initializeApp(this);
         WiSharedPreferences.initialize(this);
-
-        registerDevice();
 
         WiContactList.getInstance(this).synchronizeContacts(); // async...
 
