@@ -17,6 +17,7 @@ import com.example.eric.wishare.model.WiInvitation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
@@ -122,7 +123,13 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
+
+        mPermittedNetworksCache = new HashMap<>();
+        mPendingInvitationsCache = new HashMap<>();
     }
+
+    private HashMap<String, HashSet<String>> mPermittedNetworksCache;
+    private HashMap<String, HashSet<String>> mPendingInvitationsCache;
 
     public synchronized HashMap<String, WiContact> loadContacts(){
         HashMap<String, WiContact> contacts = new HashMap<>();
@@ -153,6 +160,13 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                         "",
                         cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_DATA_LIMIT))
                 );
+
+                if(!mPendingInvitationsCache.containsKey(recipientPhone)) {
+                    mPendingInvitationsCache.put(recipientPhone, new HashSet<String>());
+                }
+
+                mPendingInvitationsCache.get(recipientPhone).add(invitation.networkName);
+
                 Log.d(TAG, "Reciepient phone = " + recipientPhone);
                 contacts.get(recipientPhone).invite(invitation);
             } while(cur.moveToNext());
@@ -167,6 +181,12 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 String recipientPhone = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_PHONE));
                 //String expires = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_EXPIRES));
                 //String dataLimit = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT));
+
+                if(!mPermittedNetworksCache.containsKey(recipientPhone)) {
+                    mPermittedNetworksCache.put(recipientPhone, new HashSet<String>());
+                }
+
+                mPermittedNetworksCache.get(recipientPhone).add(ssid);
 
                 WiConfiguration config = new WiConfiguration(ssid, "");
                 contacts.get(recipientPhone).grantAccess(config);
@@ -204,42 +224,6 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 Log.d(TAG, "Inserted invitation to database");
             }
         });
-    }
-
-    private List<WiConfiguration> loadPermittedNetworks(WiContact contact){
-        ArrayList<WiConfiguration> permittedNetworks = new ArrayList<>();
-        Cursor cur = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
-                "phone=?", new String[]{contact.getPhone()}, null, null, null);
-
-        if(cur.moveToFirst()){
-            do {
-                permittedNetworks.add(new WiConfiguration(cur.getString(0),""));
-            } while(cur.moveToNext());
-        }
-
-        return permittedNetworks;
-    }
-
-    private List<WiInvitation> loadPendingInvitations(WiContact contact){
-        ArrayList<WiInvitation> pendingInvitations = new ArrayList<>();
-        Cursor cur = getReadableDatabase().query(TABLE_PENDING_INVITATIONS.TABLE_NAME, new String[]{TABLE_PENDING_INVITATIONS.COL_SSID},
-                "phone=?", new String[]{contact.getPhone()}, null, null, null);
-
-        if(cur.moveToFirst()){
-            do {
-                WiInvitation invitation = new WiInvitation(
-                    cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_SSID)),
-                    WiUtils.getDevicePhone(),
-                    cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_EXPIRES)),
-                    "",
-                    cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_DATA_LIMIT))
-                );
-
-                pendingInvitations.add(invitation);
-            } while(cur.moveToNext());
-        }
-
-        return pendingInvitations;
     }
 
     public synchronized ArrayList<String> getContactNetworks(WiContact contact){
@@ -310,6 +294,17 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 Log.d(TAG, "inserting network into database");
                 theDB.insert(TABLE_CONFIGURED_NETWORKS.TABLE_NAME, null, config.toContentValues());
                 Log.d(TAG, "inserted network into database");
+            }
+        });
+    }
+
+    public synchronized void save(WiContact contact){
+        contact.getPermittedNetworks();
+
+        getWritableDatabase(new OnDBReadyListener() {
+            @Override
+            public void onDBReady(SQLiteDatabase theDB) {
+
             }
         });
     }
