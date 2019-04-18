@@ -103,22 +103,28 @@ public class WiNetworkManager {
 
     public void removeConfiguredNetwork(WiConfiguration config){
         try{
-            List<WifiConfiguration> networks = sWifiManager.getConfiguredNetworks();
-            int nID = -1;
-            for (WifiConfiguration wc: networks){
-                if(wc.SSID.replace("\"", "").equals(config.SSID.replace("\"", ""))){
-                    nID = wc.networkId;
-                    break;
-                }
-            }
-            System.out.println("Android network ID is: " + nID);
-            boolean retVal = sWifiManager.removeNetwork(nID);
-            System.out.println("Remove success boolean: " + retVal);
-            //mConfiguredNetworks.remove(config);
-            //mUnConfiguredNetworks.put(config.SSID, config);
+            int id = getNetworkId(config);
+
+            Log.d(TAG, "Android network ID is: " + id);
+            boolean retVal = sWifiManager.removeNetwork(id);
+            Log.d(TAG, "Remove success boolean: " + retVal);
+            mConfiguredNetworks.remove(config.SSID);
+            mUnConfiguredNetworks.put(config.SSID, config);
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    private int getNetworkId(WiConfiguration config){
+        List<WifiConfiguration> networks = sWifiManager.getConfiguredNetworks();
+        int nID = -1;
+        for (WifiConfiguration wc: networks){
+            if(wc.SSID.replace("\"", "").equals(config.SSID.replace("\"", ""))){
+                return wc.networkId;
+            }
+        }
+
+        return -1;
     }
 
     // invoked by the host when they enter a network password.
