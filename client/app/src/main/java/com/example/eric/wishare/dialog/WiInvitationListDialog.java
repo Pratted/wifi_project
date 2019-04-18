@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
-import com.example.eric.wishare.WiSQLiteDatabase;
+import com.example.eric.wishare.WiInvitationList;
 import com.example.eric.wishare.model.WiInvitation;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
@@ -22,75 +22,47 @@ import java.util.List;
 import static android.content.Context.LAYOUT_INFLATER_SERVICE;
 
 public class WiInvitationListDialog extends WiDialog{
-    private LinearLayout mParent;
+    private LinearLayout mLinearLayout;
     private LayoutInflater mInflater;
     private ArrayList<WiInvitationListItem> mInvitationListItems = new ArrayList<>();
-    private ScrollView mParentParent;
-    private OnInvitationsUpdatedListener mOnInvitationsUpdatedListener;
-
-    public interface OnInvitationsUpdatedListener {
-        void onInvitationsUpdated(List<WiInvitation> invitations);
-    }
+    private ScrollView mCustomView;
 
     public WiInvitationListDialog(Context context){
         super(context);
 
-        mParentParent = new ScrollView(context);
+        mCustomView = new ScrollView(context);
         // create an empty layout to place into the dialog...
-        mParent = new LinearLayout(context);
+        mLinearLayout = new LinearLayout(context);
         mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-        mParent.setOrientation(LinearLayout.VERTICAL);
+        mLinearLayout.setOrientation(LinearLayout.VERTICAL);
 
-        mParentParent.addView(mParent);
-
-        ArrayList<WiInvitation> invitations = WiSQLiteDatabase.getInstance(context).loadAllInvitations();
-        for(WiInvitation inv: invitations){
-            add(inv);
-        }
-    }
-
-    public void add(WiInvitation invitation){
-        add(new WiInvitationListItem(invitation));
-
-        if(mOnInvitationsUpdatedListener != null){
-            mOnInvitationsUpdatedListener.onInvitationsUpdated(getInvitations());
-        }
-    }
-
-    private List<WiInvitation> getInvitations(){
-        ArrayList<WiInvitation> invitations = new ArrayList<>();
-
-        for(WiInvitationListItem inv: mInvitationListItems){
-            invitations.add(inv.mInvitation);
-        }
-        return invitations;
+        mCustomView.addView(mLinearLayout);
     }
 
     private void add(WiInvitationListItem invitation){
         mInvitationListItems.add(invitation);
     }
 
-    public void setOnInvitationsUpdatedListener(OnInvitationsUpdatedListener listener){
-        mOnInvitationsUpdatedListener = listener;
-    }
-
     @Override
     public MaterialDialog build() {
-        ArrayList<String> invs = new ArrayList<>();
+        mLinearLayout.removeAllViews(); // remove any existing children (prevents duplicates)
 
-        for(WiInvitationListItem item: mInvitationListItems){
-            invs.add("Invitation to " + item.mInvitation.networkName);
+        // get all current invitations...
+        List<WiInvitation> invitations = WiInvitationList.getInstance(context.get()).getAllInvitations();
+
+        for(WiInvitation invitation: invitations){
+            add(new WiInvitationListItem(invitation));
         }
 
         MaterialDialog.Builder dialog = new MaterialDialog.Builder(context.get())
                 .title("My Invitations")
                 .positiveText("Ok");
 
-        if(invs.size() == 0){
+        if(invitations.size() == 0){
             dialog = dialog.content("You have no invitations!");
         }
         else{
-            dialog = dialog.customView(mParentParent, false)
+            dialog = dialog.customView(mCustomView, false)
                     .negativeText("Clear All")
                     .onNegative(onNegative());
         }
@@ -102,19 +74,18 @@ public class WiInvitationListDialog extends WiDialog{
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 for(WiInvitationListItem item: mInvitationListItems){
-                    mParent.removeView(item.mLayout);
+                    mLinearLayout.removeView(item.mLayout);
                 }
             }
         };
     }
-
 
     public void remove(WiInvitation invitation){
         for(int i = 0; i < mInvitationListItems.size(); i++){
             WiInvitation lhs = mInvitationListItems.get(i).mInvitation;
 
             if (lhs.equals(invitation)) {
-                mParent.removeView(mInvitationListItems.get(i).mLayout);
+                mLinearLayout.removeView(mInvitationListItems.get(i).mLayout);
                 mInvitationListItems.remove(i);
 
                 return;
@@ -136,8 +107,7 @@ public class WiInvitationListDialog extends WiDialog{
             mInvitation = invitation;
 
             mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item, null);
-            mParent.addView(mLayout);
-
+            mLinearLayout.addView(mLayout);
 
             refresh();
 

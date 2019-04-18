@@ -95,6 +95,8 @@ public class WiMessagingService extends FirebaseMessagingService {
     public void onWiInvitationReceived(final WiInvitation invitation){
         Log.d(TAG, "About to show notification");
 
+        WiInvitationList.getInstance(this).add(invitation);
+
         WiInvitationNotification notification = new WiInvitationNotification(this, invitation, WiNotification.REGULAR_NOTIFICATION);
         notification.show();
         //notification.show();

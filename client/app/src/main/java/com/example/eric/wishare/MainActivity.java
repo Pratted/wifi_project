@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
     private WiConfiguredNetworkListView mConfiguredNetworkListView;
 
-    private Button btnShowNotification;
-
     private WiMyInvitationsButton btnMyInvitations;
     private Button btnAddNetwork;
     private Button btnManageContacts;
@@ -94,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 
         mAddNetworkDialog.setOnNetworkReadyListener(onNetworkReady());
         mManageContactsDialog.setOnContactSelectedListener(startContactActivity());
-        mInvitationListDialog.setOnInvitationsUpdatedListener(refreshMyInvitationsButtonCounter());
+        //mInvitationListDialog.setOnInvitationsUpdatedListener(refreshMyInvitationsButtonCounter());
 
         btnAddNetwork.setOnClickListener(showWiDialog(mAddNetworkDialog));
         btnManageContacts.setOnClickListener(showWiDialog(mManageContactsDialog));
@@ -136,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
+    /*
     private WiInvitationListDialog.OnInvitationsUpdatedListener refreshMyInvitationsButtonCounter(){
         return new WiInvitationListDialog.OnInvitationsUpdatedListener() {
             @Override
@@ -146,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
+    */
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
@@ -171,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "PREPARNG INVITATION");
 
                 WiInvitation invitation = intent.getParcelableExtra("invitation");
-                mInvitationListDialog.add(invitation);
+                //mInvitationListDialog.add(invitation);
                 new WiInvitationAcceptDeclineDialog(this, invitation).show();
                 intent.removeExtra("invitation");
             }
@@ -194,7 +193,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "PREPARNG INVITATION");
 
                 WiInvitation invitation = intent.getParcelableExtra("invitation");
-                mInvitationListDialog.add(invitation);
                 new WiInvitationAcceptDeclineDialog(this, invitation).show();
                 intent.removeExtra("invitation");
             }

@@ -12,6 +12,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
+import com.example.eric.wishare.WiInvitationList;
 import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
@@ -83,7 +84,7 @@ public class WiInvitationAcceptDeclineDialog extends WiDialog {
                         };
 
                         WiDataMessageController.getInstance(context.get()).send(msg);
-                        WiSQLiteDatabase.getInstance(context.get()).delete(mInvitation);
+                        WiInvitationList.getInstance(context.get()).remove(mInvitation);
 
                         Toast.makeText(context.get(), mInvitation.networkName + " has been accepted", Toast.LENGTH_LONG).show();
                     }
