@@ -101,6 +101,7 @@ public class WiNetworkManager {
         }
     }
 
+    // called by client when revoke access data message arrives
     public void removeConfiguredNetwork(WiConfiguration config){
         try{
             int id = getNetworkId(config);
@@ -108,11 +109,21 @@ public class WiNetworkManager {
             Log.d(TAG, "Android network ID is: " + id);
             boolean retVal = sWifiManager.removeNetwork(id);
             Log.d(TAG, "Remove success boolean: " + retVal);
-            mConfiguredNetworks.remove(config.SSID);
-            mUnConfiguredNetworks.put(config.SSID, config);
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    // invoked by the host when they enter a network password.
+    public void configureNetwork(WiConfiguration config){
+        mConfiguredNetworks.put(config.SSID, config);
+        mUnConfiguredNetworks.remove(config.SSID);
+    }
+
+    // called by host when they want to remove a network from configured network list view.
+    public void unConfigureNetwork(WiConfiguration config){
+        mConfiguredNetworks.remove(config.SSID);
+        mUnConfiguredNetworks.put(config.SSID, config);
     }
 
     private int getNetworkId(WiConfiguration config){
@@ -127,11 +138,7 @@ public class WiNetworkManager {
         return -1;
     }
 
-    // invoked by the host when they enter a network password.
-    public void configureNetwork(WiConfiguration config){
-        mConfiguredNetworks.put(config.SSID, config);
-        mUnConfiguredNetworks.remove(config.SSID);
-    }
+
 
     public boolean isSsidInRange(String ssid){
         List<ScanResult> results = sWifiManager.getScanResults();

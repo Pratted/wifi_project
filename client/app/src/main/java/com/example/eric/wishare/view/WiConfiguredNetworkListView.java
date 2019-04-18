@@ -134,7 +134,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                         }
                                     }
 
-                                    mNetworkManager.removeConfiguredNetwork(mConfig);
+                                    mNetworkManager.unConfigureNetwork(mConfig);
                                     WiContactList.getInstance(getContext()).deleteNetworkFromAllContacts(mConfig.getSSID());
                                     mDatabase.delete(mConfig);
                                 }
