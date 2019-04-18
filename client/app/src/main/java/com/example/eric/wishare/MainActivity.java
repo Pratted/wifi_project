@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
         mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
 
-        btnShowNotification = findViewById(R.id.btn_show_notification);
+        //btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);

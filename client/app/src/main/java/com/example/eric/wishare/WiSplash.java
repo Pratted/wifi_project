@@ -79,7 +79,7 @@ public class WiSplash extends Activity {
             WiSharedPreferences.putString("phone", phone);
 
             Log.d("Shit", "Saving Phone: " + phone);
-            WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
+            //WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
             WiSharedPreferences.save();
 
             WiMessagingService.registerDevice(WiUtils.getDeviceToken(), phone, new WiMessagingService.OnDeviceRegisteredListener() {

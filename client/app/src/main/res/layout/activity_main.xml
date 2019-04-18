@@ -75,17 +75,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:id="@+id/ll_bottom_main_activity">
-            <Button
-                android:id="@+id/btn_show_notification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="40dp"
-                android:layout_marginStart="40dp"
-                style="@drawable/ripple"
-                android:background="@drawable/ripple"
-                android:text="@string/btn_show_notification"
-                app:layout_constraintTop_toBottomOf="@id/ll_bottom_main_activity"
-                app:layout_constraintBottom_toTopOf="@id/btn_add_network"/>
 
             <Button
                 android:id="@+id/btn_add_network"
@@ -96,7 +85,7 @@
                 style="@drawable/ripple"
                 android:background="@drawable/ripple"
                 android:text="@string/btn_add_network"
-                app:layout_constraintTop_toBottomOf="@id/btn_show_notification"
+                app:layout_constraintTop_toBottomOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/btn_manage_contacts"/>
             <Button
                 android:id="@+id/btn_manage_contacts"

@@ -108,12 +108,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                             .checkBoxPrompt("Revoke access for all contacts?", false, new CompoundButton.OnCheckedChangeListener() {
                                 @Override
                                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                                    if (isChecked){
-                                        checked = true;
-                                    }
-                                    else{
-                                        checked = false;
-                                    }
+                                    checked = isChecked;
                                 }
                             })
                             .positiveText("Yes")
