@@ -232,17 +232,6 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         });
     }
 
-    public synchronized ArrayList<String> getContactNetworks(WiContact contact){
-        ArrayList<String> ssidList = new ArrayList<>();
-        Log.d(TAG, "Getting all contact's network from database");
-        Cursor cursor = sInstance.getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
-                TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?", new String[]{contact.getPhone()}, null, null, null);
-        while(cursor != null && cursor.moveToNext()) {
-            ssidList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID)));
-        }
-        return ssidList;
-    }
-
     public synchronized void insert(final WiContact contact){
         sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
@@ -268,7 +257,6 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             }
         });
     }
-
 
     private void saveContactPermittedNetworks(final WiContact contact, SQLiteDatabase db){
         List<WiConfiguration> temp = contact.getPermittedNetworks();
@@ -438,6 +426,17 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 Log.d(TAG, "removed permitted contact from database");
             }
         });
+    }
+
+    public synchronized ArrayList<String> getContactNetworks(WiContact contact){
+        ArrayList<String> ssidList = new ArrayList<>();
+        Log.d(TAG, "Getting all contact's network from database");
+        Cursor cursor = sInstance.getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
+                TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?", new String[]{contact.getPhone()}, null, null, null);
+        while(cursor != null && cursor.moveToNext()) {
+            ssidList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID)));
+        }
+        return ssidList;
     }
 
     public synchronized ArrayList<String> getNetworksContacts(final WifiConfiguration config){

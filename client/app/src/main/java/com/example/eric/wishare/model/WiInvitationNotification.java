@@ -51,17 +51,13 @@ public class WiInvitationNotification extends WiNotification {
 
     public void onNotificationClick() {
         Log.d(TAG, "The notification was clicked!");
-        Intent intent = new Intent(mContext, MainActivity.class);
-        intent = getIntentForMostRecentActivity();
+        Intent intent = getIntentForMostRecentActivity();
 
-        //Intent intent1  = new Intent(mContext, NetworkActivity.class);
-        
         //Log.d(TAG, "Current Activity " + WiUtils.getCurrentActivity());
         intent.putExtra("invitation", mInvitation);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        //PendingIntent contentIntent2 = PendingIntent.getActivity(mContext, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             mNotification.setContentIntent(contentIntent);
