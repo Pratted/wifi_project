@@ -284,6 +284,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         for(String ssid: cache){
             // the contact no longer has access to this network. It needs to be deleted from db
             if(!permittedNetworks.contains(ssid)){
+                Log.d(TAG, "Need to delete: " + ssid);
                 cache.remove(ssid);
                 toBeDeleted.add(ssid);
             }
