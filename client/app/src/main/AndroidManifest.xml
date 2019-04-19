@@ -25,11 +25,13 @@
         <activity
             android:name=".SettingsActivity"
             android:launchMode="singleTop"
-            android:label="@string/title_activity_settings"></activity>
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".WiSplash"></activity>
+            android:parentActivityName=".WiSplash"
+            android:screenOrientation="portrait"></activity>
 
         <service
             android:name=".WiMessagingService"
@@ -43,15 +45,18 @@
         <activity
             android:name=".ContactActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".NetworkActivity"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".WiSplash"
             android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
