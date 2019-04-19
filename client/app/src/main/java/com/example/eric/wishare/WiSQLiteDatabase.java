@@ -3,6 +3,7 @@ package com.example.eric.wishare;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.wifi.WifiConfiguration;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
@@ -124,6 +126,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     private WiSQLiteDatabase(Context context) {
         super(context.getApplicationContext(),mDATABASE_NAME,null,mDATABASE_VERSION);
 
+        Log.d(TAG, "Initializing cache...");
         mPermittedNetworksCache = new HashMap<>();
         mPendingInvitationsCache = new HashMap<>();
     }
@@ -135,7 +138,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         HashMap<String, WiContact> contacts = new HashMap<>();
 
         // load all the contacts from the contacts table...
-        Cursor cur = getReadableDatabase().query(TABLE_CONTACTS.TABLE_NAME, null, null, null, null, null, null);
+        Cursor cur = sInstance.getReadableDatabase().query(TABLE_CONTACTS.TABLE_NAME, null, null, null, null, null, null);
 
         if (cur != null && cur.moveToFirst()) {
             do {
@@ -147,8 +150,9 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         }
 
         // load all pending invitations and apply to each contact...
-        cur = getReadableDatabase().query(TABLE_PENDING_INVITATIONS.TABLE_NAME, null, null, null, null, null, null);
+        cur = sInstance.getReadableDatabase().query(TABLE_PENDING_INVITATIONS.TABLE_NAME, null, null, null, null, null, null);
 
+        Log.d(TAG, "BEGIN load pending invitations...");
         if(cur.moveToFirst()){
             do {
                 String recipientPhone = cur.getString(cur.getColumnIndex(TABLE_PENDING_INVITATIONS.COL_PHONE));
@@ -173,8 +177,9 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         }
 
         // load all permitted networks and apply to each contact
-        cur = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, null, null, null, null, null);
+        cur = sInstance.getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, null, null, null, null, null);
 
+        Log.d(TAG, "BEGIN load permitted networks...");
         if(cur.moveToFirst()){
             do {
                 String ssid = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID));
@@ -183,6 +188,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 //String dataLimit = cur.getString(cur.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT));
 
                 if(!mPermittedNetworksCache.containsKey(recipientPhone)) {
+                    Log.d(TAG, "Adding " + recipientPhone + " to permittedNetworkCache");
                     mPermittedNetworksCache.put(recipientPhone, new HashSet<String>());
                 }
 
@@ -214,7 +220,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     }
 
     public synchronized void insert(final WiInvitation invitation){
-        getWritableDatabase(new OnDBReadyListener() {
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "Adding invitation to database");
@@ -229,7 +235,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     public synchronized ArrayList<String> getContactNetworks(WiContact contact){
         ArrayList<String> ssidList = new ArrayList<>();
         Log.d(TAG, "Getting all contact's network from database");
-        Cursor cursor = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
+        Cursor cursor = sInstance.getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_SSID},
                 TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?", new String[]{contact.getPhone()}, null, null, null);
         while(cursor != null && cursor.moveToNext()) {
             ssidList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_SSID)));
@@ -237,58 +243,23 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         return ssidList;
     }
 
-
-    public synchronized void insertPendingInvitation(final WiInvitation invitation, final WiContact recipient){
-        Log.d(TAG, "ssid=" + invitation.getWiConfiguration().SSID);
-        Log.d(TAG, "phone=" + recipient.getPhone());
-
-        getWritableDatabase(new OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase theDB) {
-                Log.d(TAG, "Adding pending invitation to database");
-                ContentValues vals = new ContentValues();
-                vals.put(TABLE_PENDING_INVITATIONS.COL_PHONE, recipient.getPhone());
-                vals.put(TABLE_PENDING_INVITATIONS.COL_SSID, invitation.getWiConfiguration().SSID);
-                vals.put(TABLE_PENDING_INVITATIONS.COL_DATE_CREATED, WiUtils.getDateTime());
-                theDB.insert(TABLE_PENDING_INVITATIONS.TABLE_NAME, null, vals);
-                Log.d(TAG, "Inserted pending invitation to database");
-            }
-        });
-    }
-
-    public synchronized void insertPermittedContact(final WiContact contact, final WiConfiguration config){
-        getWritableDatabase(new OnDBReadyListener() {
-            @Override
-            public void onDBReady(SQLiteDatabase theDB) {
-                Log.d(TAG, "Adding permitted contact to database");
-                ContentValues vals = new ContentValues();
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, config.SSID);
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_PHONE, contact.getPhone());
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_EXPIRES, contact.getExpiresIn());
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT, "None");
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_DATE_CREATED, WiUtils.getDateTime());
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, config.getSSID());
-
-                theDB.insert(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, vals);
-                Log.d(TAG, "Added permitted contact to database");
-            }
-        });
-    }
-
-
     public synchronized void insert(final WiContact contact){
-        getWritableDatabase(new OnDBReadyListener() {
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "inserting contact to database");
                 theDB.insert(TABLE_CONTACTS.TABLE_NAME, null, contact.toContentValues());
+
+                // update our cache
+                mPermittedNetworksCache.put(contact.getPhone(), new HashSet<String>());
+                mPendingInvitationsCache.put(contact.getPhone(), new HashSet<String>());
                 Log.d(TAG, "Inserted contact to database");
             }
         });
     }
 
     public synchronized void insert(final WiConfiguration config) {
-        getWritableDatabase(new OnDBReadyListener() {
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "inserting network into database");
@@ -298,36 +269,136 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         });
     }
 
-    public synchronized void save(WiContact contact){
-        contact.getPermittedNetworks();
 
-        getWritableDatabase(new OnDBReadyListener() {
+    private void saveContactPermittedNetworks(final WiContact contact, SQLiteDatabase db){
+        List<WiConfiguration> temp = contact.getPermittedNetworks();
+        Set<String> permittedNetworks = new HashSet<>();
+
+        if(!mPermittedNetworksCache.containsKey(contact.getPhone())){
+            mPermittedNetworksCache.put(contact.getPhone(), new HashSet<String>());
+        }
+
+        final Set<String> cache = mPermittedNetworksCache.get(contact.getPhone());
+
+        for(WiConfiguration config: temp){
+            permittedNetworks.add(config.SSID);
+        }
+
+        for(String ssid: permittedNetworks){
+
+            // this network is not in cache. It was recently added so it must be saved in DB.
+            if(!cache.contains(ssid)){
+                cache.add(ssid);
+            }
+        }
+
+        final ArrayList<String> toBeDeleted = new ArrayList<>();
+        for(String ssid: cache){
+            // the contact no longer has access to this network. It needs to be deleted from db
+            if(!permittedNetworks.contains(ssid)){
+                cache.remove(ssid);
+                toBeDeleted.add(ssid);
+            }
+        }
+
+        try {
+            for(String ssid: toBeDeleted){
+                db.delete(TABLE_PERMITTED_CONTACTS.TABLE_NAME, "ssid=?", new String[]{ssid});
+            }
+
+            for(String ssid: cache){
+                ContentValues cv = new ContentValues();
+                cv.put(TABLE_PERMITTED_CONTACTS.COL_SSID, ssid);
+                cv.put(TABLE_PERMITTED_CONTACTS.COL_PHONE, contact.getPhone());
+                cv.put(TABLE_PERMITTED_CONTACTS.COL_EXPIRES, contact.getExpiresIn());
+
+                db.replace(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, cv);
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void saveContactPendingInvitations(final WiContact contact, SQLiteDatabase db){
+        List<WiInvitation> temp = contact.getPendingInvitations();
+        Set<String> pendingInvitations = new HashSet<>();
+
+        if(!mPendingInvitationsCache.containsKey(contact.getPhone())){
+            mPendingInvitationsCache.put(contact.getPhone(), new HashSet<String>());
+        }
+
+        final Set<String> cache = mPendingInvitationsCache.get(contact.getPhone());
+
+        for(WiInvitation inv: temp){
+            pendingInvitations.add(inv.networkName);
+        }
+
+        for(String ssid: pendingInvitations){
+
+            // this invitation is not in cache. It was recently added so it must be saved in DB.
+            if(!cache.contains(ssid)){
+                cache.add(ssid);
+            }
+        }
+
+        final ArrayList<String> toBeDeleted = new ArrayList<>();
+        for(String ssid: cache){
+
+            // the contact no longer this pending invitation. It needs to be deleted from db.
+            if(!pendingInvitations.contains(ssid)){
+                cache.remove(ssid);
+                toBeDeleted.add(ssid);
+            }
+        }
+
+        try {
+            for(String ssid: toBeDeleted){
+                db.delete(TABLE_PENDING_INVITATIONS.TABLE_NAME, "ssid=? and phone=?", new String[]{ssid, contact.getPhone()});
+            }
+
+            for(String ssid: cache){
+                ContentValues cv = new ContentValues();
+                cv.put(TABLE_PENDING_INVITATIONS.COL_SSID, ssid);
+                cv.put(TABLE_PENDING_INVITATIONS.COL_PHONE, contact.getPhone());
+                cv.put(TABLE_PENDING_INVITATIONS.COL_EXPIRES, contact.getExpiresIn());
+
+                db.replace(TABLE_PENDING_INVITATIONS.TABLE_NAME, null, cv);
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void save(final WiContact contact){
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
+                saveContactPermittedNetworks(contact, theDB);
+                saveContactPendingInvitations(contact, theDB);
+                Log.d(TAG, "Saved contact");
 
             }
         });
     }
 
-    /*
-    public synchronized void insert(final WiContact contact, final WiConfiguration config) {
-        getWritableDatabase(new OnDBReadyListener() {
+    public synchronized void save(final List<WiContact> contacts){
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
-                ContentValues vals = new ContentValues();
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_CONTACT_ID, contact.getContactID());
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_NETWORK_ID, config.getNetworkID());
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_DATA_LIMIT, "None");
-                vals.put(TABLE_PERMITTED_CONTACTS.COL_SSID, config.getSSID());
+                for(WiContact contact: contacts){
+                    saveContactPermittedNetworks(contact, theDB);
+                    saveContactPendingInvitations(contact, theDB);
+                }
 
-                theDB.insert(TABLE_PERMITTED_CONTACTS.TABLE_NAME, null, vals);
+                Log.d(TAG, "Saved " + contacts.size() + "contacts");
             }
         });
     }
-    */
 
     public synchronized void delete(final WiConfiguration config){
-        getWritableDatabase(new OnDBReadyListener() {
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "removing network from database");
@@ -341,7 +412,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     }
 
     public synchronized void delete(final WiInvitation mInvitation) {
-        getWritableDatabase(new OnDBReadyListener() {
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "removing invitation from database");
@@ -355,7 +426,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     }
 
     public synchronized void delete(final WiConfiguration config, final String phone) {
-        getWritableDatabase(new OnDBReadyListener() {
+        sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "removing permitted contact from database");
@@ -372,7 +443,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
     public synchronized ArrayList<String> getNetworksContacts(final WifiConfiguration config){
         final ArrayList<String> phoneList = new ArrayList<String>();
             Log.d(TAG, "getting ALL permitted contacts for the selected network");
-            Cursor cursor = getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_PHONE}, TABLE_PERMITTED_CONTACTS.COL_SSID + "=?", new String[]{config.SSID}, null, null, null);
+            Cursor cursor = sInstance.getReadableDatabase().query(TABLE_PERMITTED_CONTACTS.TABLE_NAME, new String[]{TABLE_PERMITTED_CONTACTS.COL_PHONE}, TABLE_PERMITTED_CONTACTS.COL_SSID + "=?", new String[]{config.SSID}, null, null, null);
             while(cursor != null && cursor.moveToNext()) {
                 phoneList.add(cursor.getString(cursor.getColumnIndex(TABLE_PERMITTED_CONTACTS.COL_PHONE)));
             }
@@ -446,7 +517,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void getWritableDatabase(OnDBReadyListener listener) {
+    public synchronized void getWritableDatabase(OnDBReadyListener listener) {
         new OpenDbAsyncTask().execute(listener);
     }
 
@@ -461,7 +532,18 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
         @Override
         protected void onPostExecute(SQLiteDatabase db) {
-            listener.onDBReady(db);
+            db.beginTransaction();
+
+            try {
+                if(WiUtils.isDatabaseEnabled()){
+                    listener.onDBReady(db);
+                }
+            } catch (SQLException e){
+                e.printStackTrace();
+            }
+
+            db.setTransactionSuccessful();
+            db.endTransaction();
         }
     }
 }

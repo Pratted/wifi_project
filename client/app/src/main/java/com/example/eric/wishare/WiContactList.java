@@ -18,6 +18,7 @@ import org.json.JSONObject;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class WiContactList {
@@ -161,7 +162,17 @@ public class WiContactList {
 
     public WiContact save(WiContact contact) {
         mContacts.put(contact.getPhone(), contact);
+
+        WiSQLiteDatabase.getInstance(mContext.get()).save(contact);
         return contact;
+    }
+
+    public void save(List<WiContact> contacts){
+        for(WiContact contact: contacts){
+            mContacts.put(contact.getPhone(), contact);
+        }
+
+        WiSQLiteDatabase.getInstance(mContext.get()).save(contacts);
     }
 
     public void deleteNetworkFromAllContacts(String networkID) {

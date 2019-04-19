@@ -10,7 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WiUtils {
-    private static String currentActivity;
+    private static String currentActivity = "ACTIVITY_MAIN";
 
     public static boolean sendInvitationsToSelf() {
         return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, false);
@@ -76,5 +76,7 @@ public class WiUtils {
         return revised;
     }
 
-
+    public static boolean isDatabaseEnabled() {
+        return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, true);
+    }
 }

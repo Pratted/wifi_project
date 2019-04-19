@@ -305,7 +305,8 @@ public class WiInvitableContactsView extends LinearLayout {
 
                             // save this information in the contact list and in the database.
                             WiContactList.getInstance(getContext()).save(mContact);
-                            WiSQLiteDatabase.getInstance(getContext()).insertPendingInvitation(invitation, mContact);
+                            //WiSQLiteDatabase.getInstance(getContext()).save(mContact);
+                            //WiSQLiteDatabase.getInstance(getContext()).insertPendingInvitation(invitation, mContact);
 
                             // send all invitations to Eric for testing... remove this when done.
                             //mContact.setPhone("610-737-0292");

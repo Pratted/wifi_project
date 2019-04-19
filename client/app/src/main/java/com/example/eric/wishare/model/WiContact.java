@@ -70,6 +70,10 @@ public class WiContact implements Parcelable{
         return new ArrayList<>(mPermittedNetworks.values());
     }
 
+    public List<WiInvitation> getPendingInvitations(){
+        return new ArrayList<>(mPendingInvitations.values());
+    }
+
     public static final Creator<WiContact> CREATOR = new Creator<WiContact>() {
         @Override
         public WiContact createFromParcel(Parcel in) {

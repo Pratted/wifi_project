@@ -145,7 +145,6 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                             mContact.invite(invitation);
 
                             WiContactList.getInstance(mContext).save(mContact);
-                            WiSQLiteDatabase.getInstance(mContext).insertPendingInvitation(invitation, mContact);
 
                             Log.d(TAG, "Adding permitted contact to database");
 

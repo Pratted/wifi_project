@@ -99,6 +99,7 @@ public class WiMessagingService extends FirebaseMessagingService {
 
         WiInvitationNotification notification = new WiInvitationNotification(this, invitation, WiNotification.REGULAR_NOTIFICATION);
         notification.show();
+
         //notification.show();
         Log.d(TAG, "Showing notification");
     }
@@ -124,10 +125,11 @@ public class WiMessagingService extends FirebaseMessagingService {
         String name = contact != null ? contact.getName() : invitation.sender;
         displayToast(name + " has accepted your invitation to " + invitation.networkName);
 
-        contact.grantAccess(config);
-        WiContactList.getInstance(this).save(contact);
-        sendMessageToActivity(WiUtils.ACTIVITY_CONTACT, config);
-        WiSQLiteDatabase.getInstance(this).insertPermittedContact(contact, config);
+        if(contact != null){
+            contact.grantAccess(config);
+            WiContactList.getInstance(this).save(contact);
+            sendMessageToActivity(WiUtils.ACTIVITY_CONTACT, config);
+        }
     }
 
     public void onWiInvitationDeclined(WiInvitation invitation){
