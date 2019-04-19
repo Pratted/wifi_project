@@ -111,10 +111,14 @@ public class ContactActivity extends AppCompatActivity {
                 mContactSharedNetworkList.hideAllNetworks();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     for (WiConfiguration config: mContact.getPermittedNetworks()){
+                        mContact.revokeAccess(config.SSID);
+                        WiContactList.getInstance(getApplicationContext()).save(mContact);
+
                         WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(config, mContact.getPhone());
                         WiDataMessageController.getInstance(getApplicationContext()).send(msg);
                         WiSQLiteDatabase.getInstance(getApplicationContext()).delete(config, mContact.getPhone());
                     }
+
                 }
             }
         };

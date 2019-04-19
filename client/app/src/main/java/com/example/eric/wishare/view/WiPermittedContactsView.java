@@ -106,6 +106,10 @@ public class WiPermittedContactsView extends WiPage{
                         public boolean test(WiPermittedContactsViewListItem wiPermittedContactsViewListItem) {
                             if(wiPermittedContactsViewListItem.mCheckBox.isChecked()){
                                 WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
+
+                                wiPermittedContactsViewListItem.getContact().revokeAccess(mNetwork.SSID);
+                                WiContactList.getInstance(getContext()).save(wiPermittedContactsViewListItem.getContact());
+
                                 WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                                 removeListItem(wiPermittedContactsViewListItem);
                                 WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
