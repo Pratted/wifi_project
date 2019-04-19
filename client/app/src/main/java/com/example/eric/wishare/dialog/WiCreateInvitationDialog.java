@@ -17,8 +17,8 @@ import com.example.eric.wishare.view.WiEditTextPermHint;
 public class WiCreateInvitationDialog extends WiDialog {
     private LinearLayout mCustomView;
     private String mSSID;
-    private WiEditTextPermHint expires;
-    private WiEditTextPermHint dataLimit;
+    private WiEditTextPermHint mExpires;
+    private WiEditTextPermHint mDataLimit;
 
     public interface OnInvitationCreatedListener{
         void onInvitationCreated(WiInvitation invitation);
@@ -32,14 +32,33 @@ public class WiCreateInvitationDialog extends WiDialog {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mCustomView = (LinearLayout) inflater.inflate(R.layout.layout_contact_search, null);
 
-        expires = (WiEditTextPermHint) mCustomView.findViewById(R.id.expires);
-        dataLimit = (WiEditTextPermHint) mCustomView.findViewById(R.id.data_limit);
+        mExpires = (WiEditTextPermHint) mCustomView.findViewById(R.id.expires);
+        mDataLimit = (WiEditTextPermHint) mCustomView.findViewById(R.id.data_limit);
 
         mSSID = ssid;
     }
 
     public void setOnInvitationCreatedListener(OnInvitationCreatedListener listener){
         mOnInvitationCreatedListener = listener;
+    }
+
+    private int getMinutes(String value){
+        switch (value){
+            case "Never":
+                return -1;
+            case "1 hour":
+                return 60;
+            case "1 day":
+                return 1440;
+            case "1 week":
+                return 10080;
+            default:
+               return Integer.valueOf(value) * 60;
+        }
+    }
+
+    private int getDataLimit(String value){
+        return -1;
     }
 
     @Override
@@ -53,26 +72,10 @@ public class WiCreateInvitationDialog extends WiDialog {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
 
-                        Integer expiresInt;
+                        int expires = getMinutes(mExpires.getCurrentValue());
+                        int dataLimit = getDataLimit(mDataLimit.getCurrentValue());
 
-                        switch (expires.getCurrentValue()) {
-                            case "1 hour":
-                                expiresInt = 60;
-                                break;
-                            case "1 day":
-                                expiresInt = 1440;
-                                break;
-                            case "1 week":
-                                expiresInt = 10080;
-                                break;
-                            default:
-                                expiresInt = Integer.valueOf(expires.getCurrentValue()) * 60;
-                        }
-
-
-                        String dataLimitString = dataLimit.getCurrentValue();
-
-                        WiInvitation inv = new WiInvitation(mSSID, WiUtils.getDevicePhone(), expiresInt.toString(), dataLimitString);
+                        WiInvitation inv = new WiInvitation(mSSID, WiUtils.getDevicePhone(), "Never", "None");
 
                         if(mOnInvitationCreatedListener != null) {
                             mOnInvitationCreatedListener.onInvitationCreated(inv);

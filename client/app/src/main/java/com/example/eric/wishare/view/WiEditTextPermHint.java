@@ -109,7 +109,7 @@ public class WiEditTextPermHint extends LinearLayout {
     }
 
     public String getCurrentValue() {
-        if (editText.getVisibility() == View.VISIBLE) {
+        if (editTextPermHint.getVisibility() == View.VISIBLE) {
             return editText.getText().toString();
         }
         return spinner.getSelectedItem().toString();
