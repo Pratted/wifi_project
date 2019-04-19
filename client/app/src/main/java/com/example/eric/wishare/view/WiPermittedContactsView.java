@@ -329,10 +329,9 @@ public class WiPermittedContactsView extends WiPage{
 
                     Log.d("WiPermittedContact", "Revoking access for " + mNetwork.SSID);
                     contact.revokeAccess(mNetwork.SSID);
-
+                    WiContactList.getInstance(getContext()).save(contact);
                     WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mNetwork, contact.getPhone());
                     WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
-                    WiContactList.getInstance(getContext()).save(contact);
                 }
             };
         }
