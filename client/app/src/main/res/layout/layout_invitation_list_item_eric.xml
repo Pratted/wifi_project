@@ -18,6 +18,7 @@
             android:src="@android:drawable/sym_action_email"/>
 
         <TextView
+            android:id="@+id/tv_invitation_title"
             android:layout_width="0dp"
             android:layout_weight="4"
             android:textSize="20sp"
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
         android:orientation="vertical"
+        android:id="@+id/expandable_layout_invitation"
         app:el_duration="500"
         app:el_expanded="true"
         app:el_parallax="0.5">

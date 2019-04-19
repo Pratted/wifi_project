@@ -30,13 +30,14 @@ public class WiInvitationListDialog extends WiDialog{
     public WiInvitationListDialog(Context context){
         super(context);
 
-        mCustomView = new ScrollView(context);
+        //mCustomView = new ScrollView(context);
         // create an empty layout to place into the dialog...
         mLinearLayout = new LinearLayout(context);
         mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
         mLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        //mLinearLayout.set
 
-        mCustomView.addView(mLinearLayout);
+        //mCustomView.addView(mLinearLayout);
     }
 
     private void add(WiInvitationListItem invitation){
@@ -62,7 +63,7 @@ public class WiInvitationListDialog extends WiDialog{
             dialog = dialog.content("You have no invitations!");
         }
         else{
-            dialog = dialog.customView(mCustomView, true)
+            dialog = dialog.customView(mLinearLayout, true)
                     .negativeText("Clear All")
                     .onNegative(onNegative());
         }
@@ -106,7 +107,7 @@ public class WiInvitationListDialog extends WiDialog{
         public WiInvitationListItem(WiInvitation invitation){
             mInvitation = invitation;
 
-            mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item, null);
+            mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item_eric, null);
             mLinearLayout.addView(mLayout);
 
             refresh();
@@ -133,7 +134,7 @@ public class WiInvitationListDialog extends WiDialog{
 
             mExpandableLayout = mLayout.findViewById(R.id.expandable_layout_invitation);
 
-            tvInvitationTitle.setText(String.format("Invitation to '%s'", mInvitation.networkName));
+            tvInvitationTitle.setText(mInvitation.networkName);
             tvInvitationOwner.setText(mInvitation.sender);
         }
 
