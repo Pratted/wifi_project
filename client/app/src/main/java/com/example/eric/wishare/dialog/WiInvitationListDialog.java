@@ -62,7 +62,7 @@ public class WiInvitationListDialog extends WiDialog{
             dialog = dialog.content("You have no invitations!");
         }
         else{
-            dialog = dialog.customView(mCustomView, false)
+            dialog = dialog.customView(mCustomView, true)
                     .negativeText("Clear All")
                     .onNegative(onNegative());
         }
