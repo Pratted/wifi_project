@@ -157,4 +157,8 @@ public class WiContact implements Parcelable{
     public void revokeAccess(String SSID) {
         mPermittedNetworks.remove(SSID);
     }
+
+    public void removePendingInvitation(String ssid) {
+        mPendingInvitations.remove(ssid);
+    }
 }
