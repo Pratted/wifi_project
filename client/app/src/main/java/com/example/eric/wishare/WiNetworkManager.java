@@ -1,15 +1,8 @@
 package com.example.eric.wishare;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -77,11 +70,7 @@ public class WiNetworkManager {
             }
         }
     }
-
-    public void refresh(){
-        synchronizeNetworks();
-    }
-
+    
     // called by a client when a host sends them network credentials
     public void addConfiguredNetwork(WiConfiguration config) {
         Log.d(TAG, "WifiManagerEnabled? " + WiUtils.isWifiManagerEnabled());
@@ -135,69 +124,6 @@ public class WiNetworkManager {
         return -1;
     }
 
-
-
-    public boolean isSsidInRange(String ssid){
-        List<ScanResult> results = sWifiManager.getScanResults();
-
-        for(ScanResult res: results){
-            if(res.SSID.replace("\"", "").equals(ssid.replace("\"", ""))){
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public void testConnection(String ssid){
-        Log.d(TAG, "Preparing for test connection");
-
-        WiConfiguration targetNetwork = getConfiguredNetwork(ssid);
-        if(targetNetwork == null){
-            Log.d(TAG, "Could not find WiConfiguration");
-            return;
-        }
-
-        Log.d(TAG, "Adding network to devices Wifi...");
-        int networkId = sWifiManager.addNetwork(targetNetwork.configure());
-        Log.d(TAG, "Target Network Id: " + networkId);
-
-        if(networkId == -1){
-            return;
-        }
-
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-        mContext.get().registerReceiver(getWifiConnectedReceiver(), intentFilter);
-
-        ConnectivityManager cm = (ConnectivityManager) mContext.get().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo tmp = cm.getActiveNetworkInfo();
-
-        if(tmp == null){
-            Log.d(TAG, "No current network...");
-            return;
-        }
-
-        if(tmp.isConnected()){
-            WifiInfo info = sWifiManager.getConnectionInfo();
-            Log.d(TAG, "Currently connected to "+ info.getSSID()+ ". Saving current connection...");
-
-            WiSharedPreferences.putString("prev_network", info.getSSID());
-            WiSharedPreferences.putString("target_network", ssid);
-            WiSharedPreferences.putBoolean("test_connection", true);
-            WiSharedPreferences.save(); // save now, blocking
-
-
-            Log.d(TAG, "Disabling " + info.getSSID());
-            Log.d(TAG, "Success? " + sWifiManager.disableNetwork(info.getNetworkId()));
-            sWifiManager.disconnect();
-        }
-
-        Log.d(TAG, "Target Network: " + ssid);
-        Log.d(TAG, "Attempting to connect to " + targetNetwork.getSSIDNoQuotes());
-        sWifiManager.enableNetwork(networkId, true);
-        sWifiManager.reconnect();
-    }
-
     // returning ArrayList here so .values() gets changed from collection to list
     public List<WifiConfiguration> getUnConfiguredNetworks() {
         return new ArrayList<>(mUnConfiguredNetworks.values());
@@ -225,99 +151,5 @@ public class WiNetworkManager {
             sInstance = new WiNetworkManager(context.getApplicationContext());
         }
         return sInstance;
-    }
-
-    public interface OnTestConnectionCompleteListener{
-        void onTestConnectionComplete(boolean success);
-    }
-
-    private OnTestConnectionCompleteListener mOnTestConnectionCompleteListener;
-
-    public void setOnTestConnectionCompleteListener(OnTestConnectionCompleteListener listener){
-        mOnTestConnectionCompleteListener = listener;
-    }
-
-    private BroadcastReceiver getWifiConnectedReceiver(){
-        return new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                String TAG = "WiNetworkManager.Rec";
-                String action = intent.getAction();
-                String prevNetwork = WiSharedPreferences.getString("prev_network", "");
-                String targetNetwork = WiSharedPreferences.getString("target_network", "");
-                boolean testConnection = WiSharedPreferences.getBoolean("test_connection", false);
-
-                if(action == null){
-                    Log.d(TAG, "No action found. Exiting");
-                    return;
-                }
-
-                Log.d(TAG, "Previous Network: " + prevNetwork);
-                Log.d(TAG, "Target Network: " + targetNetwork);
-
-                // only pay attention to network state if we're trying to test a connection
-                if(testConnection && action.equals(WifiManager.NETWORK_STATE_CHANGED_ACTION)){
-                    Log.d(TAG, "Connection state changed");
-
-                    NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                    Log.d(TAG, "Currently connected to a network? " + info.isConnected());
-
-                    if(info.isConnected()){
-                        WifiManager manager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-                        WifiInfo curr = manager.getConnectionInfo();
-
-
-                        if(curr == null){
-                            Log.d(TAG, "Could not get the current connection SSID. Unable to continue");
-
-                            return;
-                        }
-
-                        String ssid = curr.getSSID();
-
-                        if(ssid.replace("\"","").equals(targetNetwork.replace("\"", ""))){
-                            Log.d(TAG, "Connected to target network");
-
-                            //update shared prefs to avoid testing the connection more than once
-                            WiSharedPreferences.putString("prev_network", "");
-                            WiSharedPreferences.putString("target_network", "");
-                            WiSharedPreferences.putBoolean("test_connection", false);
-                            WiSharedPreferences.save();
-
-                            // unregister this receiver since it is no longer needed
-                            context.unregisterReceiver(this);
-
-                            /*
-                            // if the user was previously connect to 'A' and just tested connection 'B', disconnect them from 'B'
-                            // and connect them back to 'A'.
-                            if(!prevNetwork.replace("\"", "").equals(targetNetwork.replace("\"", ""))){
-                                manager.disconnect(); // succeeded, close this connection
-
-                                // connect back to original network..
-                                manager.enableNetwork(getPrevNetworkId(manager, prevNetwork), true);
-                            }
-                            */
-
-                            mOnTestConnectionCompleteListener.onTestConnectionComplete(true);
-                        }
-                        else{
-                            Log.d(TAG, "Connected to old network, disconnecting...");
-                            manager.disconnect();
-                            //manager.enableNetwork(getPrevNetworkId(manager, ssid), true);
-                            //manager.reconnect();
-                        }
-                    }
-                }
-            }
-
-            private int getPrevNetworkId(WifiManager manager, String ssid){
-                for(WifiConfiguration config: manager.getConfiguredNetworks()) {
-                    if (config.SSID.replace("\"", "").equals(ssid.replace("\"", ""))) {
-                        return config.networkId;
-                    }
-                }
-                return -1;
-            }
-        };
     }
 }
