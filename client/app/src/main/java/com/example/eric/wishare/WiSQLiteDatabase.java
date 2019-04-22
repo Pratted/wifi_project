@@ -538,12 +538,17 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
         @Override
         protected void onPostExecute(SQLiteDatabase db) {
+            // exit early and do nothing
+            if(!WiUtils.isDatabaseEnabled()){
+                Log.d(TAG, "The database is not enabled.");
+                return;
+            }
+
             db.beginTransaction();
 
+            // if a DB write fails, don't crash the entire app
             try {
-                if(WiUtils.isDatabaseEnabled()){
-                    listener.onDBReady(db);
-                }
+                listener.onDBReady(db);
             } catch (SQLException e){
                 e.printStackTrace();
             }
