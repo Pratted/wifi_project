@@ -18,15 +18,11 @@ import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiSQLiteDatabase;
-import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -218,7 +214,7 @@ public class WiPermittedContactsView extends WiPage{
                 }
                 else{
                     new MaterialDialog.Builder(getContext())
-                            .title("Revoke Access to " + mNetwork.getSSID())
+                            .title("Revoke Access to " + mNetwork.getSSIDNoQuotes())
                             .content("Are you want to revoke access for " + qty + contacts + "? This action cannot be undone.")
                             .negativeText("Cancel")
                             .positiveText("Revoke")

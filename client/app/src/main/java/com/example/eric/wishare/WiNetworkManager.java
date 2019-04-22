@@ -196,7 +196,7 @@ public class WiNetworkManager {
         }
 
         Log.d(TAG, "Target Network: " + ssid);
-        Log.d(TAG, "Attempting to connect to " + targetNetwork.getSSID());
+        Log.d(TAG, "Attempting to connect to " + targetNetwork.getSSIDNoQuotes());
         sWifiManager.enableNetwork(networkId, true);
         sWifiManager.reconnect();
     }

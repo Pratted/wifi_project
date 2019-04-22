@@ -1,8 +1,6 @@
 package com.example.eric.wishare.view;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -106,7 +104,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
                 WiConfiguration config = new WiConfiguration(SSID, "");
 
                 addSharedNetwork(config);
-                Log.d("SharedNetworkList", config.getSSID() + " added");
+                Log.d("SharedNetworkList", config.getSSIDNoQuotes() + " added");
         }
     }
 
@@ -188,7 +186,7 @@ public class WiContactSharedNetworkListView extends LinearLayout {
             mExpandableLayout = findViewById(R.id.expandable_network);
 
             mNetworkName = findViewById(R.id.btn_network_name);
-            mNetworkName.setText(mConfig.getSSID());
+            mNetworkName.setText(mConfig.getSSIDNoQuotes());
 
             mNetworkActivityButton = findViewById(R.id.btn_network_activity);
 

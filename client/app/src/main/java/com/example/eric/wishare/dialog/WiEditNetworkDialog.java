@@ -3,7 +3,6 @@ package com.example.eric.wishare.dialog;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -49,7 +48,7 @@ public class WiEditNetworkDialog extends WiDialog {
     @Override
     public MaterialDialog build() {
         return new MaterialDialog.Builder(context.get())
-                .title("Edit " + mConfig.getSSID())
+                .title("Edit " + mConfig.getSSIDNoQuotes())
                 .positiveText("Ok")
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override

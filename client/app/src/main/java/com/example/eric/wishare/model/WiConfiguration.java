@@ -53,7 +53,7 @@ public class WiConfiguration extends WifiConfiguration implements Parcelable {
         }
     };
 
-    public String getSSID() {
+    public String getSSIDNoQuotes() {
         return SSID.replace("\"", "");
     }
 

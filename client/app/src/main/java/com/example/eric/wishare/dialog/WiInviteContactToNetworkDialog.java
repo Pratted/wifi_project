@@ -100,7 +100,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         Log.d(TAG, "mNetworks.isEmpty() " + mNetworks.isEmpty());
 
         for (WiConfiguration config : mNetworks) {
-            Log.d(TAG, "IN BUILD Config SSID: " + config.getSSID());
+            Log.d(TAG, "IN BUILD Config SSID: " + config.getSSIDNoQuotes());
         }
 
 //        List<String> SSID = WiSQLiteDatabase.getInstance(mContext).getContactNetworks(mContact);
@@ -112,7 +112,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
         }
 
         for (int i = 0; i < mNetworks.size(); i++) {
-            if(SSID.contains(mNetworks.get(i).getSSID())) {
+            if(SSID.contains(mNetworks.get(i).SSID)){
                 mNetworks.remove(i--);
             }
         }
@@ -138,8 +138,8 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                     @Override
                     public void onInvitationCreated(WiInvitation invitation) {
                         for (final WiConfiguration config : getSelectedNetworks(indices)) {
-                            Log.d(TAG, "config id: " + config.getSSID());
-                            invitation.networkName = config.getSSID();
+                            Log.d(TAG, "config id: " + config.getSSIDNoQuotes());
+                            invitation.networkName = config.SSID;
                             invitation.setWiConfiguration(config);
 
                             mContact.invite(invitation);
@@ -155,7 +155,7 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                                 }
                             };
                             WiDataMessageController.getInstance(context.get().getApplicationContext()).send(msg);
-                            String toastText = mContact.getName() + " has been invited to " + config.getSSID();
+                            String toastText = mContact.getName() + " has been invited to " + config.getSSIDNoQuotes();
                             Toast.makeText(context.get(), toastText, Toast.LENGTH_LONG).show();
 //                            listener.onInviteClick(config);
                         }

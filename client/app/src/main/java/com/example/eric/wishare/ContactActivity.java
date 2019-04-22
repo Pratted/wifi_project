@@ -80,7 +80,7 @@ public class ContactActivity extends AppCompatActivity {
             //tvStatus.setText(message);
             mInviteToNetwork.setOnInviteAcceptListener(onInviteAccept());
             mInviteToNetwork.inviteIsAccepted(config);
-            String out = "BR: " + config.getSSID();
+            String out = "BR: " + config.getSSIDNoQuotes();
             Toast.makeText(ContactActivity.this, out, Toast.LENGTH_LONG).show();
             reload();
         }

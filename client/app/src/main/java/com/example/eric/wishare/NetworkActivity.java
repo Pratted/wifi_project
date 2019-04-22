@@ -5,8 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,14 +19,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import com.example.eric.wishare.dialog.WiEditNetworkDialog;
 import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
-import com.example.eric.wishare.dialog.WiInviteContactsDialog;
 import com.example.eric.wishare.model.WiConfiguration;
-import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.view.WiTabbedScrollView;
 
@@ -62,7 +55,7 @@ public class NetworkActivity extends AppCompatActivity {
         mConfig = getIntent().getParcelableExtra("NetworkInfo");
 
         mToolbar = findViewById(R.id.toolbar);
-        mToolbar.setTitle(mConfig.getSSID());
+        mToolbar.setTitle(mConfig.getSSIDNoQuotes());
         setSupportActionBar(mToolbar);
 
         findViewById(R.id.btn_edit_network).setOnClickListener(new View.OnClickListener() {

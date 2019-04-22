@@ -1,23 +1,16 @@
 package com.example.eric.wishare.model;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.provider.ContactsContract;
 
-import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.WiUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class WiContact implements Parcelable{
     private String name;
@@ -148,7 +141,7 @@ public class WiContact implements Parcelable{
     }
 
     public void grantAccess(WiConfiguration config) {
-        mPermittedNetworks.put(config.getSSID(), config);
+        mPermittedNetworks.put(config.SSID, config);
     }
 
     public void revokeAccess(String SSID) {

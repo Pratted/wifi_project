@@ -2,12 +2,10 @@ package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -84,9 +82,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
             int users = mConfig.hashCode() % 5;
             if(users < 0) users *= -1;
 
-            System.out.println(mConfig.getSSID());
-
-            ((TextView) findViewById(R.id.tv_network_name)).setText(mConfig.getSSID());
+            ((TextView) findViewById(R.id.tv_network_name)).setText(mConfig.getSSIDNoQuotes());
             ((TextView) findViewById(R.id.tv_active_users)).setText(users + " active user(s)");
 
             if(users % 2 == 0) {
@@ -103,8 +99,8 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                 @Override
                 public void onClick(View v) {
                     new MaterialDialog.Builder(getContext())
-                            .title("Removing " + mConfig.getSSID())
-                            .content("Are you sure you want to remove " + mConfig.getSSID() + "? This action cannot be undone.")
+                            .title("Removing " + mConfig.getSSIDNoQuotes())
+                            .content("Are you sure you want to remove " + mConfig.getSSIDNoQuotes() + "? This action cannot be undone.")
                             .checkBoxPrompt("Revoke access for all contacts?", false, new CompoundButton.OnCheckedChangeListener() {
                                 @Override
                                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -118,7 +114,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                 @Override
                                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                                     WiConfiguredNetworkListView.this.removeView(WiConfiguredNetworkListItem.this);
-                                    System.out.println("mConfig.getSSID(): " + mConfig.getSSID());
+                                    System.out.println("mConfig.getSSIDNoQuotes(): " + mConfig.getSSIDNoQuotes());
 
                                     if (checked){
                                         List<String> phoneList = WiSQLiteDatabase.getInstance(getContext()).getNetworksContacts(mConfig);
@@ -130,7 +126,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                     }
 
                                     mNetworkManager.unConfigureNetwork(mConfig);
-                                    WiContactList.getInstance(getContext()).deleteNetworkFromAllContacts(mConfig.getSSID());
+                                    WiContactList.getInstance(getContext()).deleteNetworkFromAllContacts(mConfig.SSID);
                                     mDatabase.delete(mConfig);
                                 }
                             }).show();
@@ -145,7 +141,7 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                     System.out.println("CLICKED");
                     Intent intent = new Intent(getContext(), NetworkActivity.class);
                     intent.putExtra("NetworkInfo", mConfig);
-                    System.out.println("THIS IS THE SSID " + mConfig.getSSID());
+                    System.out.println("THIS IS THE SSID " + mConfig.getSSIDNoQuotes());
                     System.out.println("\nSTARTING NETWORK ACTIVITY\n");
                     getContext().startActivity(intent);
                 }
