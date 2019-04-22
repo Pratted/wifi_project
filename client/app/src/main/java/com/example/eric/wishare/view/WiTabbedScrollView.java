@@ -62,7 +62,7 @@ public class WiTabbedScrollView extends LinearLayout {
 
     public void setWiConfiguration(WiConfiguration config){
         mPermittedContactsView = new WiPermittedContactsView(getContext(), mLhs, mRhs, config);
-        mInvitableContactsView = new WiInvitableContactsView(getContext(), config);
+        mInvitableContactsView = new WiInvitableContactsView(getContext(), mLhs, mRhs, config);
 
         for(WiContact contact: mContactList.getWiContacts().values()){
             if(contact.hasAccessTo(config.SSID)){
@@ -104,7 +104,7 @@ public class WiTabbedScrollView extends LinearLayout {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 if(tab.getPosition() == 0) mPermittedContactsView.refresh();
-                //if(tab.getPosition() == 1) mInvitableContactsView.refresh();
+                if(tab.getPosition() == 1) mInvitableContactsView.refresh();
             }
 
             @Override

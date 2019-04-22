@@ -2,12 +2,10 @@ package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.WifiConfiguration;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -16,16 +14,13 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
-import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.dialog.WiCancelInvitationDialog;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
-import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
@@ -47,16 +42,19 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private CheckBox mHeaderSelectAll;
     private Button mHeaderName;
-    private Button mName;
+    private Button mBtnLhs;
+    private Button mBtnRhs;
 
-    private LinearLayout mHeaders;
     private boolean mAscendingName;
 
     private WiConfiguration mWiConfiguration;
 
-    public WiInvitableContactsView(Context context, WiConfiguration config) {
+    public WiInvitableContactsView(Context context, Button left, Button right, WiConfiguration config) {
         super(context);
         mWiConfiguration = config;
+
+        mBtnLhs = left;
+        mBtnRhs = right;
 
         init();
     }
@@ -72,12 +70,31 @@ public class WiInvitableContactsView extends LinearLayout {
         mInvitableContacts = new ArrayList<>();
 
         mItems = findViewById(R.id.items);
-        mHeaders = findViewById(R.id.headers);
         mHeaderSelectAll = findViewById(R.id.cb_select_all);
         mHeaderName = findViewById(R.id.btn_name);
 
         mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
         mHeaderName.setOnClickListener(sortName());
+    }
+
+    public void refresh(){
+        mBtnLhs.setText("Done");
+        mBtnRhs.setText("Invite");
+
+        mBtnLhs.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCheckBoxVisibilities(GONE);
+                setButtonVisibilities(GONE);
+            }
+        });
+    }
+
+    private void setButtonVisibilities(int visibility){
+        this.refresh();
+
+        mBtnLhs.setVisibility(visibility);
+        mBtnRhs.setVisibility(visibility);
     }
 
     public void add(WiContact contact){
@@ -326,6 +343,8 @@ public class WiInvitableContactsView extends LinearLayout {
                     vibe.vibrate(40);
 
                     setCheckBoxVisibilities(VISIBLE);
+                    setButtonVisibilities(VISIBLE);
+
                     return false;
                 }
         };
