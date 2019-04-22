@@ -3,58 +3,90 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
-        android:id="@+id/headers"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="10"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/ll_permitted_contact">
 
-        <CheckBox
-            android:id="@+id/cb_select_all"
-            android:layout_weight="1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:button="@drawable/cb_selector"
-            android:background="@drawable/ripple"
-            style="@drawable/ripple"/>
-
-        <Button
-            android:id="@+id/btn_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Name"
-            android:layout_weight="4"
-            style="@drawable/ripple"
-            android:background="@drawable/ripple"/>
-
-        <Button
-            android:id="@+id/btn_data"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Data"
-            android:layout_weight="2"
-            style="@drawable/ripple"
-            android:background="@drawable/ripple"/>
-
-        <Button
-            android:id="@+id/btn_expires"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Expires"
-            android:layout_weight="3"
-            style="@drawable/ripple"
-            android:background="@drawable/ripple"/>
-    </LinearLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <LinearLayout
-            android:id="@+id/items"
+            android:id="@+id/headers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:weightSum="10"
+            android:orientation="horizontal">
+
+            <CheckBox
+                android:id="@+id/cb_select_all"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:button="@drawable/cb_selector"
+                android:background="@drawable/ripple"
+                style="@drawable/ripple"/>
+
+            <Button
+                android:id="@+id/btn_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Name"
+                android:layout_weight="4"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"/>
+
+            <Button
+                android:id="@+id/btn_data"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Data"
+                android:layout_weight="2"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"/>
+
+            <Button
+                android:id="@+id/btn_expires"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Expires"
+                android:layout_weight="3"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"/>
         </LinearLayout>
-    </ScrollView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <LinearLayout
+                android:id="@+id/items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/ll_permitted_contact_empty"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:padding="20dp"
+            android:textAlignment="center"
+            android:text="No contacts have access to this network!"/>
+        <Button
+            android:layout_marginTop="40dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@drawable/ripple"
+            android:background="@drawable/ripple"
+            android:text="Invite Contacts"/>
+    </LinearLayout>
 </LinearLayout>

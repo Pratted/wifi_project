@@ -34,6 +34,8 @@ import java.util.function.Predicate;
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiPermittedContactsView extends WiPage{
+    private String TAG = "WiPermContactView";
+
     private Button mHeaderName;
     private Button mHeaderData;
     private Button mHeaderExpires;
@@ -49,6 +51,9 @@ public class WiPermittedContactsView extends WiPage{
 
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
     private WiConfiguration mNetwork;
+
+    private LinearLayout mLinearLayout;
+    private LinearLayout mLinearLayoutEmpty;
 
     public WiPermittedContactsView(Context context, Button lhs, Button rhs, WiConfiguration network) {
         super(context);
@@ -79,6 +84,9 @@ public class WiPermittedContactsView extends WiPage{
         mHeaderName = (Button) findViewById(R.id.btn_name);
         mHeaderData = (Button) findViewById(R.id.btn_data);
         mHeaderExpires = (Button) findViewById(R.id.btn_expires);
+
+        mLinearLayout = findViewById(R.id.ll_permitted_contact);
+        mLinearLayoutEmpty = findViewById(R.id.ll_permitted_contact_empty);
 
         mHeaderName.setOnClickListener(sort(COL_NAME, 0));
         mHeaderData.setOnClickListener(sort(COL_DATA, 0));
@@ -204,6 +212,12 @@ public class WiPermittedContactsView extends WiPage{
                 setButtonVisibilities(GONE);
             }
         });
+
+        Log.d(TAG, "Refreshing");
+        Log.d(TAG, "Permitted Contacts: " + mPermittedContacts.size());
+
+        mLinearLayout.setVisibility(mPermittedContacts.isEmpty() ? View.GONE : View.VISIBLE);
+        mLinearLayoutEmpty.setVisibility(mPermittedContacts.isEmpty() ? View.VISIBLE : View.GONE);
 
         mBtnRhs.setOnClickListener(displayMultiRevokeAccessDialog());
     }

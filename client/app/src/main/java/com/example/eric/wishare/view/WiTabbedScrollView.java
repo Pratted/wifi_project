@@ -26,7 +26,6 @@ import java.util.HashMap;
 
 public class WiTabbedScrollView extends LinearLayout {
 
-    private WiTabbedScrollView mTabbedScrollView;
     private WiTabbedScrollViewPager mViewPager;
     private WiPagerAdapter mPagerAdapter;
     private WiContactList mContactList;
@@ -41,20 +40,14 @@ public class WiTabbedScrollView extends LinearLayout {
 
     public WiTabbedScrollView(Context context){
         super(context.getApplicationContext());
-        mContext = new WeakReference<Context>(context.getApplicationContext());
+        mContext = new WeakReference<>(context.getApplicationContext());
         init();
     }
 
     public WiTabbedScrollView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mContext = new WeakReference<Context>(context.getApplicationContext());
+        mContext = new WeakReference<>(context.getApplicationContext());
         init();
-    }
-
-    private WiTabbedScrollView getInstance(Context context){
-        if (mTabbedScrollView == null)
-            mTabbedScrollView = new WiTabbedScrollView(context.getApplicationContext());
-        return mTabbedScrollView;
     }
 
     private void init(){
@@ -63,7 +56,6 @@ public class WiTabbedScrollView extends LinearLayout {
         mRhs = findViewById(R.id.btn_rhs);
 
         mContactList = WiContactList.getInstance(mContext.get().getApplicationContext());
-        //mContactList.load();
 
         mViewPager = findViewById(R.id.view_pager);
     }
