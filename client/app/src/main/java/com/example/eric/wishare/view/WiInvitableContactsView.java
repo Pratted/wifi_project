@@ -184,7 +184,6 @@ public class WiInvitableContactsView extends LinearLayout {
         private ExpandableLayout mExpandableLayout;
 
         private TextView mTitle;
-        private LinearLayout mItems;
         private Button mInvite;
         private Button mVisitProfile;
         private CheckBox mHourglass;
@@ -216,7 +215,6 @@ public class WiInvitableContactsView extends LinearLayout {
 
             mExpandableLayout = findViewById(R.id.expandable_contact);
             mTitle = findViewById(R.id.title);
-            mItems = findViewById(R.id.items);
             mInvite = findViewById(R.id.btn_invite_contact);
             mVisitProfile = findViewById(R.id.btn_visit_profile);
             mSwipeLayout = findViewById(R.id.swipe_layout);
@@ -306,12 +304,6 @@ public class WiInvitableContactsView extends LinearLayout {
 
                             // save this information in the contact list and in the database.
                             WiContactList.getInstance(getContext()).save(mContact);
-                            //WiSQLiteDatabase.getInstance(getContext()).save(mContact);
-                            //WiSQLiteDatabase.getInstance(getContext()).insertPendingInvitation(invitation, mContact);
-
-                            // send all invitations to Eric for testing... remove this when done.
-                            //mContact.setPhone("610-737-0292");
-                            //mContact.setPhone("717-802-9623");
 
                             WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, mContact) {
                                 @Override

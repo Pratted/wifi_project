@@ -374,6 +374,7 @@ public class SettingsActivity extends PreferenceActivity {
 
                                                     Log.d(TAG, "Saved contact: " + contact.getName());
 
+                                                    WiSQLiteDatabase.getInstance(getContext()).insert(contact);
                                                     WiContactList.getInstance(getContext()).save(contact);
                                                 }
                                             })

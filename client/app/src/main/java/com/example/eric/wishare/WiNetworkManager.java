@@ -67,16 +67,13 @@ public class WiNetworkManager {
         }
 
         for(WifiConfiguration config: deviceNetworks){
-            // android wifi manager surrounds wifi SSID with quotes, remove them for comparision
-            String ssid = config.SSID.replace("\"", "");
-
             // if not already in configured, add to unConfiguredNetworks...
-            if(!mConfiguredNetworks.containsKey(ssid)){
-                mUnConfiguredNetworks.put(ssid, config);
-                Log.d(TAG, ssid + " is an UNconfigured network...");
+            if(!mConfiguredNetworks.containsKey(config.SSID)){
+                mUnConfiguredNetworks.put(config.SSID, config);
+                Log.d(TAG, config.SSID + " is an UNconfigured network...");
             }
             else{
-                Log.d(TAG, ssid + " is a configured network...");
+                Log.d(TAG, config.SSID + " is a configured network...");
             }
         }
     }

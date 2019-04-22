@@ -193,7 +193,14 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
                 mPermittedNetworksCache.get(recipientPhone).add(ssid);
 
                 WiConfiguration config = new WiConfiguration(ssid, "");
-                contacts.get(recipientPhone).grantAccess(config);
+
+                if(contacts.containsKey(recipientPhone)){
+                    contacts.get(recipientPhone).grantAccess(config);
+                }
+                else{
+                    Log.d(TAG, recipientPhone + " has access to " + ssid + " but could not be found in the contact list");
+                }
+
             } while(cur.moveToNext());
         }
 
