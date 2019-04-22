@@ -1,10 +1,8 @@
 package com.example.eric.wishare;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;
@@ -29,7 +27,6 @@ public class WiNetworkManager {
     private static WiNetworkManager sInstance;
     private static WifiManager sWifiManager;
 
-    private SharedPreferences.Editor mEditor;
     private WeakReference<Context> mContext;
     private String TAG = "WiNetworkManager";
 
@@ -41,8 +38,6 @@ public class WiNetworkManager {
         mContext = new WeakReference<>(context.getApplicationContext());
         sWifiManager = (WifiManager) mContext.get().getApplicationContext().getSystemService(WIFI_SERVICE);
         WiSharedPreferences.initialize(context);
-
-        mEditor = PreferenceManager.getDefaultSharedPreferences(context).edit();
 
         synchronizeNetworks();
     }
@@ -70,7 +65,7 @@ public class WiNetworkManager {
             }
         }
     }
-    
+
     // called by a client when a host sends them network credentials
     public void addConfiguredNetwork(WiConfiguration config) {
         Log.d(TAG, "WifiManagerEnabled? " + WiUtils.isWifiManagerEnabled());

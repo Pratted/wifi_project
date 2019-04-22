@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -50,16 +51,8 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private LinearLayout mHeaders;
     private boolean mAscendingName;
-    private boolean mMultiSelectEnabled;
 
     private WiConfiguration mWiConfiguration;
-
-
-    public interface OnCheckBoxVisibilitiesChangedListener {
-        void onCheckBoxVisibilitiesChanged(int visibilty);
-    }
-
-    private OnCheckBoxVisibilitiesChangedListener mCheckBoxVisibilitiesChangedListener;
 
     public WiInvitableContactsView(Context context, WiConfiguration config) {
         super(context);
@@ -74,30 +67,9 @@ public class WiInvitableContactsView extends LinearLayout {
         init();
     }
 
-    public void animateLeftSwipe() {
-        for(WiInvitableContactListItem child: mInvitableContacts){
-            if(child.mCheckBox.isChecked()){
-                child.mName.startAnimation(child.mSwipeLeftAnimation);
-            }
-        }
-    }
-
-    public void setOnCheckBoxVisibilitiesChangedListener(OnCheckBoxVisibilitiesChangedListener listener){
-        mCheckBoxVisibilitiesChangedListener = listener;
-    }
-
-    public int getSelectedContactCount(){
-        int count = 0;
-        for(WiInvitableContactListItem contact: mInvitableContacts){
-            count += contact.mCheckBox.isChecked() ? 1 : 0;
-        }
-        return count;
-    }
-
     private void init(){
         inflate(getContext(), R.layout.layout_invitable_contacts, this);
         mInvitableContacts = new ArrayList<>();
-        mMultiSelectEnabled = false;
 
         mItems = findViewById(R.id.items);
         mHeaders = findViewById(R.id.headers);
@@ -164,15 +136,14 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderSelectAll.setVisibility(visibility);
         mHeaderSelectAll.setChecked(false);
 
-        // checkboxes turned on -> multiSelection is possible...
-        mMultiSelectEnabled = (visibility == VISIBLE);
-
         for(WiInvitableContactListItem child: mInvitableContacts){
-            child.mCheckBox.setVisibility(visibility);
-        }
-
-        if(mCheckBoxVisibilitiesChangedListener != null){
-            mCheckBoxVisibilitiesChangedListener.onCheckBoxVisibilitiesChanged(visibility);
+            // if they have a pending invitation the checkbox is effectively disabled
+            if(child.hasPendingInvitation()){
+                child.mCheckBox.setVisibility(View.GONE);
+            }
+            else{
+                child.mCheckBox.setVisibility(visibility);
+            }
         }
     }
 
@@ -206,69 +177,80 @@ public class WiInvitableContactsView extends LinearLayout {
             super(context, attrs);
         }
 
+        public boolean hasPendingInvitation(){
+            return mContact.hasPendingInvitation(mWiConfiguration.SSID);
+        }
+
         private void init(){
             inflate(getContext(), R.layout.layout_invitable_contacts_list_item, this);
 
             mCheckBox = findViewById(R.id.cb_select);
             mHourglass = findViewById(R.id.cb_select_hourglass);
             mName = findViewById(R.id.btn_name);
-
             mExpandableLayout = findViewById(R.id.expandable_contact);
             mTitle = findViewById(R.id.title);
             mInvite = findViewById(R.id.btn_invite_contact);
             mVisitProfile = findViewById(R.id.btn_visit_profile);
             mSwipeLayout = findViewById(R.id.swipe_layout);
-            mSwipeLayout.setRightSwipeEnabled(false);
-
-            mSwipeLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.swipe_left);
-            mSwipeLeftAnimation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    mCheckBox.setVisibility(GONE);
-                    mHourglass.setVisibility(VISIBLE);
-                    mHourglass.setButtonDrawable(R.drawable.ic_full);
-                    mCheckBox.setChecked(false);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mCheckBox.setChecked(false);
-                    mHourglass.setButtonDrawable(R.drawable.ic_empty);
-                    mName.setText("Invitation Sent!");
-                    mName.setOnClickListener(doNothing());
-                    if(mExpandableLayout.isExpanded()) {
-                        mExpandableLayout.collapse();
-                    }
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            //setAnimation(mSwipeLeftAnimation);
 
             mName.setText(mContact.getName());
             mTitle.setText(mContact.getName() + " doesn't have access to any networks");
 
-            mCheckBox.setVisibility(INVISIBLE);
+            mSwipeLayout.setRightSwipeEnabled(false);
+            mCheckBox.setVisibility(GONE);
 
-            mName.setOnLongClickListener(onLongClick());
-            mName.setOnClickListener(expand());
-            mInvite.setOnClickListener(displayInvitationDialog());
-            mVisitProfile.setOnClickListener(startContactActivity());
+            mName.setOnClickListener(ExpandOrCollapse);
+            mName.setOnLongClickListener(DisplayCheckBoxes);
+            mInvite.setOnClickListener(DisplayInvitationDialog);
+            mVisitProfile.setOnClickListener(StartContactActivity);
+
+            mSwipeLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.swipe_left);
+            mSwipeLeftAnimation.setAnimationListener(AnimateSlideLeft);
+
+            if(mContact.hasPendingInvitation(mWiConfiguration.SSID)){
+                configureWithPendingInvitation();
+            }
         }
 
-        private View.OnClickListener doNothing(){
-            return new OnClickListener() {
-                @Override
-                public void onClick(View v) {
+        private void configureWithPendingInvitation(){
+            mCheckBox.setChecked(false);
+            mCheckBox.setVisibility(GONE);
+            mHourglass.setButtonDrawable(R.drawable.ic_empty);
+            mHourglass.setVisibility(View.VISIBLE);
+
+            mInvite.setText("View Invitation");
+            mInvite.setOnClickListener(CancelInvitation);
+        }
+
+        private Animation.AnimationListener AnimateSlideLeft = new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                mCheckBox.setVisibility(GONE);
+                mHourglass.setVisibility(VISIBLE);
+                mHourglass.setButtonDrawable(R.drawable.ic_full);
+                mCheckBox.setChecked(false);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mCheckBox.setChecked(false);
+                mHourglass.setButtonDrawable(R.drawable.ic_empty);
+                mName.setText("Invitation Sent!");
+
+                if(mExpandableLayout.isExpanded()) {
+                    mExpandableLayout.collapse();
                 }
-            };
-        }
 
-        private View.OnClickListener expand(){
-            return new OnClickListener() {
+                configureWithPendingInvitation();
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        };
+
+        private View.OnClickListener ExpandOrCollapse = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(mExpandableLayout.isExpanded()){
@@ -279,10 +261,15 @@ public class WiInvitableContactsView extends LinearLayout {
                     }
                 }
             };
-        }
 
-        private View.OnClickListener displayInvitationDialog(){
-            return new OnClickListener() {
+        private View.OnClickListener CancelInvitation = new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                new WiCancelInvitationDialog(getContext(), mWiConfiguration.SSID, mContact.getPhone()).show();
+            };
+        };
+
+        private View.OnClickListener DisplayInvitationDialog = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(mExpandableLayout.isExpanded()){
@@ -321,22 +308,18 @@ public class WiInvitableContactsView extends LinearLayout {
                     });
                     dialog.show();
                 }
-            };
-        }
+        };
 
-        private View.OnClickListener startContactActivity(){
-            return new OnClickListener() {
+        private View.OnClickListener StartContactActivity = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ContactActivity.class);
                     intent.putExtra("contact", mContact);
                     getContext().startActivity(intent);
                 }
-            };
-        }
+        };
 
-        private View.OnLongClickListener onLongClick(){
-            return new OnLongClickListener() {
+        private View.OnLongClickListener DisplayCheckBoxes = new OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
                     Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
@@ -345,7 +328,6 @@ public class WiInvitableContactsView extends LinearLayout {
                     setCheckBoxVisibilities(VISIBLE);
                     return false;
                 }
-            };
-        }
+        };
     }
 }
