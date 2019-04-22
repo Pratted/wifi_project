@@ -45,6 +45,9 @@ public class NetworkActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(WiUtils.ACTIVITY_NETWORK));
 
+
+        //String ssid = getIntent().getString("ssid");
+        //mConfig = WiNetworkManager.getInstance(this).getConfiguredNetwork(ssid);
         mConfig = getIntent().getParcelableExtra("NetworkInfo");
 
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);

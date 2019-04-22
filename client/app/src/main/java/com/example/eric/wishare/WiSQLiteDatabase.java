@@ -284,9 +284,13 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         for(String ssid: cache){
             // the contact no longer has access to this network. It needs to be deleted from db
             if(!permittedNetworks.contains(ssid)){
-                cache.remove(ssid);
+                Log.d(TAG, "Need to delete: " + ssid);
                 toBeDeleted.add(ssid);
             }
+        }
+
+        for(String bad: toBeDeleted){
+            cache.remove(bad);
         }
 
         try {
@@ -321,7 +325,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         for(WiInvitation inv: temp){
             pendingInvitations.add(inv.networkName);
         }
-
+        int x = 0;
         for(String ssid: pendingInvitations){
 
             // this invitation is not in cache. It was recently added so it must be saved in DB.
@@ -335,9 +339,12 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
 
             // the contact no longer this pending invitation. It needs to be deleted from db.
             if(!pendingInvitations.contains(ssid)){
-                cache.remove(ssid);
                 toBeDeleted.add(ssid);
             }
+        }
+
+        for(String bad: toBeDeleted){
+            cache.remove(bad);
         }
 
         try {
@@ -419,7 +426,7 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             public void onDBReady(SQLiteDatabase theDB) {
                 Log.d(TAG, "removing permitted contact from database");
                 theDB.delete(TABLE_PERMITTED_CONTACTS.TABLE_NAME,
-                        TABLE_PERMITTED_CONTACTS.COL_SSID + "=?," +
+                        TABLE_PERMITTED_CONTACTS.COL_SSID + "=? and " +
                                 TABLE_PERMITTED_CONTACTS.COL_PHONE + "=?",
                         new String[]{config.SSID, phone});
 

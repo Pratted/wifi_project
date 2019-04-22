@@ -22,6 +22,7 @@ import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiSQLiteDatabase;
+import com.example.eric.wishare.dialog.WiCancelInvitationDialog;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
 import com.example.eric.wishare.dialog.WiInviteContactToNetworkDialog;
 import com.example.eric.wishare.model.WiConfiguration;
@@ -292,7 +293,7 @@ public class WiInvitableContactsView extends LinearLayout {
 
                     // TODO: notify user client has already been invited
                     if(mContact.hasPendingInvitation(mWiConfiguration.SSID)){
-                        Toast.makeText(getContext(), mContact.getName() + " has already been invited to " + mWiConfiguration.SSID, Toast.LENGTH_LONG).show();
+                        new WiCancelInvitationDialog(getContext(), mWiConfiguration.SSID, mContact.getPhone()).show();
                         return;
                     }
 

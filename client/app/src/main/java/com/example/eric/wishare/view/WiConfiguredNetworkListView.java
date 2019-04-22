@@ -20,6 +20,7 @@ import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.WiSQLiteDatabase;
 import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 
 import java.util.HashMap;
@@ -119,7 +120,10 @@ public class WiConfiguredNetworkListView extends LinearLayout {
                                     if (checked){
                                         List<String> phoneList = WiSQLiteDatabase.getInstance(getContext()).getNetworksContacts(mConfig);
                                         for (String phone: phoneList) {
-                                            WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mConfig, phone);
+                                            WiContact contact = WiContactList.getInstance(getContext()).getContactByPhone(phone);
+                                            contact.revokeAccess(mConfig.SSID);
+                                            WiContactList.getInstance(getContext()).save(contact);
+                                            WiRevokeAccessDataMessage msg = new WiRevokeAccessDataMessage(mConfig, contact.getPhone());
                                             WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                                             WiSQLiteDatabase.getInstance(getContext()).delete(mConfig, phone);
                                         }

@@ -56,7 +56,7 @@ public class WiSplash extends Activity {
                     .input("123-456-7890", "", false, new MaterialDialog.InputCallback() {
                         @Override
                         public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                            String phone = input.toString();
+                            String phone = WiUtils.formatPhoneNumber(input.toString());
                             WiSharedPreferences.putString("phone", WiUtils.formatPhoneNumber(phone));
                             WiSQLiteDatabase.getInstance(WiSplash.this).insert(new WiContact("Me", WiUtils.formatPhoneNumber(phone)));
 
