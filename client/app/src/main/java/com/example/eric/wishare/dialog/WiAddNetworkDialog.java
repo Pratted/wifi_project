@@ -13,6 +13,7 @@ import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WiAddNetworkDialog extends WiDialog {
     private String TAG = "WiAddNetworkDialog";
@@ -20,12 +21,15 @@ public class WiAddNetworkDialog extends WiDialog {
     private WiNetworkManager mNetworkManager;
     private OnNetworkReadyListener mOnNetworkReadyListener;
 
+    private List<WifiConfiguration> mUnConfiguredNetworks;
+
     @Override
     public MaterialDialog build() {
         ArrayList<String> networks = new ArrayList<>();
+        mUnConfiguredNetworks = mNetworkManager.getUnConfiguredNetworks();
 
-        // pretty format the SSID's for the Material Dialog
-        for(WifiConfiguration config: mNetworkManager.getUnConfiguredNetworks()){
+        // remove quotes from the SSID's for the Material Dialog
+        for(WifiConfiguration config: mUnConfiguredNetworks){
             networks.add(config.SSID.replace("\"", ""));
         }
 
@@ -45,63 +49,24 @@ public class WiAddNetworkDialog extends WiDialog {
     private MaterialDialog.ListCallback onNetWorkSelect() {
         return new MaterialDialog.ListCallback() {
             @Override
-            public void onSelection(MaterialDialog dialog, View itemView, int position, final CharSequence wifiName) {
+            public void onSelection(MaterialDialog dialog, View itemView, final int position, final CharSequence wifiName) {
                 new MaterialDialog.Builder(context.get())
                         .title("Enter Password")
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
                         .input("Password", "", false, new MaterialDialog.InputCallback() {
                             @Override
                             public void onInput(@NonNull MaterialDialog dialog, final CharSequence password) {
-                                final WiConfiguration config = new WiConfiguration(wifiName.toString(), password.toString());
-                                mNetworkManager.configureNetwork(config); // now that the password has been entered the network is configured
+                                // get the original configuration with the quotes
+                                WifiConfiguration original = mUnConfiguredNetworks.get(position);
+                                final WiConfiguration config = new WiConfiguration(original.SSID, password.toString());
 
+                                // now that the password has been entered the network is configured
+                                mNetworkManager.configureNetwork(config);
+
+                                // this callback should start Network Activity
                                 if(mOnNetworkReadyListener != null){
                                     mOnNetworkReadyListener.onNetworkReady(config);
                                 }
-
-                                /*
-                                // SSID is in range, try and test the connection...
-                                if(mNetworkManager.isSsidInRange(wifiName.toString())){
-
-                                    // Circular Progress dialog. Times out after N seconds if unsuccessful.
-                                    final MaterialDialog progressDialog = new MaterialDialog.Builder(context.get())
-                                            .progress(true, 100)
-                                            .content("Configuring Network...")
-                                            .show();
-
-                                    mNetworkManager.setOnTestConnectionCompleteListener(new WiNetworkManager.OnTestConnectionCompleteListener() {
-                                        @Override
-                                        public void onTestConnectionComplete(boolean success) {
-                                            progressDialog.dismiss(); // close the progress dialog. the test is finished
-                                            Log.d(TAG, "Success? " + success);
-
-                                            // display a warning prompt telling the user that their credentials may be incorrect...
-                                            if(!success){
-                                                String msg = "WiShare was unable to connect to the network using the password you provided.";
-
-                                                new MaterialDialog.Builder(context.get())
-                                                        .title(config.SSID)
-                                                        .content(msg)
-                                                        .positiveText("Ok")
-                                                        .show();
-                                            }
-
-                                            if(mOnNetworkReadyListener != null)
-                                                mOnNetworkReadyListener.onNetworkReady(config);
-                                        }
-                                    });
-
-                                    progressDialog.show();
-                                    mNetworkManager.testConnection(wifiName.toString());
-
-                                }
-                                // Network is out of range, unable to attempt a connection
-                                else {
-                                    if(mOnNetworkReadyListener != null){
-                                        mOnNetworkReadyListener.onNetworkReady(config);
-                                    }
-                                }
-                                */
                             }}).show();
             }
         };

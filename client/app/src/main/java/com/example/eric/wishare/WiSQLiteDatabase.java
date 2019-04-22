@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.wifi.WifiConfiguration;
 import android.os.AsyncTask;
-import android.os.Looper;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import com.example.eric.wishare.model.WiConfiguration;

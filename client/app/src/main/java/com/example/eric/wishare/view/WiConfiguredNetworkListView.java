@@ -62,6 +62,8 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     }
 
     public void addConfiguredNetwork(WiConfiguration config) {
+        Log.d(TAG, "Adding configured network: '" + config.SSID + "'");
+
         WiConfiguredNetworkListItem item = new WiConfiguredNetworkListItem(getContext(), config);
         mConfiguredNetworks.put(config.SSID, item);
         addView(item);
@@ -142,11 +144,9 @@ public class WiConfiguredNetworkListView extends LinearLayout {
             return new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    System.out.println("CLICKED");
                     Intent intent = new Intent(getContext(), NetworkActivity.class);
-                    intent.putExtra("NetworkInfo", mConfig);
-                    System.out.println("THIS IS THE SSID " + mConfig.getSSIDNoQuotes());
-                    System.out.println("\nSTARTING NETWORK ACTIVITY\n");
+                    intent.putExtra("ssid", mConfig.SSID);
+                    Log.d(TAG, "Starting network activity. Using ssid='" + mConfig.SSID +"'");
                     getContext().startActivity(intent);
                 }
             };

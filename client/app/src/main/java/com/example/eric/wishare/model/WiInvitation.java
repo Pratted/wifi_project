@@ -18,10 +18,6 @@ public class WiInvitation implements Parcelable {
 
     private boolean mAccepted = false;
 
-    public WiConfiguration getWiConfiguration() {
-        return mConfiguration;
-    }
-
     public WiInvitation(String networkName, String sender, String expires, String timeLimit, String dataLimit) {
         this.networkName = networkName;
         this.sender = sender;

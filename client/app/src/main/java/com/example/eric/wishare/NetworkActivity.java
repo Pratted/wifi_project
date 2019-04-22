@@ -45,17 +45,13 @@ public class NetworkActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiver, new IntentFilter(WiUtils.ACTIVITY_NETWORK));
 
-
-        //String ssid = getIntent().getString("ssid");
-        //mConfig = WiNetworkManager.getInstance(this).getConfiguredNetwork(ssid);
-        mConfig = getIntent().getParcelableExtra("NetworkInfo");
+        String ssid = getIntent().getStringExtra("ssid");
+        mConfig = WiNetworkManager.getInstance(this).getConfiguredNetwork(ssid);
 
         mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
 
         searchBar = findViewById(R.id.edit_text_search_bar);
         searchBar.addTextChangedListener(search());
-
-        mConfig = getIntent().getParcelableExtra("NetworkInfo");
 
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle(mConfig.getSSIDNoQuotes());
