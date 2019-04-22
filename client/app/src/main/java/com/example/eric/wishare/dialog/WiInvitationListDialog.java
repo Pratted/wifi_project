@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -19,29 +20,36 @@ import net.cachapa.expandablelayout.ExpandableLayout;
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.content.Context.LAYOUT_INFLATER_SERVICE;
-
 public class WiInvitationListDialog extends WiDialog{
-    private LinearLayout mLinearLayout;
-    private LayoutInflater mInflater;
     private ArrayList<WiInvitationListItem> mInvitationListItems = new ArrayList<>();
-    private ScrollView mCustomView;
+
+    private LinearLayout mCustomView;
+    private ScrollView mScrollView;
+    private LinearLayout mLinearLayout;
 
     public WiInvitationListDialog(Context context){
         super(context);
 
-        //mCustomView = new ScrollView(context);
         // create an empty layout to place into the dialog...
+        mCustomView = new LinearLayout(context);
         mLinearLayout = new LinearLayout(context);
-        mInflater = (LayoutInflater) context.getSystemService(LAYOUT_INFLATER_SERVICE);
-        mLinearLayout.setOrientation(LinearLayout.VERTICAL);
-        //mLinearLayout.set
+        mScrollView = new ScrollView(context);
 
-        //mCustomView.addView(mLinearLayout);
+        mLinearLayout.setOrientation(LinearLayout.VERTICAL);
+        ScrollView.LayoutParams params = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800);
+        mScrollView.setLayoutParams(params);
+
+        // .customView()
+        //      LinearLayout <- this height automatically gets resized to WRAP_CONTENT
+        //          ScrollView <- set a fixed height here to prevent dialog from growing/shrinking
+        //              LinearLayout <- the actual container for our WiInvitationListItems
+        mScrollView.addView(mLinearLayout);
+        mCustomView.addView(mScrollView);
     }
 
     private void add(WiInvitationListItem invitation){
         mInvitationListItems.add(invitation);
+        mLinearLayout.addView(invitation);
     }
 
     @Override
@@ -52,7 +60,7 @@ public class WiInvitationListDialog extends WiDialog{
         List<WiInvitation> invitations = WiInvitationList.getInstance(context.get()).getAllInvitations();
 
         for(WiInvitation invitation: invitations){
-            add(new WiInvitationListItem(invitation));
+            add(new WiInvitationListItem(context.get(), invitation));
         }
 
         MaterialDialog.Builder dialog = new MaterialDialog.Builder(context.get())
@@ -63,7 +71,7 @@ public class WiInvitationListDialog extends WiDialog{
             dialog = dialog.content("You have no invitations!");
         }
         else{
-            dialog = dialog.customView(mLinearLayout, true)
+            dialog = dialog.customView(mCustomView, false)
                     .negativeText("Clear All")
                     .onNegative(onNegative());
         }
@@ -75,7 +83,7 @@ public class WiInvitationListDialog extends WiDialog{
             @Override
             public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
                 for(WiInvitationListItem item: mInvitationListItems){
-                    mLinearLayout.removeView(item.mLayout);
+                    mLinearLayout.removeView(item);
                 }
             }
         };
@@ -86,7 +94,7 @@ public class WiInvitationListDialog extends WiDialog{
             WiInvitation lhs = mInvitationListItems.get(i).mInvitation;
 
             if (lhs.equals(invitation)) {
-                mLinearLayout.removeView(mInvitationListItems.get(i).mLayout);
+                mLinearLayout.removeView(mInvitationListItems.get(i));
                 mInvitationListItems.remove(i);
 
                 return;
@@ -94,8 +102,7 @@ public class WiInvitationListDialog extends WiDialog{
         }
     }
 
-    private class WiInvitationListItem {
-        private LinearLayout mLayout;
+    private class WiInvitationListItem extends LinearLayout{
         private WiInvitation mInvitation;
 
         private TextView tvInvitationTitle;
@@ -104,19 +111,30 @@ public class WiInvitationListDialog extends WiDialog{
         private ExpandableLayout mExpandableLayout;
         //private TextView tvInvitationExpires;
 
-        public WiInvitationListItem(WiInvitation invitation){
+
+        public WiInvitationListItem(Context context, WiInvitation invitation){
+            super(context);
             mInvitation = invitation;
 
-            mLayout = (LinearLayout) mInflater.inflate(R.layout.layout_invitation_list_item_eric, null);
-            mLinearLayout.addView(mLayout);
+            init();
+        }
 
-            refresh();
+        private void init(){
+            inflate(getContext(), R.layout.layout_invitation_list_item_eric, this);
+
+            tvInvitationTitle = findViewById(R.id.tv_invitation_title);
+            tvInvitationOwner = findViewById(R.id.tv_invitation_owner);
+
+            mExpandableLayout = findViewById(R.id.expandable_layout_invitation);
+
+            tvInvitationTitle.setText(mInvitation.networkName);
+            tvInvitationOwner.setText(mInvitation.sender);
 
             mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(context.get(), mInvitation);
             mAcceptDeclineDialog.setOnAcceptedListener(onAccepted());
             mAcceptDeclineDialog.setOnDeclinedListener(onDeclined());
 
-            mLayout.setOnClickListener(new View.OnClickListener() {
+            this.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if(mExpandableLayout.isExpanded()) {
@@ -126,16 +144,6 @@ public class WiInvitationListDialog extends WiDialog{
                     }
                 }
             });
-        }
-
-        public void refresh(){
-            tvInvitationTitle = mLayout.findViewById(R.id.tv_invitation_title);
-            tvInvitationOwner = mLayout.findViewById(R.id.tv_invitation_owner);
-
-            mExpandableLayout = mLayout.findViewById(R.id.expandable_layout_invitation);
-
-            tvInvitationTitle.setText(mInvitation.networkName);
-            tvInvitationOwner.setText(mInvitation.sender);
         }
 
         private WiInvitationAcceptDeclineDialog.OnAcceptedListener onAccepted(){
