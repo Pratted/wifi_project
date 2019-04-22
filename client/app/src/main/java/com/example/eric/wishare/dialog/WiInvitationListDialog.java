@@ -2,9 +2,9 @@ package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -12,15 +12,21 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiInvitationList;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.WiDataMessage;
+import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 
 import net.cachapa.expandablelayout.ExpandableLayout;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WiInvitationListDialog extends WiDialog{
+    private static String TAG = "WiInvListDialog";
     private ArrayList<WiInvitationListItem> mInvitationListItems = new ArrayList<>();
 
     private LinearLayout mCustomView;
@@ -105,11 +111,14 @@ public class WiInvitationListDialog extends WiDialog{
     private class WiInvitationListItem extends LinearLayout{
         private WiInvitation mInvitation;
 
-        private TextView tvInvitationTitle;
-        private TextView tvInvitationOwner;
-        private WiInvitationAcceptDeclineDialog mAcceptDeclineDialog;
+        private TextView mTextViewTitle;
+        private TextView mTextViewOwner;
+        private TextView mTextViewExpires;
+
         private ExpandableLayout mExpandableLayout;
-        //private TextView tvInvitationExpires;
+
+        private Button mButtonAccept;
+        private Button mButtonDecline;
 
 
         public WiInvitationListItem(Context context, WiInvitation invitation){
@@ -122,46 +131,61 @@ public class WiInvitationListDialog extends WiDialog{
         private void init(){
             inflate(getContext(), R.layout.layout_invitation_list_item_eric, this);
 
-            tvInvitationTitle = findViewById(R.id.tv_invitation_title);
-            tvInvitationOwner = findViewById(R.id.tv_invitation_owner);
+            mTextViewTitle = findViewById(R.id.tv_invitation_title);
+            mTextViewOwner = findViewById(R.id.tv_invitation_owner);
+            mTextViewExpires = findViewById(R.id.tv_invitation_expires);
+
+            mButtonDecline = findViewById(R.id.btn_decline_invitation);
+            mButtonAccept = findViewById(R.id.btn_accept_invitation);
 
             mExpandableLayout = findViewById(R.id.expandable_layout_invitation);
 
-            tvInvitationTitle.setText(mInvitation.networkName);
-            tvInvitationOwner.setText(mInvitation.sender);
+            mTextViewTitle.setText(mInvitation.networkName);
+            mTextViewOwner.setText(mInvitation.sender);
+            mTextViewExpires.setText(mInvitation.expires);
 
-            mAcceptDeclineDialog = new WiInvitationAcceptDeclineDialog(context.get(), mInvitation);
-            mAcceptDeclineDialog.setOnAcceptedListener(onAccepted());
-            mAcceptDeclineDialog.setOnDeclinedListener(onDeclined());
+            this.setOnClickListener(ExpandOrCollapse);
 
-            this.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mExpandableLayout.isExpanded()) {
-                        mExpandableLayout.collapse();
-                    } else {
-                        mExpandableLayout.expand();
+            mButtonAccept.setOnClickListener(AcceptInvitation);
+            mButtonDecline.setOnClickListener(DeclineInvitation);
+        }
+
+        private View.OnClickListener ExpandOrCollapse = new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if(mExpandableLayout.isExpanded()) {
+                    mExpandableLayout.collapse();
+                } else {
+                    mExpandableLayout.expand();
+                }
+            }
+        };
+
+        private View.OnClickListener AcceptInvitation = new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                remove(mInvitation); // remove from the Dialog
+                WiInvitationList.getInstance(getContext()).remove(mInvitation);
+
+                /*
+                WiDataMessage msg = new WiInvitationDataMessage(mInvitation, mInvitation.sender, true) {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
                     }
-                }
-            });
-        }
+                };
 
-        private WiInvitationAcceptDeclineDialog.OnAcceptedListener onAccepted(){
-            return new WiInvitationAcceptDeclineDialog.OnAcceptedListener() {
-                @Override
-                public void onAccepted(WiInvitation invitation) {
-                    remove(invitation);
-                }
-            };
-        }
+                WiDataMessageController.getInstance(getContext()).send(msg);
+                */
+            }
+        };
 
-        private WiInvitationAcceptDeclineDialog.OnDeclinedListener onDeclined(){
-            return new WiInvitationAcceptDeclineDialog.OnDeclinedListener() {
-                @Override
-                public void onDeclined(WiInvitation invitation) {
-                    remove(invitation);
-                }
-            };
-        }
+        private View.OnClickListener DeclineInvitation = new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                remove(mInvitation);
+                WiInvitationList.getInstance(getContext()).remove(mInvitation);
+            }
+        };
     }
 }

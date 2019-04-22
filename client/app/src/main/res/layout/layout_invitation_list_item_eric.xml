@@ -82,7 +82,7 @@
                         android:text="Owner:"/>
 
                     <TextView
-                        android:id="@+id/tv_expires"
+                        android:id="@+id/tv_invitation_expires"
                         android:paddingLeft="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -124,6 +124,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Decline"
+                    android:id="@+id/btn_decline_invitation"
                     android:textColor="@color/themeGreen"
                     style="@drawable/ripple"
                     android:background="@drawable/ripple"/>
@@ -135,6 +136,7 @@
                     android:text="Accept"
                     android:textColor="@color/themeGreen"
                     style="@drawable/ripple"
+                    android:id="@+id/btn_accept_invitation"
                     android:background="@drawable/ripple"/>
 
             </LinearLayout>
