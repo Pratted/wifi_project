@@ -169,9 +169,9 @@ public class MainActivity extends AppCompatActivity {
             if(intent.hasExtra("invitation")){
                 Log.d(TAG, "PREPARNG INVITATION");
 
-                WiInvitation invitation = intent.getParcelableExtra("invitation");
-                //mInvitationListDialog.add(invitation);
-                new WiInvitationAcceptDeclineDialog(this, invitation).show();
+                String ssid = intent.getStringExtra("invitation");
+                WiInvitation invitation = WiInvitationList.getInstance(this).getInvitation(ssid);
+
                 intent.removeExtra("invitation");
             }
         }
@@ -192,9 +192,10 @@ public class MainActivity extends AppCompatActivity {
             if(intent.hasExtra("invitation")){
                 Log.d(TAG, "PREPARNG INVITATION");
 
-                WiInvitation invitation = intent.getParcelableExtra("invitation");
+                String ssid = intent.getStringExtra("invitation");
+                WiInvitation invitation = WiInvitationList.getInstance(this).getInvitation(ssid);
+
                 new WiInvitationAcceptDeclineDialog(this, invitation).show();
-                intent.removeExtra("invitation");
             }
         }
     }
