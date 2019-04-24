@@ -138,19 +138,6 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-    /*
-    private WiInvitationListDialog.OnInvitationsUpdatedListener refreshMyInvitationsButtonCounter(){
-        return new WiInvitationListDialog.OnInvitationsUpdatedListener() {
-            @Override
-            public void onInvitationsUpdated(List<WiInvitation> invitations) {
-                if(invitations != null){
-                    btnMyInvitations.setInvitationCount(invitations.size());
-                }
-            }
-        };
-    }
-    */
-
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
@@ -173,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Failed to connect to server.", Toast.LENGTH_LONG).show();
         }
     };
+
     @Override
     protected void onResume() {
 

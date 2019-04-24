@@ -15,6 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.DataOutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -136,23 +139,63 @@ public abstract class WiDataMessage extends JSONObject {
                     public void onResponse(JSONObject response) {
                         // call the method the user defined. not this one.
                         WiDataMessage.this.onResponse(response);
+
+                        Log.d(TAG, "Sending same requestin...");
+                        sendPost(mUrl);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                            Log.d(TAG, "FUCK");
+
                             if(error != null){
                                 error.printStackTrace();
+                                sendPost(mUrl);
                             }
                     }
                 });
 
 
-        req.setRetryPolicy(new DefaultRetryPolicy(20000,
+        req.setRetryPolicy(new DefaultRetryPolicy(3000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         return req;
+    }
+
+    public void sendPost(final String urlAdress) {
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL(urlAdress);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("POST");
+                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
+                    conn.setRequestProperty("Accept","application/json");
+                    conn.setDoOutput(true);
+                    conn.setDoInput(true);
+
+                    Log.i("JSON", WiDataMessage.this.toString());
+                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
+                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
+                    os.writeBytes(WiDataMessage.this.toString());
+
+                    os.flush();
+                    os.close();
+
+                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
+                    Log.i("MSG" , conn.getResponseMessage());
+
+                    conn.disconnect();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
     }
 
     public abstract void onResponse(JSONObject response);
