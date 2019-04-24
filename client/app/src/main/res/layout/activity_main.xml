@@ -32,6 +32,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             android:orientation="vertical">
+
             <TextView
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
@@ -40,31 +41,45 @@
                 android:textSize="24dp"
                 android:text="My Configured Networks"/>
 
-
-            <ScrollView
-                android:id="@+id/scroll_network_list"
+            <android.support.v7.widget.CardView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="8dp"
-                android:layout_marginEnd="20dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/scrollview_outline">
+                app:cardUseCompatPadding="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                app:cardBackgroundColor="@color/themedarker"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="12dp"
+                android:orientation="vertical">
 
-                <!-- Aditya, this is your class. -->
-                <com.example.eric.wishare.view.WiConfiguredNetworkListView
+                <ScrollView
+                    android:id="@+id/scroll_network_list"
                     android:layout_width="match_parent"
-                    android:orientation="vertical"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:id="@+id/configured_network_list">
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/scrollview_outline">
 
-                </com.example.eric.wishare.view.WiConfiguredNetworkListView>
+                    <!-- Aditya, this is your class. -->
+                    <com.example.eric.wishare.view.WiConfiguredNetworkListView
+                        android:layout_width="match_parent"
+                        android:orientation="vertical"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginLeft="4dp"
+                        android:layout_marginRight="4dp"
+                        android:id="@+id/configured_network_list">
 
-            </ScrollView>
+                    </com.example.eric.wishare.view.WiConfiguredNetworkListView>
+
+                </ScrollView>
+
+            </android.support.v7.widget.CardView>
 
         </LinearLayout>
 

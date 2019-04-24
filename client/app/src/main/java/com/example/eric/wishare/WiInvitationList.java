@@ -29,6 +29,15 @@ public class WiInvitationList {
         WiSQLiteDatabase.getInstance(mContext).delete(invitation);
     }
 
+    public WiInvitation getInvitation(String ssid){
+        for(WiInvitation invitation: mInvitations){
+            if(invitation.getNetworkName().equals(ssid)){
+                return invitation;
+            }
+        }
+        return null;
+    }
+
     public List<WiInvitation> getAllInvitations(){
         return mInvitations;
     }

@@ -37,6 +37,8 @@ public class WiMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
+
+        WiSharedPreferences.initialize(this);
     
         System.out.println("DATA RECEIVED" + remoteMessage.toString());
 

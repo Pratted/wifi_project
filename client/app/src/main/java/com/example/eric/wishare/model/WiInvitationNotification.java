@@ -54,7 +54,8 @@ public class WiInvitationNotification extends WiNotification {
         Intent intent = getIntentForMostRecentActivity();
 
         //Log.d(TAG, "Current Activity " + WiUtils.getCurrentActivity());
-        intent.putExtra("invitation", mInvitation);
+        //intent.putExtra("invitation", mInvitation);
+        intent.putExtra("invitation", mInvitation.networkName);
         intent.setFlags(FLAG_ACTIVITY_NEW_TASK);
 
         PendingIntent contentIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
