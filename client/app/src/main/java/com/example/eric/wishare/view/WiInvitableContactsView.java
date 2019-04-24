@@ -77,7 +77,11 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderName.setOnClickListener(sortName());
     }
 
-    public void refresh(){
+    public void display(){
+        mHeaderSelectAll.setVisibility(View.INVISIBLE);
+        setButtonVisibilities(View.INVISIBLE);
+        setCheckBoxVisibilities(View.INVISIBLE);
+
         mBtnLhs.setText("Done");
         mBtnRhs.setText("Invite");
 
@@ -91,8 +95,6 @@ public class WiInvitableContactsView extends LinearLayout {
     }
 
     private void setButtonVisibilities(int visibility){
-        this.refresh();
-
         mBtnLhs.setVisibility(visibility);
         mBtnRhs.setVisibility(visibility);
     }

@@ -96,15 +96,15 @@ public class WiTabbedScrollView extends LinearLayout {
         mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //descending order
         mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //ascending order
 
-        mPermittedContactsView.refresh();
+        mPermittedContactsView.display();
     }
 
     private TabLayout.OnTabSelectedListener onTabSelected(){
         return new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                if(tab.getPosition() == 0) mPermittedContactsView.refresh();
-                if(tab.getPosition() == 1) mInvitableContactsView.refresh();
+                if(tab.getPosition() == 0) mPermittedContactsView.display();
+                if(tab.getPosition() == 1) mInvitableContactsView.display();
             }
 
             @Override

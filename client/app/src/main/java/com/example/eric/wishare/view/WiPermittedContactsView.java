@@ -54,6 +54,7 @@ public class WiPermittedContactsView extends WiPage{
 
     private LinearLayout mLinearLayout;
     private LinearLayout mLinearLayoutEmpty;
+    private CheckBox mCheckboxSelectAll;
 
     public WiPermittedContactsView(Context context, Button lhs, Button rhs, WiConfiguration network) {
         super(context);
@@ -84,6 +85,7 @@ public class WiPermittedContactsView extends WiPage{
         mHeaderName = (Button) findViewById(R.id.btn_name);
         mHeaderData = (Button) findViewById(R.id.btn_data);
         mHeaderExpires = (Button) findViewById(R.id.btn_expires);
+        mCheckboxSelectAll = findViewById(R.id.cb_select_all);
 
         mLinearLayout = findViewById(R.id.ll_permitted_contact);
         mLinearLayoutEmpty = findViewById(R.id.ll_permitted_contact_empty);
@@ -202,6 +204,14 @@ public class WiPermittedContactsView extends WiPage{
 
     @Override
     public void refresh(){
+
+    }
+
+    public void display(){
+        mCheckboxSelectAll.setVisibility(View.INVISIBLE);
+        setButtonVisibilities(View.INVISIBLE);
+        setCheckBoxVisibilities(View.INVISIBLE);
+
         mBtnLhs.setText("Done");
         mBtnRhs.setText("Revoke");
 
