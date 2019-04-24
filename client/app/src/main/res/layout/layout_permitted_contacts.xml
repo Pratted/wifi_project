@@ -82,6 +82,7 @@
             android:textAlignment="center"
             android:text="No contacts have access to this network!"/>
         <Button
+            android:id="@+id/btn_invite_contacts"
             android:layout_marginTop="40dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

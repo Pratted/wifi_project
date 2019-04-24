@@ -97,6 +97,13 @@ public class WiTabbedScrollView extends LinearLayout {
         mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //ascending order
 
         mPermittedContactsView.display();
+
+        mPermittedContactsView.setOnInviteContactsButtonClickedListener(new WiPermittedContactsView.OnInviteContactsButtonClickedListener() {
+            @Override
+            public void onInviteContactsButtonClicked() {
+                mTabs.getTabAt(1).select();
+            }
+        });
     }
 
     private TabLayout.OnTabSelectedListener onTabSelected(){
