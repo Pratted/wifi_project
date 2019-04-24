@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onContactSelected(WiContact contact) {
                 Intent intent = new Intent(MainActivity.this, ContactActivity.class);
-                intent.putExtra("contact", contact);
+                intent.putExtra("contact", contact.getPhone());
                 System.out.println("STARTING CONTACT ACTIVITY");
                 startActivity(intent);
             }
