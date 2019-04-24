@@ -2,9 +2,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardUseCompatPadding="true"
-    app:cardElevation="4dp"
     app:cardCornerRadius="12dp"
+    app:cardElevation=".2dp"
+    app:cardMaxElevation=".2dp"
+    app:contentPadding="1dp"
+    app:cardUseCompatPadding="true"
     android:orientation="horizontal">
 
     <ru.rambler.libs.swipe_layout.SwipeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -13,7 +15,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/card_view_outline">
 
-        <!--CENTER. app:gravity="center" - is default value -->
         <LinearLayout
             android:id="@+id/middle_view"
             android:layout_width="match_parent"
