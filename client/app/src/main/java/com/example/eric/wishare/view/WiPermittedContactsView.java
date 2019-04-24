@@ -42,6 +42,7 @@ public class WiPermittedContactsView extends WiPage{
 
     private Button mBtnLhs;
     private Button mBtnRhs;
+    private Button mButtonInviteContacts;
 
     public static final int COL_NAME = 0;
     public static final int COL_DATA = 1;
@@ -85,6 +86,7 @@ public class WiPermittedContactsView extends WiPage{
         mHeaderName = (Button) findViewById(R.id.btn_name);
         mHeaderData = (Button) findViewById(R.id.btn_data);
         mHeaderExpires = (Button) findViewById(R.id.btn_expires);
+        mButtonInviteContacts = (Button) findViewById(R.id.btn_invite_contacts);
         mCheckboxSelectAll = findViewById(R.id.cb_select_all);
 
         mLinearLayout = findViewById(R.id.ll_permitted_contact);
@@ -93,6 +95,25 @@ public class WiPermittedContactsView extends WiPage{
         mHeaderName.setOnClickListener(sort(COL_NAME, 0));
         mHeaderData.setOnClickListener(sort(COL_DATA, 0));
         mHeaderExpires.setOnClickListener(sort(COL_EXPIRES, 0));
+
+        mButtonInviteContacts.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mOnInviteContactsButtonClickedListener != null){
+                    mOnInviteContactsButtonClickedListener.onInviteContactsButtonClicked();
+                }
+            }
+        });
+    }
+
+    public interface OnInviteContactsButtonClickedListener{
+        void onInviteContactsButtonClicked();
+    }
+
+    private OnInviteContactsButtonClickedListener mOnInviteContactsButtonClickedListener;
+
+    public void setOnInviteContactsButtonClickedListener(OnInviteContactsButtonClickedListener listener){
+        mOnInviteContactsButtonClickedListener = listener;
     }
 
     public void addPermittedContact(WiContact contact){
@@ -118,7 +139,7 @@ public class WiPermittedContactsView extends WiPage{
 
                                 WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
                                 removeListItem(wiPermittedContactsViewListItem);
-                                WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
+                                //WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
                             }
 
                             return wiPermittedContactsViewListItem.mCheckBox.isChecked();
