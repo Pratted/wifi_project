@@ -163,7 +163,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
         super.onResume();
         final TestConnectionMessage msg = new TestConnectionMessage(getApplicationContext()){
             @Override
@@ -184,6 +183,8 @@ public class MainActivity extends AppCompatActivity {
                 displayInvitation(intent);
             }
         }
+
+        btnMyInvitations.setInvitationCount(WiInvitationList.getInstance(this).size());
     }
 
     @Override
