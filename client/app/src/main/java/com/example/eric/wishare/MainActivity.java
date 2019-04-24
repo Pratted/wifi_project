@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -24,9 +25,12 @@ import com.example.eric.wishare.dialog.WiManageContactsDialog;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
+import com.example.eric.wishare.model.messaging.TestConnectionMessage;
 import com.example.eric.wishare.view.WiConfiguredNetworkListView;
 import com.example.eric.wishare.view.WiMyInvitationsButton;
 import com.google.firebase.FirebaseApp;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -158,9 +162,31 @@ public class MainActivity extends AppCompatActivity {
         WiUtils.setCurrentActivity(WiUtils.ACTIVITY_MAIN);
     }
 
+    private CountDownTimer mTimer = new CountDownTimer(3000, 1000) {
+        @Override
+        public void onTick(long l) {
+
+        }
+
+        @Override
+        public void onFinish() {
+            Toast.makeText(getApplicationContext(), "Failed to connect to server.", Toast.LENGTH_LONG).show();
+        }
+    };
     @Override
     protected void onResume() {
+
         super.onResume();
+        final TestConnectionMessage msg = new TestConnectionMessage(getApplicationContext()){
+            @Override
+            public void onResponse(JSONObject response) {
+                mTimer.cancel();
+            }
+
+        };
+        mTimer.start();
+        WiDataMessageController.getInstance(this).send(msg);
+
         WiUtils.setCurrentActivity(WiUtils.ACTIVITY_MAIN);
 
         Intent intent = getIntent();

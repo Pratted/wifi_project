@@ -32,6 +32,7 @@ public abstract class WiDataMessage extends JSONObject {
     public static final int MSG_INVITATION_ACCEPTED = 4;
     public static final int MSG_INVITATION_DECLINED = 5;
     public static final int MSG_REVOKE_ACCESS = 6;
+    public static final int MSG_TEST_CONNECTION = 7;
 
     public static String BASE_URL = "http://192.3.135.177:3000/";
 
@@ -96,7 +97,16 @@ public abstract class WiDataMessage extends JSONObject {
     public JsonObjectRequest build(){
         Log.d(TAG, "Building WiDataMessage...");
 
-        mUrl = BASE_URL + (messageType != MSG_CONTACT_LIST ? "msg" : "");
+        mUrl = BASE_URL;
+
+        if (messageType == MSG_CONTACT_LIST || messageType == MSG_TEST_CONNECTION){
+            if(messageType == MSG_TEST_CONNECTION)
+                mUrl += "hello";
+        }
+        else{
+            mUrl += "msg";
+        }
+
         mUrl += "?token=" + WiUtils.getDeviceToken();
 
         try{
