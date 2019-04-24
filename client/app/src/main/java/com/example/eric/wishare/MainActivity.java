@@ -46,13 +46,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            String message = intent.getStringExtra("key");
-            //tvStatus.setText(message);
-             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "MAIN ACTIVITY RECEIVED NEW BROADCAST MESSAGE");
+
+            if(intent.hasExtra("invitation_receieved")){
+                Log.d(TAG, "Invitation received, updadating My Invitations button...");
+                btnMyInvitations.setInvitationCount(WiInvitationList.getInstance(MainActivity.this).size());
+            }
         }
     };
-
-    private Toolbar myToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,6 @@ public class MainActivity extends AppCompatActivity {
 
         mConfiguredNetworkListView = findViewById(R.id.configured_network_list);
 
-        //btnShowNotification = findViewById(R.id.btn_show_notification);
         btnAddNetwork = findViewById(R.id.btn_add_network);
         btnManageContacts = findViewById(R.id.btn_manage_contacts);
         btnMyInvitations = findViewById(R.id.btn_my_invitations);
@@ -167,12 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(intent != null){
             if(intent.hasExtra("invitation")){
-                Log.d(TAG, "PREPARNG INVITATION");
-
-                String ssid = intent.getStringExtra("invitation");
-                WiInvitation invitation = WiInvitationList.getInstance(this).getInvitation(ssid);
-
-                intent.removeExtra("invitation");
+                displayInvitation(intent);
             }
         }
     }
@@ -190,14 +185,18 @@ public class MainActivity extends AppCompatActivity {
 
         if(intent != null){
             if(intent.hasExtra("invitation")){
-                Log.d(TAG, "PREPARNG INVITATION");
-
-                String ssid = intent.getStringExtra("invitation");
-                WiInvitation invitation = WiInvitationList.getInstance(this).getInvitation(ssid);
-
-                new WiInvitationAcceptDeclineDialog(this, invitation).show();
+                displayInvitation(intent);
             }
         }
+    }
+
+    private void displayInvitation(Intent intent){
+        Log.d(TAG, "Preparing to display invitation");
+
+        String ssid = intent.getStringExtra("invitation");
+        WiInvitation invitation = WiInvitationList.getInstance(this).getInvitation(ssid);
+
+        new WiInvitationAcceptDeclineDialog(this, invitation).show();
     }
 
     @Override

@@ -215,21 +215,6 @@ public class WiMessagingService extends FirebaseMessagingService {
         void onDeviceRegistered(String token, String phone);
     }
 
-    private void sendMessageToActivity(String msg) {
-        Intent intent = new Intent(WiUtils.ACTIVITY_MAIN);
-        // You can also include some extra data.
-        intent.putExtra("key", msg);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
-    private void sendInvitationToActivity(WiInvitation inv){
-        Intent intent = new Intent(WiUtils.ACTIVITY_MAIN);
-
-        intent.putExtra("invitation", inv);
-        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
-    }
-
-
     private void sendMessageToActivity(String activity, String msg){
         Intent intent = new Intent(activity);
         // You can also include some extra data.

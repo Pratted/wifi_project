@@ -30,7 +30,7 @@ public class WiInvitationNotification extends WiNotification {
     }
 
     public WiInvitationNotification(Context context, WiInvitation invitation, int type){
-        super(context, "WiShare Invitation", "Invitation to " + invitation.getNetworkName(), type);
+        super(context, "WiShare Invitation", "Invitation to " + invitation.getNetworkName().replace("\"", ""), type);
         mInvitation = invitation;
     }
 
