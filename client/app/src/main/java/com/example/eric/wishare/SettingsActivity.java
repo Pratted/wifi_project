@@ -263,6 +263,7 @@ public class SettingsActivity extends PreferenceActivity {
         SwitchPreference prefEnableWifiManager;
 
         EditTextPreference prefPhone;
+        EditTextPreference prefHost;
 
         private String TAG = "DeveloperSettingsFrag";
 
@@ -284,6 +285,7 @@ public class SettingsActivity extends PreferenceActivity {
             prefEnableDatabase = (SwitchPreference) findPreference("pk_enable_database");
             prefSendInvitationsToSelf = (SwitchPreference) findPreference("pk_send_invitations_to_self");
             prefEnableWifiManager = (SwitchPreference) findPreference("pk_wifi_manager");
+            prefHost = (EditTextPreference) findPreference("pk_host");
 
             prefRebuildDatabase = findPreference("pk_rebuild_database");
             prefAddContact = findPreference("pk_add_contact");
@@ -416,10 +418,12 @@ public class SettingsActivity extends PreferenceActivity {
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, dbEnabled);
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, sendInvitationsToSelf);
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_WIFI_MANAGER_ENABLED, wifiManagerEnabled);
+            WiSharedPreferences.putString(WiSharedPreferences.KEY_HOST, prefHost.getText());
 
             Log.d(TAG, "DB Enabled? " + dbEnabled);
             Log.d(TAG, "Send invite to self? " + sendInvitationsToSelf);
             Log.d(TAG, "WifiManger Enabled? " + sendInvitationsToSelf);
+            Log.d(TAG, "Host: " + prefHost.getText());
 
             WiSharedPreferences.save();
             Log.d(TAG, "Saved preferences!");

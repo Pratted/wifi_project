@@ -20,6 +20,7 @@ public class WiSharedPreferences {
     public static String KEY_DATABASE_ENABLED = "db_enabled";
     public static String KEY_SEND_INVITATIONS_TO_SELF = "send_invitations_to_self";
     public static String KEY_WIFI_MANAGER_ENABLED = "wifi_manager_enabled";
+    public static String KEY_HOST = "host";
 
     public synchronized static void putString(String key, String value) {
         mBuffer.put(key, value);

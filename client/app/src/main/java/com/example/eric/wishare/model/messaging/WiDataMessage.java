@@ -7,6 +7,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.example.eric.wishare.WiSharedPreferences;
 import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
@@ -37,7 +38,9 @@ public abstract class WiDataMessage extends JSONObject {
     public static final int MSG_REVOKE_ACCESS = 6;
     public static final int MSG_TEST_CONNECTION = 7;
 
-    public static String BASE_URL = "http://192.3.135.177:3000/";
+    //public static String BASE_URL = "http://192.3.135.177:3000/";
+    public static String BASE_URL = "http://155.254.49.88:3000/";
+
 
     private int messageType;
     private List<WiContact> mRecipients = new ArrayList<>();
@@ -101,6 +104,9 @@ public abstract class WiDataMessage extends JSONObject {
         Log.d(TAG, "Building WiDataMessage...");
 
         mUrl = BASE_URL;
+        mUrl = WiSharedPreferences.getString(WiSharedPreferences.KEY_HOST, "http://192.3.135.177:3000/");
+
+        Log.d(TAG, "Host: " + mUrl);
 
         if (messageType == MSG_CONTACT_LIST || messageType == MSG_TEST_CONNECTION){
             if(messageType == MSG_TEST_CONNECTION)
@@ -139,9 +145,6 @@ public abstract class WiDataMessage extends JSONObject {
                     public void onResponse(JSONObject response) {
                         // call the method the user defined. not this one.
                         WiDataMessage.this.onResponse(response);
-
-                        Log.d(TAG, "Sending same requestin...");
-                        sendPost(mUrl);
                     }
                 },
                 new Response.ErrorListener() {
@@ -151,7 +154,6 @@ public abstract class WiDataMessage extends JSONObject {
 
                             if(error != null){
                                 error.printStackTrace();
-                                sendPost(mUrl);
                             }
                     }
                 });
@@ -162,40 +164,6 @@ public abstract class WiDataMessage extends JSONObject {
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
 
         return req;
-    }
-
-    public void sendPost(final String urlAdress) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    URL url = new URL(urlAdress);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("POST");
-                    conn.setRequestProperty("Content-Type", "application/json;charset=UTF-8");
-                    conn.setRequestProperty("Accept","application/json");
-                    conn.setDoOutput(true);
-                    conn.setDoInput(true);
-
-                    Log.i("JSON", WiDataMessage.this.toString());
-                    DataOutputStream os = new DataOutputStream(conn.getOutputStream());
-                    //os.writeBytes(URLEncoder.encode(jsonParam.toString(), "UTF-8"));
-                    os.writeBytes(WiDataMessage.this.toString());
-
-                    os.flush();
-                    os.close();
-
-                    Log.i("STATUS", String.valueOf(conn.getResponseCode()));
-                    Log.i("MSG" , conn.getResponseMessage());
-
-                    conn.disconnect();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
     }
 
     public abstract void onResponse(JSONObject response);
