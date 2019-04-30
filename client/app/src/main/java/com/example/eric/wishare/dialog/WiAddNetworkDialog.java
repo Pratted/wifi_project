@@ -86,7 +86,7 @@ public class WiAddNetworkDialog extends WiDialog {
     private View.OnClickListener onNetWorkSelect(final WifiConfiguration config) {
         return new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(final View view) {
                 new MaterialDialog.Builder(context.get())
                         .title("Enter Password")
                         .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
@@ -99,6 +99,8 @@ public class WiAddNetworkDialog extends WiDialog {
 
                                 // now that the password has been entered the network is configured
                                 mNetworkManager.configureNetwork(config);
+
+                                mCustomLayout.removeView(view);
 
                                 // this callback should start Network Activity
                                 if(mOnNetworkReadyListener != null){
