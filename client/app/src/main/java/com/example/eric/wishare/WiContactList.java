@@ -39,6 +39,8 @@ public class WiContactList {
     private WiDataMessage msg;
     private WiDataMessageController mDataMessageController;
 
+    private HashMap<String, WiContact> mDemoContacts;
+
     @SuppressLint("StaticFieldLeak")
     private WiContactList(Context context) {
         mContacts = new HashMap<>();
@@ -110,13 +112,31 @@ public class WiContactList {
 
     public Map<String, WiContact> getWiContacts(){
         if (WiUtils.isDemoEnabled()){
-            HashMap<String, WiContact> demoContacts = mContacts;
-            ArrayList<WiContact> demoList = getDemoContacts();
-            for (WiContact contact: demoList){
-                demoContacts.put(contact.getPhone(), contact);
+
+            // initialize demoContacts once and only once
+            if(mDemoContacts == null){
+                mDemoContacts = new HashMap<>();
+                mDemoContacts.putAll(mContacts);
+
+                ArrayList<WiContact> demoList = getDemoContacts();
+                for (WiContact contact: demoList){
+                    for(WiConfiguration config: WiNetworkManager.getInstance(mContext.get()).getConfiguredNetworks()){
+                        // 10% chance they have access to this network...
+                        if(WiUtils.randomBetween(0, 10) == 0){
+                            contact.grantAccess(config);
+                        }
+                    }
+
+                    mDemoContacts.put(contact.getPhone(), contact);
+                }
             }
-            return demoContacts;
+
+            return mDemoContacts;
         }
+        else {
+            mDemoContacts = null;
+        }
+
         return mContacts;
     }
 
@@ -195,7 +215,7 @@ public class WiContactList {
         }
     }
 
-    public ArrayList<WiContact> getDemoContacts(){
+    private ArrayList<WiContact> getDemoContacts(){
         ArrayList<WiContact> demoList = new ArrayList<>();
         demoList.add(new WiContact("Hashim Vasquez","827-529-4463"));
         demoList.add(new WiContact("Allistair Berry","676-283-3298"));
@@ -297,6 +317,11 @@ public class WiContactList {
         demoList.add(new WiContact("Holmes Floyd","452-932-0518"));
         demoList.add(new WiContact("Abbot Marks","205-809-6560"));
         demoList.add(new WiContact("Ulysses Ware","344-442-2026"));
+
+        for(WiContact contact: demoList){
+            contact.setDemo(true);
+        }
+
         return demoList;
     }
 }

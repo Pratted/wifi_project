@@ -375,10 +375,14 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
         sInstance.getWritableDatabase(new OnDBReadyListener() {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
-                saveContactPermittedNetworks(contact, theDB);
-                saveContactPendingInvitations(contact, theDB);
-                Log.d(TAG, "Saved contact");
-
+                if(!contact.isDemo()){
+                    saveContactPermittedNetworks(contact, theDB);
+                    saveContactPendingInvitations(contact, theDB);
+                    Log.d(TAG, "Saved contact");
+                }
+                else{
+                    Log.d(TAG, contact.getName() + " will not be save because they are a demo contact");
+                }
             }
         });
     }
@@ -388,8 +392,13 @@ public class WiSQLiteDatabase extends SQLiteOpenHelper {
             @Override
             public void onDBReady(SQLiteDatabase theDB) {
                 for(WiContact contact: contacts){
-                    saveContactPermittedNetworks(contact, theDB);
-                    saveContactPendingInvitations(contact, theDB);
+                    if(!contact.isDemo()){
+                        saveContactPermittedNetworks(contact, theDB);
+                        saveContactPendingInvitations(contact, theDB);
+                    }
+                    else{
+                        Log.d(TAG, contact.getName() + " will not be save because they are a demo contact");
+                    }
                 }
 
                 Log.d(TAG, "Saved " + contacts.size() + "contacts");

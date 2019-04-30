@@ -17,6 +17,7 @@ public class WiContact implements Parcelable{
     private String phone;
     private Integer mDataUsage;
     private Integer mExpiresIn;
+    private boolean mIsDemo;
 
     // invitations sent to the client that they havent yet acknowledged
     private Map<String, WiInvitation> mPendingInvitations;
@@ -40,6 +41,7 @@ public class WiContact implements Parcelable{
     }
 
     private void init() {
+        mIsDemo = false;
         mPermittedNetworks = new HashMap<>();
         mPendingInvitations = new HashMap<>();
 
@@ -97,6 +99,14 @@ public class WiContact implements Parcelable{
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setDemo(boolean isDemo){
+        this.mIsDemo = isDemo;
+    }
+
+    public boolean isDemo(){
+        return mIsDemo;
     }
 
     public Integer getDataUsage() {

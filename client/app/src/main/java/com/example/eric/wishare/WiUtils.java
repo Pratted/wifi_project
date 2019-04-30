@@ -83,4 +83,9 @@ public class WiUtils {
     public static boolean isDatabaseEnabled() {
         return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, true);
     }
+
+    public static int randomBetween(int min, int max){
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
 }
