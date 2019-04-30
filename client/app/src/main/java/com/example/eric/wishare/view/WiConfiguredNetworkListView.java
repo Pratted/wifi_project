@@ -86,10 +86,10 @@ public class WiConfiguredNetworkListView extends LinearLayout {
             if(users < 0) users *= -1;
 
             ((TextView) findViewById(R.id.tv_network_name)).setText(mConfig.getSSIDNoQuotes());
-            ((TextView) findViewById(R.id.tv_active_users)).setText(users + " active user(s)");
+            ((TextView) findViewById(R.id.tv_permitted_users)).setText(users + " Contact(s) have access");
 
             if(users % 2 == 0) {
-                ((ImageView) findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
+                //((ImageView) findViewById(R.id.iv_configured_status)).setImageResource(R.drawable.ic_check_green_24dp);
             }
 
             findViewById(R.id.middle_view).setOnClickListener(startNetworkActivity());

@@ -47,8 +47,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:cardUseCompatPadding="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
                 app:cardBackgroundColor="@color/themedarker"
                 app:cardElevation="4dp"
                 app:cardCornerRadius="12dp"
@@ -83,7 +81,9 @@
 
         </LinearLayout>
 
+
         <LinearLayout
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ll_top_main_activity"
             android:layout_width="match_parent"
@@ -122,8 +122,6 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"/>
-
-
         </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

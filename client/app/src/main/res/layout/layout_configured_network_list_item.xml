@@ -29,10 +29,10 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginLeft="4dp">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_wifi_black_48dp"/>
+                <pl.droidsonroids.gif.GifImageView
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/fastsplash" />
                 <LinearLayout
                     android:layout_marginLeft="16dp"
                     android:layout_width="match_parent"
@@ -48,24 +48,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
 
-                        <ImageView
-                            android:layout_marginLeft="8dp"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:id="@+id/iv_configured_status"
-                            android:src="@drawable/ic_warning_orange_24dp"/>
-
                     </LinearLayout>
-
 
                     <TextView
                         android:textSize="16sp"
-                        android:id="@+id/tv_active_users"
+                        android:id="@+id/tv_permitted_users"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingBottom="2dp"
-                        android:text="3 active users"/>
+                        android:text="0 Contact(s) have access"/>
                 </LinearLayout>
 
             </LinearLayout>
