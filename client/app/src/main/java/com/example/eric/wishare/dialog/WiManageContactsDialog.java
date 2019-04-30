@@ -1,6 +1,7 @@
 package com.example.eric.wishare.dialog;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -11,6 +12,7 @@ import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 
 public class WiManageContactsDialog extends WiDialog{
@@ -55,16 +57,20 @@ public class WiManageContactsDialog extends WiDialog{
     }
 
     public MaterialDialog build(){
-        ArrayList<String> strings = new ArrayList<>();
+        mCustomLayout.removeAllViews();
         mContacts = new ArrayList(mContactList.getWiContacts().values());
 
-        for (WiContact contact : mContacts) {
-            strings.add(contact.getName() + " " + contact.getPhone());
+        // sort alphabetically if possible
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mContacts.sort(new Comparator<WiContact>() {
+                @Override
+                public int compare(WiContact left, WiContact right) {
+                    return left.getName().compareTo(right.getName());
+                }
+            });
         }
 
-        mCustomLayout.removeAllViews();
-
-        for(final WiContact contact: WiContactList.getInstance(context.get()).getWiContacts().values()){
+        for(final WiContact contact: mContacts){
             WiContactListItem item = new WiContactListItem(context.get(), contact.getName());
 
             item.setOnClickListener(new View.OnClickListener() {

@@ -2,6 +2,7 @@ package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.net.wifi.WifiConfiguration;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.InputType;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.example.eric.wishare.WiNetworkManager;
 import com.example.eric.wishare.model.WiConfiguration;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class WiAddNetworkDialog extends WiDialog {
@@ -29,12 +31,19 @@ public class WiAddNetworkDialog extends WiDialog {
 
     @Override
     public MaterialDialog build() {
-        ArrayList<String> networks = new ArrayList<>();
         mUnConfiguredNetworks = mNetworkManager.getUnConfiguredNetworks();
 
         mCustomLayout = new LinearLayout(context.get());
         mCustomLayout.setOrientation(LinearLayout.VERTICAL);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            mUnConfiguredNetworks.sort(new Comparator<WifiConfiguration>() {
+                @Override
+                public int compare(WifiConfiguration left, WifiConfiguration right) {
+                    return left.SSID.toLowerCase().compareTo(right.SSID.toLowerCase());
+                }
+            });
+        }
 
         // remove quotes from the SSID's for the Material Dialog
         for(WifiConfiguration config: mUnConfiguredNetworks){

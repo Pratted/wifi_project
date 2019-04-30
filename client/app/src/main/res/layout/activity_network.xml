@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/ripple"
-            android:text="@string/btn_edit_network" />
+            android:text="Forget this Network" />
 
     </LinearLayout>
 
