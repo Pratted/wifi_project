@@ -2,8 +2,11 @@ package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.model.WiContact;
 
@@ -14,6 +17,8 @@ public class WiManageContactsDialog extends WiDialog{
     private WiContactList mContactList;
     private OnContactSelectedListener mOnContactSelectedListener;
     private ArrayList<WiContact> mContacts;
+    private LinearLayout mCustomLayout;
+
 
     public interface OnContactSelectedListener{
         void onContactSelected(WiContact contact);
@@ -23,6 +28,8 @@ public class WiManageContactsDialog extends WiDialog{
         super(context);
         mContactList = WiContactList.getInstance(context);
         mContactList.setOnContactListReadyListener(onContactListReady());
+        mCustomLayout = new LinearLayout(context);
+        mCustomLayout.setOrientation(LinearLayout.VERTICAL);
     }
 
     private WiContactList.OnContactListReadyListener onContactListReady(){
@@ -55,11 +62,36 @@ public class WiManageContactsDialog extends WiDialog{
             strings.add(contact.getName() + " " + contact.getPhone());
         }
 
+        mCustomLayout.removeAllViews();
+
+        for(final WiContact contact: WiContactList.getInstance(context.get()).getWiContacts().values()){
+            WiContactListItem item = new WiContactListItem(context.get(), contact.getName());
+
+            item.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnContactSelectedListener.onContactSelected(contact);
+                }
+            });
+
+            mCustomLayout.addView(item);
+        }
+
         return new MaterialDialog.Builder(context.get())
                 .title("Select a Contact")
-                .items(strings)
-                .itemsCallback(onContactClicked())
+                .customView(mCustomLayout, true)
                 .negativeText("Cancel")
                 .build();
+    }
+
+    public class WiContactListItem extends LinearLayout {
+
+        public WiContactListItem(Context context, String name) {
+            super(context);
+
+            inflate(getContext(), R.layout.layout_contact_list_item, this);
+
+            ((TextView) findViewById(R.id.tv_contact_name)).setText(name);
+        }
     }
 }

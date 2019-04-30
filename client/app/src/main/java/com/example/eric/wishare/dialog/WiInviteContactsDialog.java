@@ -2,18 +2,22 @@ package com.example.eric.wishare.dialog;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.widget.LinearLayout;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WiInviteContactsDialog extends WiDialog {
 
     private ArrayList<WiContact> mContacts = new ArrayList<>();
     private WiConfiguration mConfig;
+    private LinearLayout mCustomLayout;
 
     @Override
     public MaterialDialog build() {
@@ -55,6 +59,7 @@ public class WiInviteContactsDialog extends WiDialog {
         super(context);
 
         mConfig = config;
+        mCustomLayout = new LinearLayout(context);
     }
 
     public void addContact(WiContact contact){
