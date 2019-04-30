@@ -79,7 +79,7 @@
                     <TextView
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:text="Owner:"/>
+                        android:text="Expires:"/>
 
                     <TextView
                         android:id="@+id/tv_invitation_expires"
@@ -103,7 +103,7 @@
                     <TextView
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:text="Owner:"/>
+                        android:text="Data:"/>
 
                     <TextView
                         android:id="@+id/tv_data_limit"

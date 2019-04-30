@@ -160,6 +160,11 @@ public class WiContactList {
         return mContacts.get(phone);
     }
 
+
+    public boolean hasContact(String phone){
+        return mContacts.containsKey(phone);
+    }
+
     public WiContact save(WiContact contact) {
         mContacts.put(contact.getPhone(), contact);
 
