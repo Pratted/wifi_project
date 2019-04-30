@@ -49,6 +49,10 @@ public class WiUtils {
         return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_WIFI_MANAGER_ENABLED, true);
     }
 
+    public static boolean isDemoEnabled(){
+        return WiSharedPreferences.getBoolean(WiSharedPreferences.KEY_DEMO_MODE, false);
+    }
+
     public static String randomPhoneNumber(){
         return formatPhoneNumber(String.valueOf(random10DigitNumber()));
     }

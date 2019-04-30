@@ -9,6 +9,7 @@ import java.util.Map;
 import static android.content.Context.MODE_PRIVATE;
 
 public class WiSharedPreferences {
+
     private static Map<String, Object> mReadOnly;
     private static Map<String, Object> mBuffer;
     private static SharedPreferences.Editor mEditor;
@@ -21,6 +22,7 @@ public class WiSharedPreferences {
     public static String KEY_SEND_INVITATIONS_TO_SELF = "send_invitations_to_self";
     public static String KEY_WIFI_MANAGER_ENABLED = "wifi_manager_enabled";
     public static String KEY_HOST = "host";
+    public static final String KEY_DEMO_MODE = "demo_mode";
 
     public synchronized static void putString(String key, String value) {
         mBuffer.put(key, value);
