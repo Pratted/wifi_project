@@ -12,8 +12,10 @@ import android.widget.TextView;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.R;
+import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
 import com.example.eric.wishare.WiInvitationList;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiDataMessage;
 import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
@@ -114,6 +116,7 @@ public class WiInvitationListDialog extends WiDialog{
         private TextView mTextViewTitle;
         private TextView mTextViewOwner;
         private TextView mTextViewExpires;
+        private TextView mTextViewDataLimit;
 
         private ExpandableLayout mExpandableLayout;
 
@@ -134,15 +137,22 @@ public class WiInvitationListDialog extends WiDialog{
             mTextViewTitle = findViewById(R.id.tv_invitation_title);
             mTextViewOwner = findViewById(R.id.tv_invitation_owner);
             mTextViewExpires = findViewById(R.id.tv_invitation_expires);
+            mTextViewDataLimit = findViewById(R.id.tv_data_limit);
 
             mButtonDecline = findViewById(R.id.btn_decline_invitation);
             mButtonAccept = findViewById(R.id.btn_accept_invitation);
 
             mExpandableLayout = findViewById(R.id.expandable_layout_invitation);
 
-            mTextViewTitle.setText(mInvitation.networkName);
+            mTextViewTitle.setText(mInvitation.networkName.replace("\"", ""));
+
             mTextViewOwner.setText(mInvitation.sender);
+            if(WiContactList.getInstance(context.get()).hasContact(mInvitation.sender)){
+                mTextViewOwner.setText(WiContactList.getInstance(context.get()).getContactByPhone(mInvitation.sender).getName());
+            }
+
             mTextViewExpires.setText(mInvitation.expires);
+            mTextViewDataLimit.setText("Unlimited");
 
             this.setOnClickListener(ExpandOrCollapse);
 
