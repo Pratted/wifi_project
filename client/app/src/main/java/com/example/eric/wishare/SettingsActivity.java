@@ -261,6 +261,7 @@ public class SettingsActivity extends PreferenceActivity {
         SwitchPreference prefSendInvitationsToSelf;
         SwitchPreference prefEnableDatabase;
         SwitchPreference prefEnableWifiManager;
+        SwitchPreference prefDemoMode;
 
         EditTextPreference prefPhone;
         EditTextPreference prefHost;
@@ -289,6 +290,7 @@ public class SettingsActivity extends PreferenceActivity {
 
             prefRebuildDatabase = findPreference("pk_rebuild_database");
             prefAddContact = findPreference("pk_add_contact");
+            prefDemoMode = (SwitchPreference)findPreference("pk_demo_mode");
 
             prefRebuildDatabase.setOnPreferenceClickListener(displayRebuildDatabaseDialog());
             prefAddContact.setOnPreferenceClickListener(displayAddContactDialog());
@@ -414,11 +416,13 @@ public class SettingsActivity extends PreferenceActivity {
             boolean dbEnabled = prefEnableDatabase.isChecked();
             boolean sendInvitationsToSelf = prefSendInvitationsToSelf.isChecked();
             boolean wifiManagerEnabled = prefEnableWifiManager.isChecked();
+            boolean demoEnabled = prefDemoMode.isChecked();
 
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_DATABASE_ENABLED, dbEnabled);
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_SEND_INVITATIONS_TO_SELF, sendInvitationsToSelf);
             WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_WIFI_MANAGER_ENABLED, wifiManagerEnabled);
             WiSharedPreferences.putString(WiSharedPreferences.KEY_HOST, prefHost.getText());
+            WiSharedPreferences.putBoolean(WiSharedPreferences.KEY_DEMO_MODE, demoEnabled);
 
             Log.d(TAG, "DB Enabled? " + dbEnabled);
             Log.d(TAG, "Send invite to self? " + sendInvitationsToSelf);
