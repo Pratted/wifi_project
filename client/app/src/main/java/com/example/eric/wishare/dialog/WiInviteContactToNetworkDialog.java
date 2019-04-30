@@ -103,18 +103,24 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
             Log.d(TAG, "IN BUILD Config SSID: " + config.getSSIDNoQuotes());
         }
 
-//        List<String> SSID = WiSQLiteDatabase.getInstance(mContext).getContactNetworks(mContact);
         Set<String> SSID = new HashSet<>(WiSQLiteDatabase.getInstance(mContext).getContactNetworks(mContact));
         Log.d(TAG, "SSID.isEmpty() " + SSID.isEmpty());
 
         for(String ssid : SSID) {
+            ssid = ssid.replace("\"", "");
             Log.d(TAG, "SSID: " + ssid);
         }
 
         for (int i = 0; i < mNetworks.size(); i++) {
+            Log.d(TAG, "network SSID: " + mNetworks.get(i).SSID);
             if(SSID.contains(mNetworks.get(i).SSID)){
+                Log.d(TAG, "contains");
                 mNetworks.remove(i--);
             }
+        }
+
+        for(WiConfiguration config : mNetworks) {
+            config.SSID = config.SSID.replace("\"", "");
         }
     }
 

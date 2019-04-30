@@ -52,7 +52,8 @@ public class ContactActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mConfigReceiver, new IntentFilter(WiUtils.ACTIVITY_CONTACT));
 
-        mContact = getIntent().getExtras().getParcelable("contact");
+        String phone = getIntent().getStringExtra("contact");
+        mContact = WiContactList.getInstance(this).getContactByPhone(phone);
 
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle(mContact.getName());
@@ -64,7 +65,7 @@ public class ContactActivity extends AppCompatActivity {
         btnRevokeSelectiveAccess = findViewById(R.id.btn_revoke_selective_access);
         btnHideCheckBoxes = findViewById(R.id.btn_hide_checkboxes);
         mContactSharedNetworkList.setOnCheckBoxVisibleListener(onCheckBoxVisible());
-        mContactSharedNetworkList.populateNetworks(this, mContact);
+        mContactSharedNetworkList.populateNetworks(mContact);
 
         btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
 
@@ -135,7 +136,7 @@ public class ContactActivity extends AppCompatActivity {
                                 " This action is permanent.")
                         .negativeText("Cancel")
                         .positiveText("Yes")
-                        .onPositive(removeAllNetworks())
+                        .onPositive(mContactSharedNetworkList.revokeAllAccesses(mContact))
                         .show();
             }
         };
@@ -159,26 +160,23 @@ public class ContactActivity extends AppCompatActivity {
                 });
 
                 btnRevokeSelectiveAccess.setVisibility(View.VISIBLE);
-                btnRevokeSelectiveAccess.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Remove selected networks
-//                        new MaterialDialog.Builder(getContext())
-//                                .title("Revoke Network Access")
-//                                .content("Are you sure you want to revoke " + networks + " networks?" +
-//                                        " This action is permanent.")
-//                                .negativeText("Cancel")
-//                                .positiveText("Yes")
-//                                .onPositive(mContactSharedNetworkList.hideSelectedNetworks())
-//                                .show();
+                btnRevokeSelectiveAccess.setOnClickListener(revokeSelectiveAccess());
+            }
+        };
+    }
 
-                        mContactSharedNetworkList.hideSelectedNetworks();
-                        mContactSharedNetworkList.hideAllCheckBoxes();
-                        btnHideCheckBoxes.setVisibility(View.GONE);
-                        btnRevokeSelectiveAccess.setVisibility(View.GONE);
-                        mHiddenLayout.setVisibility(View.GONE);
-                    }
-                });
+    private View.OnClickListener revokeSelectiveAccess() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new MaterialDialog.Builder(ContactActivity.this)
+                        .title("Revoke Network Access")
+                        .content("Are you sure you want to revoke access to all the selected networks? " +
+                                "This action is permanent.")
+                        .negativeText("Cancel")
+                        .positiveText("Yes")
+                        .onPositive(mContactSharedNetworkList.revokeSelectiveAccess(mContact))
+                        .show();
             }
         };
     }
