@@ -61,12 +61,81 @@
             android:inputType="textPersonName" />
     </LinearLayout>
 
-    <com.example.eric.wishare.view.WiTabbedScrollView
-        android:id="@+id/tabbed_scroll_view"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </com.example.eric.wishare.view.WiTabbedScrollView>
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tab_layout"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@drawable/ripple"
+                android:background="@drawable/ripple"
+                app:tabIndicatorColor="@color/themeGreen"
+                app:tabBackground="@drawable/ripple">
 
+            </android.support.design.widget.TabLayout>
+
+            <com.example.eric.wishare.view.WiTabbedScrollViewPager
+                app:layout_constraintTop_toBottomOf="@id/tab_layout"
+                app:layout_constraintBottom_toTopOf="@+id/layout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_below="@id/tab_layout">
+
+            </com.example.eric.wishare.view.WiTabbedScrollViewPager>
+
+            <View
+                app:layout_constraintTop_toBottomOf="@id/view_pager"
+                android:id="@+id/bottom_border"
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/themeGreen"/>
+
+            <LinearLayout
+                app:layout_constraintTop_toBottomOf="@id/bottom_border"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:id="@+id/layout"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:visibility="visible"
+                    android:id="@+id/btn_lhs"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@drawable/ripple"
+                    android:background="@drawable/ripple"
+                    android:text="Cancel"/>
+
+                <Button
+                    android:visibility="visible"
+                    android:id="@+id/btn_rhs"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@drawable/ripple"
+                    android:background="@drawable/ripple"
+                    android:text="Revoke Access"/>
+            </LinearLayout>
+        </android.support.constraint.ConstraintLayout>
+    </LinearLayout>
 </LinearLayout>

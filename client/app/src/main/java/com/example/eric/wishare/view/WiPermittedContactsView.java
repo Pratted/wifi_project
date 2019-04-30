@@ -33,7 +33,7 @@ import java.util.function.Predicate;
 
 import ru.rambler.libs.swipe_layout.SwipeLayout;
 
-public class WiPermittedContactsView extends WiPage{
+public class WiPermittedContactsView extends LinearLayout {
     private String TAG = "WiPermContactView";
 
     private Button mHeaderName;
@@ -53,6 +53,7 @@ public class WiPermittedContactsView extends WiPage{
     private ArrayList<WiPermittedContactsViewListItem> mPermittedContacts;
     private WiConfiguration mNetwork;
 
+    private LinearLayout mItems;
     private LinearLayout mLinearLayout;
     private LinearLayout mLinearLayoutEmpty;
     private CheckBox mCheckboxSelectAll;
@@ -70,16 +71,9 @@ public class WiPermittedContactsView extends WiPage{
         mNetwork = network;
 
         init();
-
-        setOnFocusChangeListener(new OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus) refresh();
-            }
-        });
     }
 
-    protected void init(){
+    private void init(){
         inflate(getContext(), R.layout.layout_permitted_contacts, this);
         mPermittedContacts = new ArrayList<>();
 
@@ -88,6 +82,7 @@ public class WiPermittedContactsView extends WiPage{
         mHeaderExpires = (Button) findViewById(R.id.btn_expires);
         mButtonInviteContacts = (Button) findViewById(R.id.btn_invite_contacts);
         mCheckboxSelectAll = findViewById(R.id.cb_select_all);
+        mItems = findViewById(R.id.items);
 
         mLinearLayout = findViewById(R.id.ll_permitted_contact);
         mLinearLayoutEmpty = findViewById(R.id.ll_permitted_contact_empty);
@@ -95,32 +90,14 @@ public class WiPermittedContactsView extends WiPage{
         mHeaderName.setOnClickListener(sort(COL_NAME, 0));
         mHeaderData.setOnClickListener(sort(COL_DATA, 0));
         mHeaderExpires.setOnClickListener(sort(COL_EXPIRES, 0));
-
-        mButtonInviteContacts.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(mOnInviteContactsButtonClickedListener != null){
-                    mOnInviteContactsButtonClickedListener.onInviteContactsButtonClicked();
-                }
-            }
-        });
     }
 
-    public interface OnInviteContactsButtonClickedListener{
-        void onInviteContactsButtonClicked();
-    }
-
-    private OnInviteContactsButtonClickedListener mOnInviteContactsButtonClickedListener;
-
-    public void setOnInviteContactsButtonClickedListener(OnInviteContactsButtonClickedListener listener){
-        mOnInviteContactsButtonClickedListener = listener;
-    }
 
     public void addPermittedContact(WiContact contact){
         WiPermittedContactsViewListItem item = new WiPermittedContactsViewListItem(getContext(), contact);
 
         mPermittedContacts.add(item);
-        addListItem(item);
+        mItems.addView(item);
     }
 
     public MaterialDialog.SingleButtonCallback removeSelectedContacts(){
@@ -138,8 +115,7 @@ public class WiPermittedContactsView extends WiPage{
                                 WiContactList.getInstance(getContext()).save(wiPermittedContactsViewListItem.getContact());
 
                                 WiDataMessageController.getInstance(getContext().getApplicationContext()).send(msg);
-                                removeListItem(wiPermittedContactsViewListItem);
-                                //WiSQLiteDatabase.getInstance(getContext()).delete(mNetwork, wiPermittedContactsViewListItem.getContact().getPhone());
+
                             }
 
                             return wiPermittedContactsViewListItem.mCheckBox.isChecked();
@@ -191,11 +167,10 @@ public class WiPermittedContactsView extends WiPage{
 
         mSortCriteria.put(column, !ascending);
 
-        int x = 0;
-        removeAllItems();
+        //removeAllItems();
 
         for(WiPermittedContactsViewListItem contact: mPermittedContacts){
-            addListItem(contact);
+            //addListItem(contact);
         }
     }
 
@@ -219,40 +194,22 @@ public class WiPermittedContactsView extends WiPage{
     }
 
     private void setButtonVisibilities(int visibility){
-        mBtnLhs.setVisibility(visibility);
-        mBtnRhs.setVisibility(visibility);
-    }
-
-    @Override
-    public void refresh(){
-
+        //mBtnLhs.setVisibility(visibility);
+        //mBtnRhs.setVisibility(visibility);
     }
 
     public void display(){
-        mCheckboxSelectAll.setVisibility(View.INVISIBLE);
-        setButtonVisibilities(View.INVISIBLE);
-        setCheckBoxVisibilities(View.INVISIBLE);
-
-        mBtnLhs.setText("Done");
-        mBtnRhs.setText("Revoke");
-
-        mBtnLhs.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCheckBoxVisibilities(INVISIBLE);
-                setButtonVisibilities(GONE);
-            }
-        });
+        //mCheckboxSelectAll.setVisibility(View.INVISIBLE);
+        //setButtonVisibilities(View.INVISIBLE);
 
         Log.d(TAG, "Refreshing");
         Log.d(TAG, "Permitted Contacts: " + mPermittedContacts.size());
 
         mLinearLayout.setVisibility(mPermittedContacts.isEmpty() ? View.GONE : View.VISIBLE);
         mLinearLayoutEmpty.setVisibility(mPermittedContacts.isEmpty() ? View.VISIBLE : View.GONE);
-
-        mBtnRhs.setOnClickListener(displayMultiRevokeAccessDialog());
     }
 
+    /*
     private OnClickListener displayMultiRevokeAccessDialog() {
         return new OnClickListener() {
             @Override
@@ -275,6 +232,7 @@ public class WiPermittedContactsView extends WiPage{
             }
         };
     }
+    */
 
     private class WiPermittedContactsViewListItem extends LinearLayout {
         private CheckBox mCheckBox;
@@ -310,15 +268,11 @@ public class WiPermittedContactsView extends WiPage{
             mSwipeLayout = findViewById(R.id.swipe_layout);
             mRow = findViewById(R.id.row);
 
-            //mName.setOnLongClickListener(onLongClick());
-            mRow.setOnLongClickListener(onLongClick());
             mRow.setOnClickListener(expand());
 
             if(mContact != null) setContact(mContact);
 
             mExpandableLayout = findViewById(R.id.expandable_contact);
-
-            //mRow.setOnClickListener(expand());
 
             mRevokeAccess.setOnClickListener(displayRevokeAccessDialog(mContact));
             mVisitProfile.setOnClickListener(startContactActivity(mContact));
@@ -370,7 +324,7 @@ public class WiPermittedContactsView extends WiPage{
             return new MaterialDialog.SingleButtonCallback() {
                 @Override
                 public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                    removeListItem(WiPermittedContactsViewListItem.this);
+                    //removeListItem(WiPermittedContactsViewListItem.this);
 
                     Log.d("WiPermittedContact", "Revoking access for " + mNetwork.SSID);
                     contact.revokeAccess(mNetwork.SSID);
@@ -398,22 +352,5 @@ public class WiPermittedContactsView extends WiPage{
             return mContact;
         }
 
-        private View.OnLongClickListener onLongClick(){
-            return new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    // Vibrate and display checkboxes if not already displayed
-                    if(getCheckBoxVisibilties() == INVISIBLE){
-                        Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                        vibe.vibrate(10);
-
-                        setCheckBoxVisibilities(VISIBLE);
-                        setButtonVisibilities(VISIBLE);
-                    }
-
-                    return false;
-                }
-            };
-        }
     }
 }

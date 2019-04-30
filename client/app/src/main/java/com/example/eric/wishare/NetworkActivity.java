@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +15,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,18 +23,28 @@ import android.widget.Toast;
 import com.example.eric.wishare.dialog.WiEditNetworkDialog;
 import com.example.eric.wishare.dialog.WiInvitationAcceptDeclineDialog;
 import com.example.eric.wishare.model.WiConfiguration;
+import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
-import com.example.eric.wishare.view.WiTabbedScrollView;
+import com.example.eric.wishare.view.WiInvitableContactsView;
+import com.example.eric.wishare.view.WiPermittedContactsView;
+import com.example.eric.wishare.view.WiTabbedScrollViewPager;
 
 public class NetworkActivity extends AppCompatActivity {
     private final String TAG = "NetworkActivity";
     private WiConfiguration mConfig;
 
-    private WiEditNetworkDialog mEditNetworkDialog;
-    private WiTabbedScrollView mTabbedScrollView;
-
     private EditText searchBar;
     private Toolbar mToolbar;
+
+    private WiTabbedScrollViewPager mViewPager;
+    private WiPagerAdapter mPagerAdapter;
+    private WiContactList mContactList;
+
+    private WiPermittedContactsView mPermittedContactsView;
+    private WiInvitableContactsView mInvitableContactsView;
+
+    private Button mLhs;
+    private Button mRhs;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -48,28 +59,51 @@ public class NetworkActivity extends AppCompatActivity {
         String ssid = getIntent().getStringExtra("ssid");
         mConfig = WiNetworkManager.getInstance(this).getConfiguredNetwork(ssid);
 
-        mEditNetworkDialog = new WiEditNetworkDialog(this, mConfig);
-
+        mToolbar = findViewById(R.id.toolbar);
+        mViewPager = findViewById(R.id.view_pager);
         searchBar = findViewById(R.id.edit_text_search_bar);
+
+        mPagerAdapter = new WiPagerAdapter();
+        mViewPager.setAdapter(mPagerAdapter);
+        mContactList = WiContactList.getInstance(this);
+
+        mPermittedContactsView = new WiPermittedContactsView(this, mLhs, mRhs, mConfig);
+        mInvitableContactsView = new WiInvitableContactsView(this, mLhs, mRhs, mConfig);
+
+        for(WiContact contact: mContactList.getWiContacts().values()){
+            if(contact.hasAccessTo(mConfig.SSID)){
+                mPermittedContactsView.addPermittedContact(contact);
+            }
+            else{
+                mInvitableContactsView.add(contact);
+            }
+        }
+
+        //mInvitableContactsView.sortName(true);
+
+        mPagerAdapter.addView(mPermittedContactsView);
+        mPagerAdapter.notifyDataSetChanged();
+
+        mPagerAdapter.addView(mInvitableContactsView);
+        mPagerAdapter.notifyDataSetChanged();
+
+        final TabLayout mTabs = findViewById(R.id.tab_layout);
+        mTabs.setupWithViewPager(mViewPager);
+
+        mTabs.getTabAt(0).setText("Permitted Contacts");
+        mTabs.getTabAt(1).setText("Invite Contacts");
+
+        mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //descending order
+        mPermittedContactsView.sort(WiPermittedContactsView.COL_NAME); //ascending order
+
+        mPermittedContactsView.display();
+
         searchBar.addTextChangedListener(search());
 
-        mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle(mConfig.getSSIDNoQuotes());
         setSupportActionBar(mToolbar);
-
-        findViewById(R.id.btn_edit_network).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mEditNetworkDialog.show();
-            }
-        });
-
-
-        mTabbedScrollView = findViewById(R.id.tabbed_scroll_view);
-
-        if(mConfig != null)
-            mTabbedScrollView.setWiConfiguration(mConfig);
     }
+
 
     @Override
     protected void onStart() {
@@ -90,7 +124,8 @@ public class NetworkActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                mTabbedScrollView.filter(s.toString());
+                mPermittedContactsView.filter(s.toString());
+                mInvitableContactsView.filter(s.toString());
             }
 
             @Override
@@ -105,7 +140,6 @@ public class NetworkActivity extends AppCompatActivity {
             String message = intent.getStringExtra("key");
             Log.d(TAG, "Received message: " + message);
 
-            //tvStatus.setText(message);
             Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     };
@@ -134,7 +168,6 @@ public class NetworkActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
                 startActivity(new Intent(NetworkActivity.this, SettingsActivity.class));
                 return true;
 
