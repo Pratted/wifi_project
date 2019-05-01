@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Date;
+
 public class WiInvitation implements Parcelable {
     public String networkName;
     public String sender;
