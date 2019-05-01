@@ -324,7 +324,7 @@ public class WiPermittedContactsView extends LinearLayout {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ContactActivity.class);
-                    intent.putExtra("contact", contact);
+                    intent.putExtra("contact", mContact.getPhone());
                     getContext().startActivity(intent);
                 }
             };
