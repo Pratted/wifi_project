@@ -143,8 +143,9 @@ public class WiSplash extends Activity {
     }
 
     public void startWiShare(int delay){
-        new Handler().postDelayed(new Runnable() {
+        WiContactList.getInstance(WiSplash.this).synchronizeContacts();
 
+        new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 // This method will be executed once the timer is over

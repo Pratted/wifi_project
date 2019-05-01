@@ -185,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         btnMyInvitations.setInvitationCount(WiInvitationList.getInstance(this).size());
+        mConfiguredNetworkListView.refresh();
     }
 
     @Override

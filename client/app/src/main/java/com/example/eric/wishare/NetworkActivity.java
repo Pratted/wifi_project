@@ -67,7 +67,7 @@ public class NetworkActivity extends AppCompatActivity {
         mViewPager.setAdapter(mPagerAdapter);
         mContactList = WiContactList.getInstance(this);
 
-        mPermittedContactsView = new WiPermittedContactsView(this, mLhs, mRhs, mConfig);
+        mPermittedContactsView = new WiPermittedContactsView(this, mConfig);
         mInvitableContactsView = new WiInvitableContactsView(this, mConfig);
 
         for(WiContact contact: mContactList.getWiContacts().values()){
@@ -79,7 +79,7 @@ public class NetworkActivity extends AppCompatActivity {
             }
         }
 
-        //mInvitableContactsView.sortName(true);
+        mInvitableContactsView.sortName(true);
 
         mPagerAdapter.addView(mPermittedContactsView);
         mPagerAdapter.notifyDataSetChanged();

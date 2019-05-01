@@ -69,8 +69,27 @@ public class WiConfiguredNetworkListView extends LinearLayout {
         addView(item);
     }
 
+    public void refresh(){
+        for(WiConfiguredNetworkListItem item: mConfiguredNetworks.values()){
+            int users = 0;
+
+            for(WiContact contact: WiContactList.getInstance(getContext()).getWiContacts().values()){
+                Log.d(TAG, "FUCK " + item.mConfig.SSID);
+                if(item.mConfig.SSID.replace("\"", "").equals("HOME-0622")){
+                    int x = 0;
+                }
+                if(contact.hasAccessTo(item.mConfig.SSID)){
+                    users++;
+                }
+            }
+
+            item.mSubtitle.setText(users + " Contact(s) have access");
+        }
+    }
+
     private class WiConfiguredNetworkListItem extends SwipeLayout {
         private WiConfiguration mConfig;
+        private TextView mSubtitle;
 
         public WiConfiguredNetworkListItem(Context context, WiConfiguration config){
             super(context);
@@ -82,16 +101,10 @@ public class WiConfiguredNetworkListView extends LinearLayout {
         public void init() {
             inflate(getContext(), R.layout.layout_configured_network_list_item, this);
 
-            int users = 0;
-
-            for(WiContact contact: WiContactList.getInstance(getContext()).getWiContacts().values()){
-                if(contact.hasAccessTo(mConfig.SSID)){
-                    users++;
-                }
-            }
+            mSubtitle = findViewById(R.id.tv_permitted_users);
 
             ((TextView) findViewById(R.id.tv_network_name)).setText(mConfig.getSSIDNoQuotes());
-            ((TextView) findViewById(R.id.tv_permitted_users)).setText(users + " Contact(s) have access");
+            //((TextView) findViewById(R.id.tv_permitted_users)).setText(users + " Contact(s) have access");
 
             findViewById(R.id.middle_view).setOnClickListener(startNetworkActivity());
             findViewById(R.id.iv_trash).setOnClickListener(displayConfirmDeleteDialog());

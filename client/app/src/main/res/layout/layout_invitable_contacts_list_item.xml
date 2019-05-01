@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ru.rambler.libs.swipe_layout.SwipeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/swipe_layout">
+
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -22,23 +18,23 @@
                 android:gravity="center"
                 android:layout_weight="2">
                 <CheckBox
-                    android:visibility="visible"
+                    android:visibility="gone"
                     android:id="@+id/cb_select"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     style="@drawable/ripple"
                     android:background="@drawable/ripple"
                     android:theme="@style/greenCheck"/>
-                <CheckBox
+                <ImageView
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_full"
-                    android:visibility="gone"
-                    android:id="@+id/cb_select_hourglass"
-                    style="@drawable/ripple"
-                    android:theme="@style/greenCheck"/>
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_person_black_24dp"
+                    android:visibility="visible"
+                    android:id="@+id/iv_placeholder"
+                    style="@drawable/ripple" />
             </LinearLayout>
             <Button
+                android:layout_marginLeft="10dp"
                 android:gravity="left|center_vertical"
                 android:id="@+id/btn_name"
                 android:layout_width="0dp"
@@ -50,8 +46,6 @@
                 style="@drawable/ripple"
                 android:background="@drawable/ripple"/>
         </LinearLayout>
-
-    </ru.rambler.libs.swipe_layout.SwipeLayout>
 
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_contact"
@@ -65,21 +59,15 @@
             android:weightSum="10">
 
             <LinearLayout
-                android:layout_weight="2"
+                android:layout_weight="0"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"/>
 
             <LinearLayout
-                android:layout_weight="8"
+                android:layout_weight="10"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="has access to these networks:"/>
 
                 <LinearLayout
                     android:layout_width="match_parent"

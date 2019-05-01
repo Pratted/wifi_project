@@ -2,6 +2,7 @@ package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -78,6 +80,8 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderSelectAll.setOnCheckedChangeListener(SelectAll);
         mHeaderName.setOnClickListener(SortName);
         mButtonCancel.setOnClickListener(Cancel);
+
+        setCheckBoxVisibilities(View.INVISIBLE);
     }
 
     public void add(WiContact contact){
@@ -85,12 +89,16 @@ public class WiInvitableContactsView extends LinearLayout {
 
         mInvitableContacts.add(item);
         mItems.addView(item);
+
+        paintRows();
     }
 
     public void filter(String searchString) {
         for(WiInvitableContactListItem contact: mInvitableContacts){
             contact.setVisibility(contact.mContact.getName().toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
         }
+
+        paintRows();
     }
 
     private CompoundButton.OnCheckedChangeListener SelectAll = new CompoundButton.OnCheckedChangeListener() {
@@ -133,6 +141,8 @@ public class WiInvitableContactsView extends LinearLayout {
         for(WiInvitableContactListItem contact: mInvitableContacts){
             mItems.addView(contact);
         }
+
+        paintRows();
     }
 
     public void setCheckBoxVisibilities(int visibility){
@@ -142,12 +152,29 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderSelectAll.setChecked(false);
 
         for(WiInvitableContactListItem child: mInvitableContacts){
-            // if they have a pending invitation the checkbox is effectively disabled
-            if(child.hasPendingInvitation()){
-                child.mCheckBox.setVisibility(View.GONE);
+            if(visibility == VISIBLE){
+                if(child.hasPendingInvitation()){
+                    child.mCheckBox.setVisibility(View.GONE);
+                }
+                else{
+                    child.mImagePlaceHolder.setVisibility(GONE);
+                    child.mCheckBox.setVisibility(VISIBLE);
+                }
             }
             else{
-                child.mCheckBox.setVisibility(visibility);
+                child.mCheckBox.setVisibility(GONE);
+                child.mImagePlaceHolder.setVisibility(VISIBLE);
+            }
+        }
+    }
+
+    private void paintRows(){
+        boolean alt = false;
+
+        for(WiInvitableContactListItem item: mInvitableContacts){
+            if(item.getVisibility() == VISIBLE){
+                item.setBackgroundResource(alt ? R.color.themedarkest : R.color.themedarkGreen);
+                alt = !alt;
             }
         }
     }
@@ -162,9 +189,8 @@ public class WiInvitableContactsView extends LinearLayout {
         private TextView mTitle;
         private Button mInvite;
         private Button mVisitProfile;
-        private CheckBox mHourglass;
+        private ImageView mImagePlaceHolder;
 
-        private SwipeLayout mSwipeLayout;
         private Animation mSwipeLeftAnimation;
 
         public WiInvitableContactListItem(Context context) {
@@ -190,21 +216,19 @@ public class WiInvitableContactsView extends LinearLayout {
             inflate(getContext(), R.layout.layout_invitable_contacts_list_item, this);
 
             mCheckBox = findViewById(R.id.cb_select);
-            mHourglass = findViewById(R.id.cb_select_hourglass);
+            mImagePlaceHolder = findViewById(R.id.iv_placeholder);
             mName = findViewById(R.id.btn_name);
             mExpandableLayout = findViewById(R.id.expandable_contact);
-            mTitle = findViewById(R.id.title);
+            //mTitle = findViewById(R.id.title);
             mInvite = findViewById(R.id.btn_invite_contact);
             mVisitProfile = findViewById(R.id.btn_visit_profile);
-            mSwipeLayout = findViewById(R.id.swipe_layout);
 
             mName.setText(mContact.getName());
-            mTitle.setText(mContact.getName() + " doesn't have access to any networks");
+           // mTitle.setText(mContact.getName() + " doesn't have access to any networks");
 
-            mSwipeLayout.setRightSwipeEnabled(false);
             mCheckBox.setVisibility(GONE);
 
-            //mName.setOnClickListener(ExpandOrCollapse);
+            mName.setOnClickListener(ExpandOrCollapse);
             mName.setOnLongClickListener(DisplayCheckBoxes);
             mInvite.setOnClickListener(DisplayInvitationDialog);
             mVisitProfile.setOnClickListener(StartContactActivity);
@@ -220,8 +244,8 @@ public class WiInvitableContactsView extends LinearLayout {
         private void configureWithPendingInvitation(){
             mCheckBox.setChecked(false);
             mCheckBox.setVisibility(GONE);
-            mHourglass.setButtonDrawable(R.drawable.ic_empty);
-            mHourglass.setVisibility(View.VISIBLE);
+            mImagePlaceHolder.setImageResource(R.drawable.ic_empty);
+            mImagePlaceHolder.setVisibility(View.VISIBLE);
 
             mInvite.setText("View Invitation");
             mInvite.setOnClickListener(CancelInvitation);
@@ -231,15 +255,15 @@ public class WiInvitableContactsView extends LinearLayout {
             @Override
             public void onAnimationStart(Animation animation) {
                 mCheckBox.setVisibility(GONE);
-                mHourglass.setVisibility(VISIBLE);
-                mHourglass.setButtonDrawable(R.drawable.ic_full);
+                mImagePlaceHolder.setVisibility(VISIBLE);
+                mImagePlaceHolder.setImageResource(R.drawable.ic_full);
                 mCheckBox.setChecked(false);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
                 mCheckBox.setChecked(false);
-                mHourglass.setButtonDrawable(R.drawable.ic_empty);
+                mImagePlaceHolder.setImageResource(R.drawable.ic_empty);
                 mName.setText("Invitation Sent!");
 
                 if(mExpandableLayout.isExpanded()) {
@@ -332,7 +356,7 @@ public class WiInvitableContactsView extends LinearLayout {
 
                     setCheckBoxVisibilities(VISIBLE);
 
-                    return false;
+                    return true;
                 }
         };
     }

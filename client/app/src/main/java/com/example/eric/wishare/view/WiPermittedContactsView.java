@@ -41,9 +41,9 @@ public class WiPermittedContactsView extends LinearLayout {
     private Button mHeaderData;
     private Button mHeaderExpires;
 
-    private Button mBtnLhs;
-    private Button mBtnRhs;
-    private Button mButtonInviteContacts;
+    private Button mButtonRevokeSelected;
+    private Button mButtonCancel;
+
 
     public static final int COL_NAME = 0;
     public static final int COL_DATA = 1;
@@ -57,9 +57,9 @@ public class WiPermittedContactsView extends LinearLayout {
     private LinearLayout mItems;
     private ConstraintLayout mLinearLayout;
     private LinearLayout mLinearLayoutEmpty;
-    private CheckBox mCheckboxSelectAll;
+    private CheckBox mHeaderSelectAll;
 
-    public WiPermittedContactsView(Context context, Button lhs, Button rhs, WiConfiguration network) {
+    public WiPermittedContactsView(Context context, WiConfiguration network) {
         super(context);
 
         mSortCriteria = new HashMap<>();
@@ -67,10 +67,7 @@ public class WiPermittedContactsView extends LinearLayout {
         mSortCriteria.put(COL_DATA, false);
         mSortCriteria.put(COL_EXPIRES, false);
 
-        mBtnLhs = lhs;
-        mBtnRhs = rhs;
         mNetwork = network;
-
         init();
     }
 
@@ -78,19 +75,53 @@ public class WiPermittedContactsView extends LinearLayout {
         inflate(getContext(), R.layout.layout_permitted_contacts, this);
         mPermittedContacts = new ArrayList<>();
 
-        mHeaderName = (Button) findViewById(R.id.btn_name);
-        mHeaderData = (Button) findViewById(R.id.btn_data);
-        mHeaderExpires = (Button) findViewById(R.id.btn_expires);
-        mButtonInviteContacts = (Button) findViewById(R.id.btn_invite_contacts);
-        mCheckboxSelectAll = findViewById(R.id.cb_select_all);
+        mHeaderName = findViewById(R.id.btn_name);
+        mHeaderData = findViewById(R.id.btn_data);
+        mHeaderExpires = findViewById(R.id.btn_expires);
+        mButtonRevokeSelected = findViewById(R.id.btn_revoke_access_selected);
+        mButtonCancel = findViewById(R.id.btn_cancel);
+        mHeaderSelectAll = findViewById(R.id.cb_select_all);
         mItems = findViewById(R.id.items);
-
         mLinearLayout = findViewById(R.id.ll_permitted_contact);
         mLinearLayoutEmpty = findViewById(R.id.ll_permitted_contact_empty);
 
         mHeaderName.setOnClickListener(sort(COL_NAME, 0));
         mHeaderData.setOnClickListener(sort(COL_DATA, 0));
         mHeaderExpires.setOnClickListener(sort(COL_EXPIRES, 0));
+
+        mButtonCancel.setOnClickListener(Cancel);
+
+        setCheckBoxVisibilities(View.INVISIBLE);
+    }
+
+    private View.OnClickListener Cancel = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            setCheckBoxVisibilities(INVISIBLE);
+        }
+    };
+
+    public void setCheckBoxVisibilities(int visibility){
+        mButtonRevokeSelected.setVisibility(visibility);
+        mButtonCancel.setVisibility(visibility);
+        mHeaderSelectAll.setVisibility(visibility);
+        mHeaderSelectAll.setChecked(false);
+
+        for(WiPermittedContactsViewListItem child: mPermittedContacts){
+            // if they have a pending invitation the checkbox is effectively disabled
+            child.mCheckBox.setVisibility(visibility);
+        }
+    }
+
+    private void paintRows(){
+        boolean alt = false;
+
+        for(WiPermittedContactsViewListItem item: mPermittedContacts){
+            if(item.getVisibility() == VISIBLE){
+                item.setBackgroundResource(alt ? R.color.themedarkest : R.color.themedarkGreen);
+                alt = !alt;
+            }
+        }
     }
 
 
@@ -99,6 +130,8 @@ public class WiPermittedContactsView extends LinearLayout {
 
         mPermittedContacts.add(item);
         mItems.addView(item);
+
+        paintRows();
     }
 
     public MaterialDialog.SingleButtonCallback removeSelectedContacts(){
@@ -168,11 +201,13 @@ public class WiPermittedContactsView extends LinearLayout {
 
         mSortCriteria.put(column, !ascending);
 
-        //removeAllItems();
+        mItems.removeAllViews();
 
         for(WiPermittedContactsViewListItem contact: mPermittedContacts){
-            //addListItem(contact);
+            mItems.addView(contact);
         }
+
+        paintRows();
     }
 
     public void sort(int column){
@@ -192,17 +227,11 @@ public class WiPermittedContactsView extends LinearLayout {
         for(WiPermittedContactsViewListItem contact: mPermittedContacts){
             contact.setVisibility(contact.mContact.getName().toLowerCase().contains(searchString.toLowerCase()) ? VISIBLE : GONE);
         }
-    }
 
-    private void setButtonVisibilities(int visibility){
-        //mBtnLhs.setVisibility(visibility);
-        //mBtnRhs.setVisibility(visibility);
+        paintRows();
     }
 
     public void display(){
-        //mCheckboxSelectAll.setVisibility(View.INVISIBLE);
-        //setButtonVisibilities(View.INVISIBLE);
-
         Log.d(TAG, "Refreshing");
         Log.d(TAG, "Permitted Contacts: " + mPermittedContacts.size());
 
@@ -277,6 +306,7 @@ public class WiPermittedContactsView extends LinearLayout {
 
             mRevokeAccess.setOnClickListener(displayRevokeAccessDialog(mContact));
             mVisitProfile.setOnClickListener(startContactActivity(mContact));
+            mRow.setOnLongClickListener(DisplayCheckBoxes);
         }
 
         private View.OnClickListener expand(){
@@ -353,5 +383,16 @@ public class WiPermittedContactsView extends LinearLayout {
             return mContact;
         }
 
+        private View.OnLongClickListener DisplayCheckBoxes = new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                vibe.vibrate(40);
+
+                setCheckBoxVisibilities(VISIBLE);
+
+                return true;
+            }
+        };
     }
 }
