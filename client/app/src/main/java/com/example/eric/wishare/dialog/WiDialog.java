@@ -8,6 +8,7 @@ import java.lang.ref.WeakReference;
 
 abstract public class WiDialog {
     protected WeakReference<Context> context;
+    private MaterialDialog mDialog;
 
     /*****************************************************
      this method builds a specific dialog.
@@ -30,7 +31,12 @@ abstract public class WiDialog {
     }
 
     public void show(){
-        build().show();
+        mDialog = build();
+        mDialog.show();
+    }
+
+    public void dismiss(){
+        mDialog.dismiss();
     }
 
     public void refresh(Context context){

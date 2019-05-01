@@ -77,6 +77,7 @@ public class WiManageContactsDialog extends WiDialog{
                 @Override
                 public void onClick(View view) {
                     mOnContactSelectedListener.onContactSelected(contact);
+                    dismiss();
                 }
             });
 
