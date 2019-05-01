@@ -191,6 +191,10 @@ public class WiContactList {
     }
 
     public WiContact getContactByPhone(String phone){
+        if(WiUtils.isDemoEnabled()){
+            return mDemoContacts.get(phone);
+        }
+
         return mContacts.get(phone);
     }
 

@@ -2,7 +2,6 @@ package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -13,9 +12,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
@@ -28,14 +27,10 @@ import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.WiInvitation;
 import com.example.eric.wishare.model.messaging.WiInvitationDataMessage;
 
-import net.cachapa.expandablelayout.ExpandableLayout;
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-
-import ru.rambler.libs.swipe_layout.SwipeLayout;
 
 public class WiInvitableContactsView extends LinearLayout {
 
@@ -181,14 +176,10 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private class WiInvitableContactListItem extends LinearLayout {
         private WiContact mContact;
-
         private CheckBox mCheckBox;
-        private Button mName;
-        private ExpandableLayout mExpandableLayout;
 
-        private TextView mTitle;
-        private Button mInvite;
-        private Button mVisitProfile;
+        private Button mButtonInvite;
+        private ImageButton mVisitProfile;
         private ImageView mImagePlaceHolder;
 
         private Animation mSwipeLeftAnimation;
@@ -217,20 +208,14 @@ public class WiInvitableContactsView extends LinearLayout {
 
             mCheckBox = findViewById(R.id.cb_select);
             mImagePlaceHolder = findViewById(R.id.iv_placeholder);
-            mName = findViewById(R.id.btn_name);
-            mExpandableLayout = findViewById(R.id.expandable_contact);
-            //mTitle = findViewById(R.id.title);
-            mInvite = findViewById(R.id.btn_invite_contact);
+            mButtonInvite = findViewById(R.id.btn_invite_contact);
             mVisitProfile = findViewById(R.id.btn_visit_profile);
 
-            mName.setText(mContact.getName());
-           // mTitle.setText(mContact.getName() + " doesn't have access to any networks");
-
+            mButtonInvite.setText(mContact.getName());
             mCheckBox.setVisibility(GONE);
 
-            mName.setOnClickListener(ExpandOrCollapse);
-            mName.setOnLongClickListener(DisplayCheckBoxes);
-            mInvite.setOnClickListener(DisplayInvitationDialog);
+            mButtonInvite.setOnLongClickListener(DisplayCheckBoxes);
+            mButtonInvite.setOnClickListener(DisplayInvitationDialog);
             mVisitProfile.setOnClickListener(StartContactActivity);
 
             mSwipeLeftAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.swipe_left);
@@ -247,8 +232,8 @@ public class WiInvitableContactsView extends LinearLayout {
             mImagePlaceHolder.setImageResource(R.drawable.ic_empty);
             mImagePlaceHolder.setVisibility(View.VISIBLE);
 
-            mInvite.setText("View Invitation");
-            mInvite.setOnClickListener(CancelInvitation);
+            mButtonInvite.setText("View Invitation");
+            mButtonInvite.setOnClickListener(CancelInvitation);
         }
 
         private Animation.AnimationListener AnimateSlideLeft = new Animation.AnimationListener() {
@@ -264,11 +249,7 @@ public class WiInvitableContactsView extends LinearLayout {
             public void onAnimationEnd(Animation animation) {
                 mCheckBox.setChecked(false);
                 mImagePlaceHolder.setImageResource(R.drawable.ic_empty);
-                mName.setText("Invitation Sent!");
-
-                if(mExpandableLayout.isExpanded()) {
-                    mExpandableLayout.collapse();
-                }
+                mButtonInvite.setText("Invitation Sent!");
 
                 configureWithPendingInvitation();
             }
@@ -279,17 +260,6 @@ public class WiInvitableContactsView extends LinearLayout {
             }
         };
 
-        private View.OnClickListener ExpandOrCollapse = new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(mExpandableLayout.isExpanded()){
-                        mExpandableLayout.collapse();
-                    }
-                    else{
-                        mExpandableLayout.expand();
-                    }
-                }
-            };
 
         private View.OnClickListener CancelInvitation = new View.OnClickListener(){
             @Override
@@ -301,10 +271,6 @@ public class WiInvitableContactsView extends LinearLayout {
         private View.OnClickListener DisplayInvitationDialog = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(mExpandableLayout.isExpanded()){
-                        mExpandableLayout.collapse();
-                    }
-
                     // TODO: notify user client has already been invited
                     if(mContact.hasPendingInvitation(mWiConfiguration.SSID)){
                         new WiCancelInvitationDialog(getContext(), mWiConfiguration.SSID, mContact.getPhone()).show();
@@ -331,7 +297,7 @@ public class WiInvitableContactsView extends LinearLayout {
                             System.out.println("The phone is: " + mContact.getPhone());
                             WiDataMessageController.getInstance(getContext()).send(msg);
 
-                            mName.startAnimation(mSwipeLeftAnimation);
+                            mButtonInvite.startAnimation(mSwipeLeftAnimation);
 
                         }
                     });
@@ -343,7 +309,7 @@ public class WiInvitableContactsView extends LinearLayout {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(getContext(), ContactActivity.class);
-                    intent.putExtra("contact", mContact);
+                    intent.putExtra("contact", mContact.getPhone());
                     getContext().startActivity(intent);
                 }
         };

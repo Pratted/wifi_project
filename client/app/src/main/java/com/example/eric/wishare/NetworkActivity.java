@@ -43,9 +43,6 @@ public class NetworkActivity extends AppCompatActivity {
     private WiPermittedContactsView mPermittedContactsView;
     private WiInvitableContactsView mInvitableContactsView;
 
-    private Button mLhs;
-    private Button mRhs;
-
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

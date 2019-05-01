@@ -36,77 +36,22 @@
             <Button
                 android:layout_marginLeft="10dp"
                 android:gravity="left|center_vertical"
-                android:id="@+id/btn_name"
+                android:id="@+id/btn_invite_contact"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
+                android:layout_weight="6"
                 android:typeface="normal"
                 android:textAllCaps="false"
                 android:text="hello world"
                 style="@drawable/ripple"
                 android:background="@drawable/ripple"/>
-        </LinearLayout>
-
-    <net.cachapa.expandablelayout.ExpandableLayout
-        android:id="@+id/expandable_contact"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="10">
-
-            <LinearLayout
-                android:layout_weight="0"
+            <ImageButton
+                android:id="@+id/btn_visit_profile"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"/>
-
-            <LinearLayout
-                android:layout_weight="10"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/items">
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <Button
-                        android:id="@+id/btn_invite_contact"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Invite"
-                        style="@drawable/ripple"
-                        android:background="@drawable/ripple"/>
-
-                    <Button
-                        android:id="@+id/btn_visit_profile"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Visit Profile"
-                        style="@drawable/ripple"
-                        android:background="@drawable/ripple"/>
-                </LinearLayout>
-
-
-            </LinearLayout>
+                android:layout_weight="2"
+                android:layout_height="match_parent"
+                android:background="@drawable/ripple"
+                android:src="@drawable/ic_arrow_forward_black_24dp"/>
         </LinearLayout>
-
-
-
-    </net.cachapa.expandablelayout.ExpandableLayout>
 
 </LinearLayout>
