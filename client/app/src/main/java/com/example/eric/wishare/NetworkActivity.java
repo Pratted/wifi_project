@@ -68,7 +68,7 @@ public class NetworkActivity extends AppCompatActivity {
         mContactList = WiContactList.getInstance(this);
 
         mPermittedContactsView = new WiPermittedContactsView(this, mLhs, mRhs, mConfig);
-        mInvitableContactsView = new WiInvitableContactsView(this, mLhs, mRhs, mConfig);
+        mInvitableContactsView = new WiInvitableContactsView(this, mConfig);
 
         for(WiContact contact: mContactList.getWiContacts().values()){
             if(contact.hasAccessTo(mConfig.SSID)){

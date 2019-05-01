@@ -42,19 +42,16 @@ public class WiInvitableContactsView extends LinearLayout {
 
     private CheckBox mHeaderSelectAll;
     private Button mHeaderName;
-    private Button mBtnLhs;
-    private Button mBtnRhs;
+    private Button mButtonCancel;
+    private Button mButtonInviteSelected;
 
     private boolean mAscendingName;
 
     private WiConfiguration mWiConfiguration;
 
-    public WiInvitableContactsView(Context context, Button left, Button right, WiConfiguration config) {
+    public WiInvitableContactsView(Context context, WiConfiguration config) {
         super(context);
         mWiConfiguration = config;
-
-        mBtnLhs = left;
-        mBtnRhs = right;
 
         init();
     }
@@ -73,30 +70,14 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderSelectAll = findViewById(R.id.cb_select_all);
         mHeaderName = findViewById(R.id.btn_name);
 
-        mHeaderSelectAll.setOnCheckedChangeListener(onSelectAll());
-        mHeaderName.setOnClickListener(sortName());
-    }
+        mButtonCancel = findViewById(R.id.btn_cancel);
+        mButtonInviteSelected = findViewById(R.id.btn_invite_selected);
+        mButtonCancel.setVisibility(View.VISIBLE);
+        mButtonInviteSelected.setVisibility(View.VISIBLE);
 
-    public void display(){
-        mHeaderSelectAll.setVisibility(View.INVISIBLE);
-        setButtonVisibilities(View.INVISIBLE);
-        setCheckBoxVisibilities(View.INVISIBLE);
-
-        mBtnLhs.setText("Done");
-        mBtnRhs.setText("Invite");
-
-        mBtnLhs.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setCheckBoxVisibilities(GONE);
-                setButtonVisibilities(GONE);
-            }
-        });
-    }
-
-    private void setButtonVisibilities(int visibility){
-        mBtnLhs.setVisibility(visibility);
-        mBtnRhs.setVisibility(visibility);
+        mHeaderSelectAll.setOnCheckedChangeListener(SelectAll);
+        mHeaderName.setOnClickListener(SortName);
+        mButtonCancel.setOnClickListener(Cancel);
     }
 
     public void add(WiContact contact){
@@ -112,25 +93,28 @@ public class WiInvitableContactsView extends LinearLayout {
         }
     }
 
-    private CompoundButton.OnCheckedChangeListener onSelectAll(){
-        return new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                for(WiInvitableContactListItem child: mInvitableContacts){
-                    child.mCheckBox.setChecked(isChecked);
-                }
+    private CompoundButton.OnCheckedChangeListener SelectAll = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+            for(WiInvitableContactListItem child: mInvitableContacts){
+                child.mCheckBox.setChecked(isChecked);
             }
-        };
-    }
+        }
+    };
 
-    private View.OnClickListener sortName(){
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sortName(mAscendingName);
-            }
-        };
-    }
+    private View.OnClickListener SortName = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            sortName(mAscendingName);
+        }
+    };
+
+    private View.OnClickListener Cancel = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            setCheckBoxVisibilities(INVISIBLE);
+        }
+    };
 
     public void sortName(final boolean ascending){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -152,6 +136,8 @@ public class WiInvitableContactsView extends LinearLayout {
     }
 
     public void setCheckBoxVisibilities(int visibility){
+        mButtonInviteSelected.setVisibility(visibility);
+        mButtonCancel.setVisibility(visibility);
         mHeaderSelectAll.setVisibility(visibility);
         mHeaderSelectAll.setChecked(false);
 
@@ -218,7 +204,7 @@ public class WiInvitableContactsView extends LinearLayout {
             mSwipeLayout.setRightSwipeEnabled(false);
             mCheckBox.setVisibility(GONE);
 
-            mName.setOnClickListener(ExpandOrCollapse);
+            //mName.setOnClickListener(ExpandOrCollapse);
             mName.setOnLongClickListener(DisplayCheckBoxes);
             mInvite.setOnClickListener(DisplayInvitationDialog);
             mVisitProfile.setOnClickListener(StartContactActivity);
@@ -345,7 +331,6 @@ public class WiInvitableContactsView extends LinearLayout {
                     vibe.vibrate(40);
 
                     setCheckBoxVisibilities(VISIBLE);
-                    setButtonVisibilities(VISIBLE);
 
                     return false;
                 }

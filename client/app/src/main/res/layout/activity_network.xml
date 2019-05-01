@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     tools:context=".NetworkActivity">
 
     <android.support.v7.widget.Toolbar
@@ -86,7 +87,6 @@
 
             <com.example.eric.wishare.view.WiTabbedScrollViewPager
                 app:layout_constraintTop_toBottomOf="@id/tab_layout"
-                app:layout_constraintBottom_toTopOf="@+id/layout"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 android:id="@+id/view_pager"
@@ -95,13 +95,6 @@
                 android:layout_below="@id/tab_layout">
 
             </com.example.eric.wishare.view.WiTabbedScrollViewPager>
-
-            <View
-                app:layout_constraintTop_toBottomOf="@id/view_pager"
-                android:id="@+id/bottom_border"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="@color/themeGreen"/>
 
         </android.support.constraint.ConstraintLayout>
     </LinearLayout>
