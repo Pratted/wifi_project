@@ -118,10 +118,6 @@ public class WiInviteContactToNetworkDialog extends WiDialog {
                 mNetworks.remove(i--);
             }
         }
-
-        for(WiConfiguration config : mNetworks) {
-            config.SSID = config.SSID.replace("\"", "");
-        }
     }
 
     private List<WiConfiguration> getSelectedNetworks(Integer[] indices) {

@@ -23,6 +23,7 @@ import com.example.eric.wishare.model.WiConfiguration;
 import com.example.eric.wishare.model.WiContact;
 import com.example.eric.wishare.model.messaging.WiRevokeAccessDataMessage;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -70,10 +71,16 @@ public class WiConfiguredNetworkListView extends LinearLayout {
     }
 
     public void refresh(){
+        List<WiConfiguration> configuredNetworks  = mNetworkManager.getConfiguredNetworks();
+        int fuck = 0;
+
         for(WiConfiguredNetworkListItem item: mConfiguredNetworks.values()){
             int users = 0;
 
-            for(WiContact contact: WiContactList.getInstance(getContext()).getWiContacts().values()){
+            Collection<WiContact> contacts = WiContactList.getInstance(getContext()).getWiContacts().values();
+            int y = 0;
+
+            for(WiContact contact: contacts){
                 Log.d(TAG, "FUCK " + item.mConfig.SSID);
                 if(item.mConfig.SSID.replace("\"", "").equals("HOME-0622")){
                     int x = 0;

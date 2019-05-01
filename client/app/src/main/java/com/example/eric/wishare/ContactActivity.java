@@ -52,12 +52,14 @@ public class ContactActivity extends AppCompatActivity {
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mConfigReceiver, new IntentFilter(WiUtils.ACTIVITY_CONTACT));
 
+
         String phone = getIntent().getStringExtra("contact");
         mContact = WiContactList.getInstance(this).getContactByPhone(phone);
 
         mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitle(mContact.getName());
         setSupportActionBar(mToolbar);
+
 
         mContactSharedNetworkList = findViewById(R.id.contactNetworkList);
         mHiddenLayout = findViewById(R.id.ll_hidden_btn_layout);
@@ -68,6 +70,7 @@ public class ContactActivity extends AppCompatActivity {
         mContactSharedNetworkList.populateNetworks(mContact);
 
         btnInviteContactToNetwork = findViewById(R.id.btn_invite_contact_to_network);
+
 
         findViewById(R.id.btn_revoke_all_access).setOnClickListener(revokeAllAccess());
         mInviteToNetwork = new WiInviteContactToNetworkDialog(this, mContact, btnInviteContactToNetwork);
