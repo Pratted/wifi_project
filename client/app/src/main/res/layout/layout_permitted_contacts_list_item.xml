@@ -5,93 +5,64 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ru.rambler.libs.swipe_layout.SwipeLayout
-        android:id="@+id/swipe_layout"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="10">
-            <CheckBox
-                android:visibility="invisible"
-                android:id="@+id/cb_select"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:checked="false"
-                android:layout_weight="1"
-                android:button="@drawable/cb_selector"
-                android:background="@drawable/ripple"
-                style="@drawable/ripple"/>
+        android:layout_height="wrap_content"
+        android:weightSum="10">
+        <CheckBox
+            android:visibility="invisible"
+            android:id="@+id/cb_select"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:layout_weight="1"
+            android:button="@drawable/cb_selector"
+            android:background="@drawable/ripple"
+            style="@drawable/ripple"/>
 
-            <LinearLayout
-                android:id="@+id/row"
+        <LinearLayout
+            android:id="@+id/row"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="9"
+            android:weightSum="9"
+            android:background="@drawable/ripple"
+            style="@drawable/ripple">
+            <TextView
+                android:clickable="false"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp"
+                android:paddingLeft="8dp"
+                android:textSize="16sp"
+                android:id="@+id/btn_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="9"
-                android:weightSum="9"
-                android:background="@drawable/ripple"
-                style="@drawable/ripple">
-                <TextView
-                    android:clickable="false"
-                    android:paddingTop="12dp"
-                    android:paddingBottom="12dp"
-                    android:paddingLeft="8dp"
-                    android:textSize="16sp"
-                    android:id="@+id/btn_name"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="4"
-                    android:typeface="normal"
-                    android:textAllCaps="false"
-                    android:gravity="left|center_vertical"/>
-                <TextView
-                    android:id="@+id/tv_data"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:layout_weight="2"/>
-
-                <TextView
-                    android:id="@+id/tv_expires"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="3"
-                    android:gravity="center"/>
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_marginTop="10dp"
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="#d9e90909"
-            app:gravity="right"
-            app:bring_to_clamp="100dp"
-            app:clamp="self"
-            app:sticky="none">
-            <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_weight="4"
+                android:typeface="normal"
+                android:textAllCaps="false"
+                android:gravity="left|center_vertical"/>
+            <TextView
+                android:id="@+id/tv_data"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:gravity="center">
-                <ImageButton
-                    android:id="@+id/iv_trash"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:src="@drawable/ic_phonelink_erase_black_24dp"/>
-            </LinearLayout>
+                android:gravity="center"
+                android:layout_weight="2"/>
+
+            <TextView
+                android:id="@+id/tv_expires"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="3"
+                android:gravity="center"/>
         </LinearLayout>
-    </ru.rambler.libs.swipe_layout.SwipeLayout>
+
+    </LinearLayout>
 
     <net.cachapa.expandablelayout.ExpandableLayout
         android:layout_marginLeft="12dp"
         android:layout_marginRight="12dp"
         android:id="@+id/expandable_contact"
-        android:background="@color/themedarker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

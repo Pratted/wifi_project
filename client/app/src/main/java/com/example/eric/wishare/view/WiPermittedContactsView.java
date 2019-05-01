@@ -32,8 +32,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.function.Predicate;
 
-import ru.rambler.libs.swipe_layout.SwipeLayout;
-
 public class WiPermittedContactsView extends LinearLayout {
     private String TAG = "WiPermContactView";
 
@@ -275,7 +273,6 @@ public class WiPermittedContactsView extends LinearLayout {
         private WiContact mContact;
 
         private ExpandableLayout mExpandableLayout;
-        private SwipeLayout mSwipeLayout;
 
         private LinearLayout mRow;
 
@@ -295,7 +292,6 @@ public class WiPermittedContactsView extends LinearLayout {
             mExpires = (TextView) findViewById(R.id.tv_expires);
             mRevokeAccess = (Button) findViewById(R.id.btn_revoke_access);
             mVisitProfile = (Button) findViewById(R.id.btn_visit_profile);
-            mSwipeLayout = findViewById(R.id.swipe_layout);
             mRow = findViewById(R.id.row);
 
             mRow.setOnClickListener(expand());
@@ -315,11 +311,9 @@ public class WiPermittedContactsView extends LinearLayout {
                 public void onClick(View v) {
                     if(mExpandableLayout.isExpanded()){
                         mExpandableLayout.collapse();
-                        WiPermittedContactsViewListItem.this.setBackgroundResource(R.color.background_material_dark);
                     }
                     else{
                         mExpandableLayout.expand();
-                        WiPermittedContactsViewListItem.this.setBackgroundResource(R.color.themedarker);
                     }
                 }
             };
