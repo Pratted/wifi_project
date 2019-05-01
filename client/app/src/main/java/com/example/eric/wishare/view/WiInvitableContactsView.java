@@ -2,10 +2,13 @@ package com.example.eric.wishare.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -15,7 +18,10 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
@@ -232,7 +238,6 @@ public class WiInvitableContactsView extends LinearLayout {
             mImagePlaceHolder.setImageResource(R.drawable.ic_empty);
             mImagePlaceHolder.setVisibility(View.VISIBLE);
 
-            mButtonInvite.setText("View Invitation");
             mButtonInvite.setOnClickListener(CancelInvitation);
         }
 
@@ -260,22 +265,38 @@ public class WiInvitableContactsView extends LinearLayout {
             }
         };
 
-
         private View.OnClickListener CancelInvitation = new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                new WiCancelInvitationDialog(getContext(), mWiConfiguration.SSID, mContact.getPhone()).show();
+                LayoutInflater inflater = LayoutInflater.from(getContext());
+                LinearLayout customLayout = (LinearLayout) inflater.inflate(R.layout.layout_view_pending_invitation, null);
+
+                WiInvitation invitation = mContact.getPendingInvitation(mWiConfiguration.SSID);
+
+                ((TextView) customLayout.findViewById(R.id.tv_expires)).setText(invitation.expires);
+                ((TextView) customLayout.findViewById(R.id.tv_data)).setText(invitation.dataLimit);
+
+                new MaterialDialog.Builder(getContext())
+                        .title("You already invited " + mContact.getName() + " to " + mWiConfiguration.getSSIDNoQuotes())
+                        .customView(customLayout, false)
+                        .negativeText("Cancel Invitation")
+                        .onNegative(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                mContact.removePendingInvitation(mWiConfiguration.SSID);
+                                WiContactList.getInstance(getContext()).save(mContact);
+                                mImagePlaceHolder.setImageResource(R.drawable.ic_person_black_24dp);
+                                mButtonInvite.setOnClickListener(DisplayInvitationDialog);
+                            }
+                        })
+                        .positiveText("Ok")
+                        .show();
             };
         };
 
         private View.OnClickListener DisplayInvitationDialog = new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: notify user client has already been invited
-                    if(mContact.hasPendingInvitation(mWiConfiguration.SSID)){
-                        new WiCancelInvitationDialog(getContext(), mWiConfiguration.SSID, mContact.getPhone()).show();
-                        return;
-                    }
 
                     WiCreateInvitationDialog dialog = new WiCreateInvitationDialog(getContext(), mWiConfiguration.SSID);
                     dialog.setOnInvitationCreatedListener(new WiCreateInvitationDialog.OnInvitationCreatedListener() {

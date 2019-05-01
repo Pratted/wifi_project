@@ -69,6 +69,10 @@ public class WiContact implements Parcelable{
         return new ArrayList<>(mPendingInvitations.values());
     }
 
+    public WiInvitation getPendingInvitation(String ssid){
+        return mPendingInvitations.get(ssid);
+    }
+
     public static final Creator<WiContact> CREATOR = new Creator<WiContact>() {
         @Override
         public WiContact createFromParcel(Parcel in) {
