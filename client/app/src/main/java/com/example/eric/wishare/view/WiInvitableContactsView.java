@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -26,6 +27,7 @@ import com.example.eric.wishare.ContactActivity;
 import com.example.eric.wishare.R;
 import com.example.eric.wishare.WiContactList;
 import com.example.eric.wishare.WiDataMessageController;
+import com.example.eric.wishare.WiUtils;
 import com.example.eric.wishare.dialog.WiCancelInvitationDialog;
 import com.example.eric.wishare.dialog.WiCreateInvitationDialog;
 import com.example.eric.wishare.model.WiConfiguration;
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 public class WiInvitableContactsView extends LinearLayout {
 
@@ -51,6 +54,7 @@ public class WiInvitableContactsView extends LinearLayout {
     private boolean mAscendingName;
 
     private WiConfiguration mWiConfiguration;
+    private WiCreateInvitationDialog mInviteSelectedDialog;
 
     public WiInvitableContactsView(Context context, WiConfiguration config) {
         super(context);
@@ -81,9 +85,56 @@ public class WiInvitableContactsView extends LinearLayout {
         mHeaderSelectAll.setOnCheckedChangeListener(SelectAll);
         mHeaderName.setOnClickListener(SortName);
         mButtonCancel.setOnClickListener(Cancel);
+        mButtonInviteSelected.setOnClickListener(DisplayCreateMultipleInvitationDialog);
 
         setCheckBoxVisibilities(View.INVISIBLE);
+
+        mInviteSelectedDialog = new WiCreateInvitationDialog(getContext(), mWiConfiguration.SSID);
+        mInviteSelectedDialog.setOnInvitationCreatedListener(InviteSelectedContacts);
     }
+
+    private View.OnClickListener DisplayCreateMultipleInvitationDialog = new View.OnClickListener(){
+        @Override
+        public void onClick(View view) {
+            mInviteSelectedDialog.show();
+        }
+    };
+
+    private WiCreateInvitationDialog.OnInvitationCreatedListener InviteSelectedContacts = new WiCreateInvitationDialog.OnInvitationCreatedListener() {
+        @Override
+        public void onInvitationCreated(WiInvitation invitation) {
+            String TAG = "InviteSelected";
+            Log.d(TAG, "Inviting selected contacts...");
+            invitation.setWiConfiguration(mWiConfiguration);
+
+            List<WiContact> invited = new ArrayList<>();
+
+            for(WiInvitableContactListItem item: mInvitableContacts){
+                WiContact contact = item.mContact;
+
+                if(!item.hasPendingInvitation() && item.mCheckBox.isChecked()){
+                    WiInvitationDataMessage msg = new WiInvitationDataMessage(invitation, contact) {
+                        @Override
+                        public void onResponse(JSONObject response) {
+
+                        }
+                    };
+
+                    contact.invite(invitation);
+
+                    //WiDataMessageController.getInstance(getContext()).send(msg);
+                    invited.add(contact);
+                    Log.d(TAG, "Sending invitation to " + contact.getName());
+                    item.animateInvitationCreated();
+                }
+            }
+
+            // save all the invited contacts..
+            if(!invited.isEmpty()){
+                WiContactList.getInstance(getContext()).save(invited);
+            }
+        }
+    };
 
     public void add(WiContact contact){
         WiInvitableContactListItem item = new WiInvitableContactListItem(getContext(), contact);
@@ -325,6 +376,10 @@ public class WiInvitableContactsView extends LinearLayout {
                     dialog.show();
                 }
         };
+
+        private void animateInvitationCreated(){
+            mButtonInvite.startAnimation(mSwipeLeftAnimation);
+        }
 
         private View.OnClickListener StartContactActivity = new OnClickListener() {
                 @Override
