@@ -116,7 +116,6 @@ public class WiContactList {
             // initialize demoContacts once and only once
             if(mDemoContacts == null){
                 mDemoContacts = new HashMap<>();
-                mDemoContacts.putAll(mContacts);
 
                 ArrayList<WiContact> demoList = getDemoContacts();
                 for (WiContact contact: demoList){
@@ -127,6 +126,12 @@ public class WiContactList {
                         }
                     }
 
+                    mDemoContacts.put(contact.getPhone(), contact);
+                }
+            }
+
+            for(WiContact contact: mContacts.values()){
+                if(!mDemoContacts.containsKey(contact.getPhone())){
                     mDemoContacts.put(contact.getPhone(), contact);
                 }
             }
