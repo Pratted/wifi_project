@@ -116,6 +116,8 @@ public class WiAddNetworkDialog extends WiDialog {
                                     mOnNetworkReadyListener.onNetworkReady(config);
                                 }
                             }}).show();
+
+                dismiss();
             }
         };
     }

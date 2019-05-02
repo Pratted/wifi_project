@@ -1,6 +1,7 @@
 package com.example.eric.wishare.dialog;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +46,7 @@ public class WiInvitationListDialog extends WiDialog{
 
         mLinearLayout.setOrientation(LinearLayout.VERTICAL);
         ScrollView.LayoutParams params = new ScrollView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 800);
+        params.setMargins(50, 0, 50, 0);
         mScrollView.setLayoutParams(params);
 
         // .customView()
@@ -165,8 +167,11 @@ public class WiInvitationListDialog extends WiDialog{
             public void onClick(View view) {
                 if(mExpandableLayout.isExpanded()) {
                     mExpandableLayout.collapse();
+                    setBackgroundColor(Color.TRANSPARENT);
                 } else {
                     mExpandableLayout.expand();
+                    setBackgroundResource(R.color.themedarkGreen);
+
                 }
             }
         };

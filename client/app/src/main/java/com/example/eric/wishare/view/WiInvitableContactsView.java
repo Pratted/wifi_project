@@ -122,7 +122,7 @@ public class WiInvitableContactsView extends LinearLayout {
 
                     contact.invite(invitation);
 
-                    //WiDataMessageController.getInstance(getContext()).send(msg);
+                    WiDataMessageController.getInstance(getContext()).send(msg);
                     invited.add(contact);
                     Log.d(TAG, "Sending invitation to " + contact.getName());
                     item.animateInvitationCreated();
@@ -394,7 +394,7 @@ public class WiInvitableContactsView extends LinearLayout {
                 @Override
                 public boolean onLongClick(View v) {
                     Vibrator vibe = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
-                    vibe.vibrate(40);
+                    vibe.vibrate(60);
 
                     setCheckBoxVisibilities(VISIBLE);
 

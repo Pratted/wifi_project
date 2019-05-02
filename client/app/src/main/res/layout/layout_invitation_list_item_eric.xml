@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width = "match_parent"
         android:weightSum="5"
+        android:background="@drawable/ripple"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
@@ -15,19 +16,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:src="@android:drawable/sym_action_email"/>
+            android:src="@drawable/ic_mail_black_24dp"/>
 
         <TextView
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
             android:id="@+id/tv_invitation_title"
             android:layout_width="0dp"
             android:layout_weight="4"
             android:textSize="20sp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:text="Home-0622"/>
 
     </LinearLayout>
 
     <net.cachapa.expandablelayout.ExpandableLayout
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -35,7 +39,7 @@
         android:orientation="vertical"
         android:id="@+id/expandable_layout_invitation"
         app:el_duration="500"
-        app:el_expanded="true">
+        app:el_expanded="false">
 
         <LinearLayout
             android:layout_width="match_parent"
