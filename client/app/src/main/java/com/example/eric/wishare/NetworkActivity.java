@@ -15,6 +15,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -39,6 +40,7 @@ public class NetworkActivity extends AppCompatActivity {
     private WiTabbedScrollViewPager mViewPager;
     private WiPagerAdapter mPagerAdapter;
     private WiContactList mContactList;
+    private Button mButtonInviteContacts;
 
     private WiPermittedContactsView mPermittedContactsView;
     private WiInvitableContactsView mInvitableContactsView;
@@ -68,10 +70,6 @@ public class NetworkActivity extends AppCompatActivity {
         mInvitableContactsView = new WiInvitableContactsView(this, mConfig);
 
         for(WiContact contact: mContactList.getWiContacts().values()){
-            if(contact == null || mConfig == null){
-                int fuck = 0;
-            }
-
             if(contact.hasAccessTo(mConfig.SSID)){
                 mPermittedContactsView.addPermittedContact(contact);
             }
@@ -103,6 +101,18 @@ public class NetworkActivity extends AppCompatActivity {
 
         mToolbar.setTitle(mConfig.getSSIDNoQuotes());
         setSupportActionBar(mToolbar);
+
+        mButtonInviteContacts = mPermittedContactsView.findViewById(R.id.btn_invite_contacts);
+        mButtonInviteContacts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mTabs.getTabAt(1).select();
+            }
+        });
+
+        if(!mPermittedContactsView.hasPermittedContacts()){
+            mTabs.getTabAt(1).select();
+        }
     }
 
 

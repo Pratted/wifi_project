@@ -237,6 +237,10 @@ public class WiPermittedContactsView extends LinearLayout {
         mLinearLayoutEmpty.setVisibility(mPermittedContacts.isEmpty() ? View.VISIBLE : View.GONE);
     }
 
+    public boolean hasPermittedContacts() {
+        return !mPermittedContacts.isEmpty();
+    }
+
     /*
     private OnClickListener displayMultiRevokeAccessDialog() {
         return new OnClickListener() {
