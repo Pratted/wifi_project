@@ -37,7 +37,9 @@ public class WiMyInvitationsButton extends RelativeLayout {
         tvInvitationBadge.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
     }
 
+    /*
     public void setOnClickListener(View.OnClickListener onClickListener){
-        btnMyInvitations.setOnClickListener(onClickListener);
+        //this.setOnClickListener(onClickListener);
     }
+    */
 }
