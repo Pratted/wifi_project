@@ -1,6 +1,7 @@
 package com.example.eric.wishare;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -186,6 +187,9 @@ public class MainActivity extends AppCompatActivity {
 
         btnMyInvitations.setInvitationCount(WiInvitationList.getInstance(this).size());
         mConfiguredNetworkListView.refresh();
+
+        NotificationManager manager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.cancelAll();
     }
 
     @Override
